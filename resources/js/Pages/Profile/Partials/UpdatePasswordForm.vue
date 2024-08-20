@@ -36,9 +36,9 @@ const updatePassword = () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Perbarui Kata Sandi</h2>
+            <h2 class="text-lg font-medium text-gray-900">Perbarui Kata Sandi</h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-gray-600">
                 Pastikan akun Anda menggunakan Kata Sandi yang panjang dan acak agar tetap aman.
             </p>
         </header>
@@ -76,7 +76,7 @@ const updatePassword = () => {
 
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Tersimpan.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Tersimpan.</p>
                 </Transition>
             </div>
         </form>

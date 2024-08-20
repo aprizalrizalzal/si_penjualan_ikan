@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\Table\CategoriesSeeder;
+use Database\Seeders\Table\ProductsSeeder;
 use Database\Seeders\Table\RolesSeeder;
 use Database\Seeders\Table\RoleUserSeeder;
 use Database\Seeders\Table\UsersSeeder;
@@ -27,6 +29,8 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             RolesSeeder::class,
             RoleUserSeeder::class,
+            CategoriesSeeder::class,
+            ProductsSeeder::class,
         ]);
     }
 }

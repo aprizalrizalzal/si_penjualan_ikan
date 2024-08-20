@@ -193,7 +193,8 @@ onUnmounted(() => {
                             <span class="text-sm">Dashboard</span>
                         </ResponsiveNavLink>
                         <hr>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.products')"
+                            :active="route().current('show.products')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-box-seam" viewBox="0 0 16 16">
                                 <path
@@ -201,7 +202,8 @@ onUnmounted(() => {
                             </svg>
                             <span class="text-sm">Produk</span>
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.categories')"
+                            :active="route().current('show.categories')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-list" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd"
@@ -209,7 +211,8 @@ onUnmounted(() => {
                             </svg>
                             <span class="text-sm">Kategori</span>
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.users')"
+                            :active="route().current('show.users')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-people" viewBox="0 0 16 16">
                                 <path
@@ -218,7 +221,8 @@ onUnmounted(() => {
                             <span class="text-sm">Pengguna</span>
                         </ResponsiveNavLink>
                         <hr>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.users')"
+                            :active="route().current('show.users')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-inbox" viewBox="0 0 16 16">
                                 <path
