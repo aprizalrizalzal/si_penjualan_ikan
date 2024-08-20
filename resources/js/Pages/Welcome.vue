@@ -12,14 +12,6 @@ defineProps({
     canRegister: {
         type: Boolean,
     },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
 });
 
 const showingNavigationDropdown = ref(false);
@@ -52,7 +44,7 @@ onUnmounted(() => {
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="flex items-center h-20">
                             <!-- drawer init and show -->
-                            <button
+                            <button v-if="$page.props.auth.user"
                                 class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
                                 type="button" data-drawer-target="drawer-navigation"
                                 data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
@@ -140,7 +132,7 @@ onUnmounted(() => {
                     </div>
                 </nav>
                 <!-- drawer component -->
-                <div id="drawer-navigation"
+                <div v-if="canLogin && $page.props.auth.user" id="drawer-navigation"
                     class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                     tabindex="-1" aria-labelledby="drawer-navigation-label">
                     <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
