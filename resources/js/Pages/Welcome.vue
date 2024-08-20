@@ -50,17 +50,6 @@ onUnmounted(() => {
                     <!-- Primary Navigation Menu -->
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="flex items-center h-20">
-                            <!-- drawer init and show -->
-                            <button v-if="$page.props.auth.user"
-                                class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
-                                type="button" data-drawer-target="drawer-navigation"
-                                data-drawer-show="drawer-navigation" aria-controls="drawer-navigation">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-chevron-compact-right animate-pulse" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" stroke="currentColor" stroke-width="0.5"
-                                        d="M6.776 1.553a.5.5 0 0 1 .671.223l3 6a.5.5 0 0 1 0 .448l-3 6a.5.5 0 1 1-.894-.448L9.44 8 6.553 2.224a.5.5 0 0 1 .223-.671" />
-                                </svg>
-                            </button>
                             <div class="flex me-auto truncate">
                                 <!-- Logo -->
                                 <div class="shrink-0 flex items-center">
