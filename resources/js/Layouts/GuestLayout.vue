@@ -1,8 +1,8 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { Link } from '@inertiajs/vue3';
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
+import { onMounted } from 'vue';
+import { initFlowbite } from 'flowbite';
 
 onMounted(() => {
     initFlowbite();
@@ -11,13 +11,15 @@ onMounted(() => {
 
 <template>
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-white">
-        <div>
+        <div class="animate-fade-down flex flex-col justify-center items-center gap-4">
             <Link href="/">
-            <ApplicationLogo class="w-20 h-20 fill-current text-blue-500" />
+            <ApplicationLogo class="w-40 h-auto" />
             </Link>
+            <h1 class="text-gray-800">Sistem Informasi Penjual Ikan</h1>
         </div>
 
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white hover:shadow-md overflow-hidden sm:rounded-lg">
+        <div
+            class="animate-fade-up w-full sm:max-w-md mt-6 px-6 py-4 bg-white hover:shadow-md overflow-hidden sm:rounded-lg">
             <slot />
         </div>
     </div>
