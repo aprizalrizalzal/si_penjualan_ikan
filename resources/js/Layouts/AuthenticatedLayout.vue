@@ -18,7 +18,7 @@ onMounted(() => {
 
 <template>
     <div>
-        <div class="min-h-screen bg-blue-100">
+        <div class="min-h-screen bg-white">
             <nav class="bg-white border-b border-blue-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
