@@ -25,9 +25,9 @@ const form = useForm({
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-green-900 dark:text-green-100">Informasi Profil</h2>
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Informasi Profil</h2>
 
-            <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 Perbarui informasi profil akun dan alamat email Anda.
             </p>
         </header>
@@ -52,16 +52,16 @@ const form = useForm({
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-green-800 dark:text-green-200">
+                <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
                     Alamat email Anda belum diverifikasi.
                     <Link :href="route('verification.send')" method="post" as="button"
-                        class="underline text-sm text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-100 rounded-md focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-green-800">
+                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-green-800">
                     Klik di sini untuk mengirim ulang email verifikasi.
                     </Link>
                 </p>
 
                 <div v-show="status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
+                    class="mt-2 font-medium text-sm text-gray-600 dark:text-gray-400">
                     Tautan verifikasi baru telah dikirim ke alamat email Anda.
                 </div>
             </div>
@@ -71,7 +71,7 @@ const form = useForm({
 
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-green-600 dark:text-green-400">Tersimpan.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">Tersimpan.</p>
                 </Transition>
             </div>
         </form>

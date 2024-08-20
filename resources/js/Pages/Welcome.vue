@@ -55,9 +55,9 @@ onUnmounted(() => {
                                 <!-- Logo -->
                                 <div class="shrink-0 flex items-center">
                                     <Link :href="route('welcome')">
-                                    <ApplicationLogo class="w-20 h-auto" />
+                                    <ApplicationLogo class="w-16 h-auto" />
                                     </Link>
-                                    <h1 class="px-4 text-gray-800">SI Penjual Ikan</h1>
+                                    <h1 class="px-4 text-lg text-gray-800">SI Penjual Ikan</h1>
                                 </div>
                             </div>
 

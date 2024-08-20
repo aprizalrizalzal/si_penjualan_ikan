@@ -38,7 +38,7 @@ onUnmounted(() => {
                     <div class="flex items-center h-20">
                         <!-- drawer init and show -->
                         <button
-                            class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-green-500 hover:text-green-700 hover:bg-green-100 focus:outline-none focus:bg-green-100 focus:text-green-700 transition duration-150 ease-in-out"
+                            class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
                             type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation"
                             aria-controls="drawer-navigation">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -51,9 +51,9 @@ onUnmounted(() => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('welcome')">
-                                <ApplicationLogo class="w-10 h-auto" />
+                                <ApplicationLogo class="w-16 h-auto" />
                                 </Link>
-                                <h1 class="px-4 text-gray-800">SI Penjual Ikan</h1>
+                                <h1 class="px-4 text-lg text-gray-800">SI Penjual Ikan</h1>
                             </div>
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -67,7 +67,7 @@ onUnmounted(() => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-green-500 bg-white hover:text-green-700 focus:outline-none transition ease-in-out duration-250">
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-250">
                                                 {{ $page.props.auth.user.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@ onUnmounted(() => {
                         <!-- Hamburger -->
                         <div class="animate-fade-left -me-2 flex items-center sm:hidden">
                             <button @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-green-500 hover:text-green-700 hover:bg-green-100 focus:outline-none focus:bg-green-100 focus:text-green-700 transition duration-150 ease-in-out">
+                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out">
                                 <svg class="h-6 w-6" stroke="#256125" fill="none" viewBox="0 0 24 24">
                                     <path :class="{
                                         hidden: showingNavigationDropdown,
@@ -118,12 +118,12 @@ onUnmounted(() => {
                         </ResponsiveNavLink>
                     </div>
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-green-200">
+                    <div class="pt-4 pb-1 border-t border-blue-200">
                         <div class="px-4">
-                            <div class="font-medium text-base text-green-800">
+                            <div class="font-medium text-base text-gray-800">
                                 {{ $page.props.auth.user.name }}
                             </div>
-                            <div class="font-medium text-sm text-green-500">{{ $page.props.auth.user.email }}</div>
+                            <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
                         </div>
 
                         <div class="mt-3 space-y-1">
@@ -146,12 +146,12 @@ onUnmounted(() => {
             <div id="drawer-navigation"
                 class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
-                <h5 id="drawer-navigation-label" class="text-base font-semibold text-green-500 px-4 pb-7">
+                <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
                     MENU - SIService
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation"
-                    class="text-green-400 bg-transparent hover:bg-green-100 hover:text-green-900 rounded-md text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
+                    class="text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-900 rounded-md text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -164,7 +164,7 @@ onUnmounted(() => {
                         <!-- <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')"
                             :active="route().current('dashboard')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M6 1v3H1V1zM1 0a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1zm14 12v3h-5v-3zm-5-1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM6 8v7H1V8zM1 7a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zm14-6v7h-5V1zm-5-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1z" />
@@ -175,7 +175,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.users')"
                             :active="route().current('show.users')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
@@ -185,7 +185,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.spare.parts')"
                             :active="route().current('show.spare.parts') || route().current('show.spare.parts.categories')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z" />
@@ -196,7 +196,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.customers')"
                             :active="route().current('show.customers')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4" />
@@ -206,7 +206,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.devices')"
                             :active="route().current('show.devices') || route().current('show.device.types')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2zM0 12.5h16a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5" />
@@ -216,7 +216,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.services')"
                             :active="route().current('show.services') || route().current('show.service.statuses')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path fill-rule="evenodd"
                                     d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2" />
@@ -227,7 +227,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.service.details')"
                             :active="route().current('show.service.details')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z" />
@@ -241,7 +241,7 @@ onUnmounted(() => {
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.part.usages')"
                             :active="route().current('show.part.usages')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z" />
@@ -251,7 +251,7 @@ onUnmounted(() => {
                         <hr>
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                class="flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">
                                 <path
                                     d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
@@ -262,10 +262,10 @@ onUnmounted(() => {
                         </ResponsiveNavLink> -->
                         <!-- <div>
                             <button type="button"
-                                class="flex items-center w-full p-2 text-base text-green-900 transition duration-75 rounded-md group hover:bg-green-100"
+                                class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-md group hover:bg-blue-100"
                                 aria-controls="dropdown-device-types" data-collapse-toggle="dropdown-device-types">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-display flex-shrink-0 w-5 h-4 text-green-500 transition duration-75 group-hover:text-green-900"
+                                    class="bi bi-display flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                     viewBox="0 0 16 16">
                                     <path
                                         d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4q0 1 .25 1.5H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.75Q6 13 6 12H2s-2 0-2-2zm1.398-.855a.76.76 0 0 0-.254.302A1.5 1.5 0 0 0 1 4.01V10c0 .325.078.502.145.602q.105.156.302.254a1.5 1.5 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.76.76 0 0 0 .254-.302 1.5 1.5 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.76.76 0 0 0-.302-.254A1.5 1.5 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145" />
@@ -281,15 +281,15 @@ onUnmounted(() => {
                             <div id="dropdown-device-types" class="hidden py-2 space-y-2">
                                 <div>
                                     <a href="#"
-                                        class="flex items-center w-full p-2 text-green-900 transition duration-75 rounded-md pl-11 group hover:bg-green-100">Products</a>
+                                        class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-md pl-11 group hover:bg-blue-100">Products</a>
                                 </div>
                                 <div>
                                     <a href="#"
-                                        class="flex items-center w-full p-2 text-green-900 transition duration-75 rounded-md pl-11 group hover:bg-green-100">Billing</a>
+                                        class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-md pl-11 group hover:bg-blue-100">Billing</a>
                                 </div>
                                 <div>
                                     <a href="#"
-                                        class="flex items-center w-full p-2 text-green-900 transition duration-75 rounded-md pl-11 group hover:bg-green-100">Invoice</a>
+                                        class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-md pl-11 group hover:bg-blue-100">Invoice</a>
                                 </div>
                             </div>
                         </div> -->
@@ -301,7 +301,7 @@ onUnmounted(() => {
                 <slot />
             </main>
             <!-- Page Footer -->
-            <footer class="animate-fade-up pb-4 text-center text-sm text-green-900 bg-white">
+            <footer class="animate-fade-up pb-4 text-center text-sm text-gray-900 bg-white">
                 <Footer />
             </footer>
         </div>

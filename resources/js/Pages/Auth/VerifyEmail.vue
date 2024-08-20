@@ -31,7 +31,7 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
             hati mengirimkan email lain kepada Anda.
         </div>
 
-        <div class="mb-4 font-medium text-sm text-green-600" v-if="verificationLinkSent">
+        <div class="mb-4 font-medium text-sm text-gray-600" v-if="verificationLinkSent">
             Tautan verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran.
         </div>
 
