@@ -11,11 +11,11 @@ onMounted(() => {
 
 <template>
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-white">
-        <div class="animate-fade-down flex flex-col justify-center items-center gap-4">
+        <div class="animate-fade-down flex flex-col justify-center items-center">
             <Link href="/">
             <ApplicationLogo class="w-40 h-auto" />
             </Link>
-            <h1 class="text-gray-800">Sistem InformaSistem Informasi Penjualan Ikan (SIPI)</h1>
+            <h1 class="text-gray-800 font-bold">Sistem Informasi Penjualan Ikan (SIPI)</h1>
         </div>
 
         <div
