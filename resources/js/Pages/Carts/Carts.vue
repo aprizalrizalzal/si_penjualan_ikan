@@ -8,9 +8,17 @@ import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     carts: Array,
+});
+
+const form = useForm({
+    quantity: '',
 });
 
 const searchQuery = ref('');
@@ -51,7 +59,17 @@ const previousPage = () => {
 
 const selectedCart = ref(null);
 
+const showingModalQuantityUpdate = ref(false);
 const confirmingCartDeletion = ref(false);
+
+const showModalQuantityUpdate = (cart) => {
+    showingModalQuantityUpdate.value = true;
+    selectedCart.value = cart;
+};
+
+if (selectedCart) {
+    form.quantity = 1
+}
 
 const confirmCartDeletion = (cart) => {
     confirmingCartDeletion.value = true;
@@ -68,6 +86,7 @@ const deleteCart = () => {
 };
 
 const closeModal = () => {
+    showingModalQuantityUpdate.value = false;
     confirmingCartDeletion.value = false;
 };
 </script>
@@ -108,7 +127,7 @@ const closeModal = () => {
                                 <td class="px-3 py-3 truncate">{{ cart.product.weight }} Kg</td>
                                 <td class="px-3 py-3 truncate">{{ $formatCurrency(cart.product.price) }}</td>
                                 <td class="px-3 py-3 truncate">
-                                    <a href="#" type="button" @click="showModalUpdateCart(cart)"
+                                    <a href="#" type="button" @click="showModalQuantityUpdate(cart)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
                                         {{ cart.quantity }}
                                         <PencilSquare width="16" height="16" />
@@ -144,6 +163,29 @@ const closeModal = () => {
                         </svg>
                     </SecondaryButton>
                 </div>
+
+                <!-- Update order item modal -->
+                <Modal :show="showingModalQuantityUpdate">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-medium text-gray-900">
+                                Kuantitas <strong>{{ selectedCart.product.name }}</strong>
+                            </h2>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <form @submit.prevent="submitForm" class="mt-3 space-y-3">
+                            <div>
+                                <InputLabel for="quantity" value="Kuantitas" />
+                                <TextInput id="quantity" type="text" class="mt-1 block w-full" v-model="form.quantity"
+                                    placeholder="Kuantitas" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.quantity" />
+                            </div>
+                            <div class="mt-6 flex justify-start">
+                                <PrimaryButton>Simpan</PrimaryButton>
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
 
                 <!-- Delete cart modal -->
                 <Modal :show="confirmingCartDeletion">
