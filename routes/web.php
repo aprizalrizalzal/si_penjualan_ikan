@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\ProductController;
@@ -21,7 +22,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');
     Route::post('/product', [ProductController::class, 'store'])->name('store.product');
@@ -38,21 +39,22 @@ Route::middleware(['role:admin'])->group(function () {
 
     Route::post('/user/assign-role', [RoleController::class, 'assignRole'])->name('assign.roles');
     Route::delete('/user/remove-role', [RoleController::class, 'removeRole'])->name('remove.role');
-
-    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
-    Route::post('/order', [OrderController::class, 'store'])->name('store.order');
-    Route::put('/order', [OrderController::class, 'update'])->name('update.order');
-    Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
-});
-
-Route::middleware(['role:user'])->group(function () {
-    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
+    Route::post('/order', [OrderController::class, 'store'])->name('store.order');
+    Route::put('/order', [OrderController::class, 'update'])->name('update.order');
+    Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
+
+    Route::get('/carts', [CartController::class, 'show'])->name('show.carts');
+    Route::post('/cart', [CartController::class, 'store'])->name('store.cart');
+    Route::put('/cart', [CartController::class, 'update'])->name('update.cart');
+    Route::delete('/cart', [CartController::class, 'destroy'])->name('destroy.cart');
 });
 
 require __DIR__ . '/auth.php';

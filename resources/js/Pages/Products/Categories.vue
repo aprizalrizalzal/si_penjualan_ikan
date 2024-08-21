@@ -142,7 +142,7 @@ const closeModal = () => {
                                 <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
                                     <div class="flex flex-col">
                                         <div class="text-base font-semibold">{{ category.name }} </div>
-                                        <div class="font-normal text-gray-500">Banyak {{
+                                        <div class="font-normal text-gray-500">Kuantitas: {{
                                             category.products_count }}
                                         </div>
                                     </div>
@@ -192,7 +192,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus status layanan <strong>{{
                                 selectedCategory.status
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah status layanan <strong>{{ selectedCategory.status }}</strong> dihapus,

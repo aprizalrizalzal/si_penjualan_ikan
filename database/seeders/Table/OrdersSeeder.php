@@ -16,31 +16,33 @@ class OrdersSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ambil semua pengguna yang bukan admin
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', '!=', 'admin');
         })->get();
 
-        foreach ($users as $user) {
-            // Buat pesanan baru
+        $userCount = $users->count();
+        if ($userCount == 0) {
+            return; // Jika tidak ada pengguna, hentikan seeder
+        }
+
+        // Buat pesanan untuk pengguna secara acak
+        foreach ($users->random(min($userCount, 3)) as $user) { // Menggunakan 5 sebagai batasan maksimum atau total pengguna jika kurang dari 5
             $order = Order::create([
                 'user_id' => $user->id,
-                'status' => 'pending', // Set status default menjadi 'pending'
+                'status' => 'pending',
                 'total_amount' => 0, // Nilai sementara, akan diperbarui setelah item ditambahkan
             ]);
 
             $totalAmount = 0;
 
-            // Ambil beberapa produk untuk item pesanan
-            $products = Product::inRandomOrder()->take(rand(1, 5))->get();
+            // Ambil produk secara acak
+            $products = Product::inRandomOrder()->take(rand(1, 3))->get();
 
             foreach ($products as $product) {
-                $quantity = rand(1, 10); // Kuantitas item pesanan
+                $quantity = rand(1, 10);
 
-                // Hitung total item pesanan
                 $orderItemTotal = $product->price * $quantity;
 
-                // Buat item pesanan
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
@@ -51,7 +53,7 @@ class OrdersSeeder extends Seeder
                 $totalAmount += $orderItemTotal;
             }
 
-            // Perbarui total_amount pada pesanan
+            // Update total amount di pesanan
             $order->update(['total_amount' => $totalAmount]);
         }
     }

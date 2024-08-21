@@ -95,7 +95,7 @@ const deleteUser = () => {
 
 const showingModalassignRole = ref(false);
 
-const showModalassignRole = (user) => {
+const showModalAssignRole = (user) => {
     selectedUser.value = user;
     showingModalassignRole.value = true;
 };
@@ -150,7 +150,7 @@ const closeModal = () => {
                                 <th scope="col" class="px-3 py-3 truncate">
                                     Status E-mail
                                 </th>
-                                <th scope="col" class="px-2 py-3 text-center truncate" colspan="2">
+                                <th scope="col" class="px-2 py-3 text-center truncate">
                                     Aksi
                                 </th>
                             </tr>
@@ -167,7 +167,11 @@ const closeModal = () => {
                                     </div>
                                 </th>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <span v-for="role in getUserRoles(user)" :key="role.id">#{{ role.name }}</span>
+                                    <a href="#" type="button" @click="showModalAssignRole(user)"
+                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
+                                        <span v-for="role in getUserRoles(user)" :key="role.id">#{{ role.name }}</span>
+                                        <PencilSquare width="16" height="16" />
+                                    </a>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
                                     <div v-if="user.email_verified_at !== null"
@@ -191,13 +195,6 @@ const closeModal = () => {
                                         </svg>
                                         <span>Belum Diverifikasi</span>
                                     </div>
-                                </td>
-                                <td class="px-3 py-3 truncate">
-                                    <!-- Modal toggle edit-->
-                                    <a href="#" type="button" @click="showModalassignRole(user)"
-                                        class="flex gap-2 items-center justify-center font-normal px-2 text-blue-600 hover:underline">
-                                        <PencilSquare width="16" height="16" />Sunting
-                                    </a>
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle delete-->

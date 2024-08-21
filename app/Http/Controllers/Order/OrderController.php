@@ -7,6 +7,7 @@ use App\Models\Order\Order;
 use App\Models\Order\OrderItem;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -14,8 +15,13 @@ class OrderController extends Controller
 {
     public function show()
     {
-        // Mengambil semua pesanan dengan item pesanan dan produk terkait
-        $orders = Order::with('orderItems.product')->get();
+        if (Auth::user()->hasRole('admin')) {
+            // Admin melihat semua pesanan
+            $orders = Order::with('user', 'orderItems.product')->get();
+        } else {
+            // User melihat pesanan mereka sendiri
+            $orders = Order::where('user_id', Auth::id())->with('orderItems.product')->get();
+        }
 
         return Inertia::render('Orders/Orders', [
             'orders' => $orders
@@ -26,7 +32,6 @@ class OrderController extends Controller
     {
         // Validasi input
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'status' => [
                 'required',
                 Rule::in(['pending', 'paid', 'shipped', 'completed', 'cancelled']),
@@ -36,9 +41,10 @@ class OrderController extends Controller
             'order_items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Membuat pesanan baru
+        $userId = Auth::user()->hasRole('admin') ? $request->user_id : Auth::id();
+
         $order = Order::create([
-            'user_id' => $request->user_id,
+            'user_id' => $userId,
             'status' => $request->status,
             'total_amount' => 0, // Nilai sementara, akan diperbarui setelah item ditambahkan
         ]);
@@ -63,7 +69,7 @@ class OrderController extends Controller
         // Memperbarui total_amount pada pesanan
         $order->update(['total_amount' => $totalAmount]);
 
-        return redirect()->route('orders.index');
+        return redirect()->route('show.orders');
     }
 
     public function update(Request $request)
@@ -81,6 +87,11 @@ class OrderController extends Controller
         ]);
 
         $order = Order::findOrFail($request->id);
+
+        // Periksa jika pengguna adalah user dan tidak memiliki hak atas pesanan ini
+        if (!Auth::user()->hasRole('admin') && $order->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
         // Memperbarui status pesanan
         $order->update([
@@ -109,7 +120,7 @@ class OrderController extends Controller
         // Memperbarui total_amount pada pesanan
         $order->update(['total_amount' => $totalAmount]);
 
-        return redirect()->route('orders.index');
+        return redirect()->route('show.orders');
     }
 
     public function destroy(Request $request)
@@ -120,11 +131,17 @@ class OrderController extends Controller
         ]);
 
         $order = Order::findOrFail($request->id);
+
+        // Periksa jika pengguna adalah user dan tidak memiliki hak atas pesanan ini
+        if (!Auth::user()->hasRole('admin') && $order->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         // Menghapus item pesanan terkait
         $order->orderItems()->delete();
         // Menghapus pesanan
         $order->delete();
 
-        return redirect()->route('orders.index');
+        return redirect()->route('show.orders');
     }
 }

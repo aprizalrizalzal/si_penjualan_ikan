@@ -158,10 +158,10 @@ const closeModal = () => {
                                     <div class="font-normal text-gray-500">{{ product.description }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div class="font-normal text-gray-500">{{ product.price }}</div>
+                                    <div class="font-normal text-gray-500">Rp {{ product.price }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div class="font-normal text-gray-500">{{ product.weight }}</div>
+                                    <div class="font-normal text-gray-500">{{ product.weight }} Kg</div>
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Edit-->

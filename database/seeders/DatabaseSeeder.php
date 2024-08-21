@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\Table\CartsSeeder;
 use Database\Seeders\Table\CategoriesSeeder;
 use Database\Seeders\Table\OrderItemsSeeder;
 use Database\Seeders\Table\OrdersSeeder;
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
             RoleUserSeeder::class,
             CategoriesSeeder::class,
             ProductsSeeder::class,
+            CartsSeeder::class,
             OrdersSeeder::class,
         ]);
     }

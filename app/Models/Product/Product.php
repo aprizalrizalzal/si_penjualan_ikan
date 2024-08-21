@@ -2,6 +2,8 @@
 
 namespace App\Models\Product;
 
+use App\Models\Cart\Cart;
+use App\Models\Cart\CartItem;
 use App\Models\Order\OrderItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +28,15 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relasi dengan model Cart.
+     * Product miliki banyak Cart.
+     */
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
     }
 
     /**

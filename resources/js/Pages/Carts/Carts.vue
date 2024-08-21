@@ -8,36 +8,33 @@ import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
-import CardHeading from '@/Components/Icons/CardHeading.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-    orders: Array,
+    carts: Array,
 });
 
 const searchQuery = ref('');
 
-const filteredOrdersSearch = computed(() => {
+const filteredCartsSearch = computed(() => {
     if (!searchQuery.value) {
-        return props.orders;
+        return props.carts;
     }
-    return props.orders.filter(order =>
-        order.id.toString().includes(searchQuery.value.toLowerCase()) ||
-        order.status.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return props.carts.filter(cart =>
+        cart.id.toString().includes(searchQuery.value.toLowerCase())
     );
 });
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
-const paginatedOrders = computed(() => {
+const paginatedCarts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return filteredOrdersSearch.value.slice(start, end);
+    return filteredCartsSearch.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredOrdersSearch.value.length / itemsPerPage);
+    return Math.ceil(filteredCartsSearch.value.length / itemsPerPage);
 });
 
 const nextPage = () => {
@@ -52,25 +49,17 @@ const previousPage = () => {
     }
 };
 
-const selectedOrder = ref(null);
-const selectedOrderItems = ref(null);
+const selectedCart = ref(null);
 
-const showingModalOrderItems = ref(false);
-const confirmingOrderDeletion = ref(false);
+const confirmingCartDeletion = ref(false);
 
-const showModalOrderItems = (order) => {
-    showingModalOrderItems.value = true;
-    selectedOrder.value = order;
-    selectedOrderItems.value = order.order_items;
+const confirmCartDeletion = (cart) => {
+    confirmingCartDeletion.value = true;
+    selectedCart.value = cart;
 };
 
-const confirmOrderDeletion = (order) => {
-    confirmingOrderDeletion.value = true;
-    selectedOrder.value = order;
-};
-
-const deleteOrder = () => {
-    router.delete(route('destroy.order', { id: selectedOrder.value.id }), {
+const deleteCart = () => {
+    router.delete(route('destroy.cart', { id: selectedCart.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
@@ -79,18 +68,17 @@ const deleteOrder = () => {
 };
 
 const closeModal = () => {
-    showingModalOrderItems.value = false;
-    confirmingOrderDeletion.value = false;
+    confirmingCartDeletion.value = false;
 };
 </script>
 
 <template>
 
-    <Head title="Orders" />
+    <Head title="Carts" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pesanan</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Keranjang</h2>
         </template>
 
         <div class="py-4">
@@ -104,36 +92,32 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 text-center truncate">ID Pesanan</th>
-                                <th scope="col" class="px-3 py-3 truncate">Status</th>
-                                <th scope="col" class="px-3 py-3 truncate">Item Pesanan</th>
+                                <th scope="col" class="px-3 py-3 truncate">Produk</th>
+                                <th scope="col" class="px-3 py-3 truncate">Berat</th>
+                                <th scope="col" class="px-3 py-3 truncate">Harga</th>
+                                <th scope="col" class="px-3 py-3 truncate">Kuantitas</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
                                 <th scope="col" class="px-2 py-3 text-center truncate">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(order, index) in paginatedOrders" :key="order.id"
+                            <tr v-for="(cart, index) in paginatedCarts" :key="cart.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td class="px-3 py-3 text-center truncate">{{ order.id }}</td>
-                                <td class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdateOrder(order)"
+                                <td class="px-3 py-3 truncate">{{ cart.product.name }}</td>
+                                <td class="px-3 py-3 truncate">{{ cart.product.weight }} Kg</td>
+                                <td class="px-3 py-3 truncate">Rp {{ cart.product.price }}</td>
+                                <td class="px-3 py-3 truncate">
+                                    <a href="#" type="button" @click="showModalUpdateCart(cart)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        {{ order.status }}
+                                        {{ cart.quantity }}
                                         <PencilSquare width="16" height="16" />
                                     </a>
                                 </td>
+                                <td class="px-3 py-3 truncate">Rp {{ cart.product.price * cart.quantity }}</td>
                                 <td class="px-3 py-3 truncate">
-                                    <!-- Modal toggle Detail-->
-                                    <a href="#" type="button" @click="showModalOrderItems(order)"
-                                        class="flex gap-2 items-center font-normal text-gray-600 hover:underline">
-                                        <CardHeading width="16" height="16" />Detail
-                                    </a>
-                                </td>
-                                <td class="px-3 py-3 truncate">Rp {{ order.total_amount }}</td>
-                                <td class="px-3 py-3 truncate">
-                                    <!-- Delete Order -->
-                                    <a href="#" type="button" @click="confirmOrderDeletion(order)"
+                                    <!-- Delete cart -->
+                                    <a href="#" type="button" @click="confirmCartDeletion(cart)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-red-600 hover:underline">
                                         <Trash3 width="16" height="16" />Hapus
                                     </a>
@@ -160,43 +144,19 @@ const closeModal = () => {
                     </SecondaryButton>
                 </div>
 
-                <!-- Detail order item modal -->
-                <Modal :show="showingModalOrderItems">
+                <!-- Delete cart modal -->
+                <Modal :show="confirmingCartDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail Pesanan <strong>{{ selectedOrder.user.name }}</strong>
-                        </h2>
-                        <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
-                            <tbody>
-                                <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
-                                    class="bg-white border-b hover:bg-blue-100">
-                                    <td class="w-4 pe-3 py-1.5 text-center">{{ index + 1 }}.</td>
-                                    <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
-                                    <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
-                                        Kg</td>
-                                    <td class="pe-6 py-1.5 truncate">Rp {{ orderItem.price }} </td>
-                                    <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="mt-6 flex justify-start">
-                            <PrimaryButton @click="closeModal">Ok</PrimaryButton>
-                        </div>
-                    </div>
-                </Modal>
-
-                <Modal :show="confirmingOrderDeletion">
-                    <div class="p-6">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedOrder.id }}</strong>?
+                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedCart.id }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah pesanan ID <strong>{{ selectedOrder.id }}</strong> dihapus, semua
+                            Setelah pesanan ID <strong>{{ selectedCart.id }}</strong> dihapus, semua
                             sumber daya dan datanya akan dihapus secara permanen.
                         </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <DangerButton class="ms-3" @click="deleteOrder">Hapus</DangerButton>
+                            <DangerButton class="ms-3" @click="deleteCart">Hapus</DangerButton>
                         </div>
                     </div>
                 </Modal>

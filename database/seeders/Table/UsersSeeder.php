@@ -24,8 +24,20 @@ class UsersSeeder extends Seeder
 
             ],
             [
-                'name' => 'Pembeli',
-                'email' => 'pembeli@email.com',
+                'name' => 'Pembeli Satu',
+                'email' => 'pembelisatu@email.com',
+                'email_verified_at' => Carbon::now(),
+                'password' => Hash::make('password')
+            ],
+            [
+                'name' => 'Pembeli Dua',
+                'email' => 'pembelidua@email.com',
+                'email_verified_at' => Carbon::now(),
+                'password' => Hash::make('password')
+            ],
+            [
+                'name' => 'Pembeli Tiga',
+                'email' => 'pembelitiga@email.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('password')
             ],

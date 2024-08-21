@@ -16,7 +16,21 @@ class RoleUserSeeder extends Seeder
     {
         $userRole = Role::where('name', 'user')->first();
         if ($userRole) {
-            $users = User::where('email', 'pembeli@email.com')->get();
+            $users = User::where('email', 'pembelisatu@email.com')->get();
+            foreach ($users as $user) {
+                $user->roles()->syncWithoutDetaching([$userRole->id => ['created_at' => now(), 'updated_at' => now()]]);
+            }
+        }
+        $userRole = Role::where('name', 'user')->first();
+        if ($userRole) {
+            $users = User::where('email', 'pembelidua@email.com')->get();
+            foreach ($users as $user) {
+                $user->roles()->syncWithoutDetaching([$userRole->id => ['created_at' => now(), 'updated_at' => now()]]);
+            }
+        }
+        $userRole = Role::where('name', 'user')->first();
+        if ($userRole) {
+            $users = User::where('email', 'pembelitiga@email.com')->get();
             foreach ($users as $user) {
                 $user->roles()->syncWithoutDetaching([$userRole->id => ['created_at' => now(), 'updated_at' => now()]]);
             }
