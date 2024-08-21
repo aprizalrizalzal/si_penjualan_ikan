@@ -238,7 +238,8 @@ onUnmounted(() => {
                             </svg>
                             <span class="text-sm">Laporan</span>
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.payments')"
+                            :active="route().current('show.payments')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-credit-card" viewBox="0 0 16 16">
                                 <path
@@ -317,7 +318,8 @@ onUnmounted(() => {
                             </svg>
                             <span class="text-sm">Pesanan</span>
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.payments')"
+                            :active="route().current('show.payments')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-credit-card" viewBox="0 0 16 16">
                                 <path

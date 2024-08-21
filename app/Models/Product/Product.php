@@ -31,6 +31,15 @@ class Product extends Model
     }
 
     /**
+     * Relasi dengan model ProductImage.
+     * Product miliki banyak ProductImage.
+     */
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    /**
      * Relasi dengan model Cart.
      * Product miliki banyak Cart.
      */

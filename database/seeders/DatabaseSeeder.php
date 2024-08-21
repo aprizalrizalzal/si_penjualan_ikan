@@ -7,6 +7,8 @@ use Database\Seeders\Table\CartsSeeder;
 use Database\Seeders\Table\CategoriesSeeder;
 use Database\Seeders\Table\OrderItemsSeeder;
 use Database\Seeders\Table\OrdersSeeder;
+use Database\Seeders\Table\PaymentsSeeder;
+use Database\Seeders\Table\ProductImagesSeeder;
 use Database\Seeders\Table\ProductsSeeder;
 use Database\Seeders\Table\RolesSeeder;
 use Database\Seeders\Table\RoleUserSeeder;
@@ -34,8 +36,10 @@ class DatabaseSeeder extends Seeder
             RoleUserSeeder::class,
             CategoriesSeeder::class,
             ProductsSeeder::class,
+            ProductImagesSeeder::class,
             CartsSeeder::class,
             OrdersSeeder::class,
+            PaymentsSeeder::class,
         ]);
     }
 }

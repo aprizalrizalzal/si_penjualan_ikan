@@ -2,6 +2,7 @@
 
 namespace App\Models\Order;
 
+use App\Models\Payment\Payment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,15 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Relasi ke model Payment.
+     * Satu Order memiliki satu Payment.
+     */
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 
     /**

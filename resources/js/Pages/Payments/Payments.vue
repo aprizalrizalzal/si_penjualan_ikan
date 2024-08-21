@@ -12,32 +12,32 @@ import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-    orders: Array,
+    payments: Array,
 });
 
 const searchQuery = ref('');
 
-const filteredOrdersSearch = computed(() => {
+const filteredPaymentsSearch = computed(() => {
     if (!searchQuery.value) {
-        return props.orders;
+        return props.payments;
     }
-    return props.orders.filter(order =>
-        order.id.toString().includes(searchQuery.value.toLowerCase()) ||
-        order.status.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return props.payments.filter(payment =>
+        payment.id.toString().includes(searchQuery.value.toLowerCase()) ||
+        payment.status.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
-const paginatedOrders = computed(() => {
+const paginatedPayments = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return filteredOrdersSearch.value.slice(start, end);
+    return filteredPaymentsSearch.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredOrdersSearch.value.length / itemsPerPage);
+    return Math.ceil(filteredPaymentsSearch.value.length / itemsPerPage);
 });
 
 const nextPage = () => {
@@ -52,25 +52,18 @@ const previousPage = () => {
     }
 };
 
-const selectedOrder = ref(null);
-const selectedOrderItems = ref(null);
+const selectedPayment = ref(null);
 
-const showingModalOrderItems = ref(false);
-const confirmingOrderDeletion = ref(false);
+const confirmingPaymentDeletion = ref(false);
 
-const showModalOrderItems = (order) => {
-    showingModalOrderItems.value = true;
-    selectedOrder.value = order;
-    selectedOrderItems.value = order.order_items;
+
+const confirmPaymentDeletion = (payment) => {
+    confirmingPaymentDeletion.value = true;
+    selectedPayment.value = payment;
 };
 
-const confirmOrderDeletion = (order) => {
-    confirmingOrderDeletion.value = true;
-    selectedOrder.value = order;
-};
-
-const deleteOrder = () => {
-    router.delete(route('destroy.order', { id: selectedOrder.value.id }), {
+const deletePayment = () => {
+    router.delete(route('destroy.payment', { id: selectedPayment.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
@@ -79,18 +72,17 @@ const deleteOrder = () => {
 };
 
 const closeModal = () => {
-    showingModalOrderItems.value = false;
-    confirmingOrderDeletion.value = false;
+    confirmingPaymentDeletion.value = false;
 };
 </script>
 
 <template>
 
-    <Head title="Orders" />
+    <Head title="Payments" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pesanan</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pembayaran</h2>
         </template>
 
         <div class="py-4">
@@ -99,42 +91,44 @@ const closeModal = () => {
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2">
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari Pesanan" />
+                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari Pembayaran" />
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 text-center truncate">ID Pesanan</th>
+                                <th scope="col" class="px-3 py-3 text-center truncate">ID Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
-                                <th scope="col" class="px-3 py-3 truncate">Total</th>
+                                <th scope="col" class="px-3 py-3 truncate">Metode Pembayaran</th>
+                                <th scope="col" class="px-3 py-3 truncate">Jumlah</th>
                                 <th scope="col" class="px-2 py-3 text-center truncate" colspan="2">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(order, index) in paginatedOrders" :key="order.id"
+                            <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td class="px-3 py-3 text-center truncate">{{ order.id }}</td>
+                                <td class="px-3 py-3 text-center truncate">{{ payment.id }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdateOrder(order)"
+                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        {{ order.status }}
+                                        {{ payment.status }}
                                         <PencilSquare width="16" height="16" />
                                     </a>
                                 </td>
-                                <td class="px-3 py-3 truncate">Rp {{ order.total_amount }}</td>
+                                <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
+                                <td class="px-3 py-3 truncate">Rp {{ payment.amount }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
-                                    <a href="#" type="button" @click="showModalOrderItems(order)"
+                                    <a href="#" type="button" @click="showModalPayments(payment)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-gray-600 hover:underline">
                                         <CardHeading width="16" height="16" />Detail
                                     </a>
                                 </td>
                                 <td class="px-3 py-3 truncate">
-                                    <!-- Delete Order -->
-                                    <a href="#" type="button" @click="confirmOrderDeletion(order)"
+                                    <!-- Delete payment -->
+                                    <a href="#" type="button" @click="confirmPaymentDeletion(payment)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-red-600 hover:underline">
                                         <Trash3 width="16" height="16" />Hapus
                                     </a>
@@ -161,43 +155,18 @@ const closeModal = () => {
                     </SecondaryButton>
                 </div>
 
-                <!-- Detail order item modal -->
-                <Modal :show="showingModalOrderItems">
+                <Modal :show="confirmingPaymentDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail Pesanan <strong>{{ selectedOrder.user.name }}</strong>
-                        </h2>
-                        <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
-                            <tbody>
-                                <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
-                                    class="bg-white border-b hover:bg-blue-100">
-                                    <td class="w-4 pe-3 py-1.5 text-center">{{ index + 1 }}.</td>
-                                    <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
-                                    <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
-                                        Kg</td>
-                                    <td class="pe-6 py-1.5 truncate">Rp {{ orderItem.price }} </td>
-                                    <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="mt-6 flex justify-start">
-                            <PrimaryButton @click="closeModal">Ok</PrimaryButton>
-                        </div>
-                    </div>
-                </Modal>
-
-                <Modal :show="confirmingOrderDeletion">
-                    <div class="p-6">
-                        <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedOrder.id }}</strong>?
+                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedPayment.id }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah pesanan ID <strong>{{ selectedOrder.id }}</strong> dihapus, semua
+                            Setelah pesanan ID <strong>{{ selectedPayment.id }}</strong> dihapus, semua
                             sumber daya dan datanya akan dihapus secara permanen.
                         </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <DangerButton class="ms-3" @click="deleteOrder">Hapus</DangerButton>
+                            <DangerButton class="ms-3" @click="deletePayment">Hapus</DangerButton>
                         </div>
                     </div>
                 </Modal>

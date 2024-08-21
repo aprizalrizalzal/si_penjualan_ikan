@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -55,6 +56,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart', [CartController::class, 'store'])->name('store.cart');
     Route::put('/cart', [CartController::class, 'update'])->name('update.cart');
     Route::delete('/cart', [CartController::class, 'destroy'])->name('destroy.cart');
+
+    Route::get('/payments', [PaymentController::class, 'show'])->name('show.payments');
+    Route::post('/payment', [PaymentController::class, 'store'])->name('store.payment');
+    Route::put('/payment', [PaymentController::class, 'update'])->name('update.payment');
+    Route::delete('/payment', [PaymentController::class, 'destroy'])->name('destroy.payment');
 });
 
 require __DIR__ . '/auth.php';
