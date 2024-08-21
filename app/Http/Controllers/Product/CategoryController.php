@@ -12,6 +12,7 @@ class CategoryController extends Controller
 {
     public function show()
     {
+        // Mengambil semua kategori dengan jumlah produk terkait
         $categories = Category::withCount('products')->get();
 
         return Inertia::render('Products/Categories', [
@@ -21,11 +22,13 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255|unique:' . Category::class,
             'description' => 'required|string',
         ]);
 
+        // Membuat kategori baru
         Category::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -36,6 +39,7 @@ class CategoryController extends Controller
 
     public function update(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:categories,id',
             'name' => [
@@ -49,6 +53,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($request->id);
 
+        // Memperbarui kategori
         $category->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -59,11 +64,13 @@ class CategoryController extends Controller
 
     public function destroy(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:categories,id',
         ]);
 
         $category = Category::findOrFail($request->id);
+        // Menghapus kategori
         $category->delete();
 
         return redirect()->route('show.categories');

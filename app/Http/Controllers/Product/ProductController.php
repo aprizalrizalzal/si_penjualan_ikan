@@ -12,6 +12,7 @@ class ProductController extends Controller
 {
     public function show()
     {
+        // Mengambil semua produk dengan kategori terkait
         $products = Product::with('category')->get();
 
         return Inertia::render('Products/Products', [
@@ -21,6 +22,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255|unique:' . Product::class,
             'description' => 'required|string',
@@ -30,6 +32,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+        // Membuat produk baru
         Product::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -44,6 +47,7 @@ class ProductController extends Controller
 
     public function update(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:products,id',
             'name' => [
@@ -61,6 +65,7 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($request->id);
 
+        // Memperbarui produk
         $product->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -75,11 +80,13 @@ class ProductController extends Controller
 
     public function destroy(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:products,id',
         ]);
 
         $product = Product::findOrFail($request->id);
+        // Menghapus produk
         $product->delete();
 
         return redirect()->route('show.products');

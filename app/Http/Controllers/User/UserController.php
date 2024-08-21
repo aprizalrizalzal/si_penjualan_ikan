@@ -11,6 +11,7 @@ class UserController extends Controller
 {
     public function show()
     {
+        // Mengambil semua pengguna dengan peran terkait
         $users = User::with('roles')->get();
 
         return Inertia::render('Users/Users', [
@@ -20,11 +21,13 @@ class UserController extends Controller
 
     public function destroy(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id' => 'required|exists:users,id',
         ]);
 
         $user = User::findOrFail($request->id);
+        // Menghapus pengguna
         $user->delete();
 
         return redirect()->route('show.users');
