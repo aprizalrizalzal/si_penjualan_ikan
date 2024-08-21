@@ -8,6 +8,7 @@ use App\Models\Payment\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -20,12 +21,12 @@ class PaymentController extends Controller
 
         if (Auth::user()->hasRole('admin')) {
             // Admin dapat melihat semua pembayaran
-            $payments = Payment::with('order')->get();
+            $payments = Payment::with('order', 'order.user')->get();
         } else {
             // User hanya dapat melihat pembayaran mereka sendiri
             $payments = Payment::whereHas('order', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
-            })->with('order')->get();
+            })->with('order', 'order.user')->get();
         }
 
         return Inertia::render('Payments/Payments', [
@@ -39,6 +40,7 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'payment_code' => Str::upper(Str::random(8)),
             'order_id' => 'required|exists:orders,id',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',

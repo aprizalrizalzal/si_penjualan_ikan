@@ -8,6 +8,7 @@ use App\Models\Product\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class OrdersSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class OrdersSeeder extends Seeder
         // Buat pesanan untuk pengguna secara acak
         foreach ($users->random(min($userCount, 3)) as $user) { // Menggunakan 5 sebagai batasan maksimum atau total pengguna jika kurang dari 5
             $order = Order::create([
+                'order_code' => Str::upper(Str::random(8)),
                 'user_id' => $user->id,
                 'status' => 'pending',
                 'total_amount' => 0, // Nilai sementara, akan diperbarui setelah item ditambahkan

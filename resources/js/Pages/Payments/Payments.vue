@@ -54,8 +54,13 @@ const previousPage = () => {
 
 const selectedPayment = ref(null);
 
+const showingModalPayment = ref(false);
 const confirmingPaymentDeletion = ref(false);
 
+const showModalPayment = (payment) => {
+    showingModalPayment.value = true;
+    selectedPayment.value = payment;
+};
 
 const confirmPaymentDeletion = (payment) => {
     confirmingPaymentDeletion.value = true;
@@ -72,6 +77,7 @@ const deletePayment = () => {
 };
 
 const closeModal = () => {
+    showingModalPayment.value = false;
     confirmingPaymentDeletion.value = false;
 };
 </script>
@@ -98,7 +104,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 text-center truncate">ID Pembayaran</th>
+                                <th scope="col" class="px-3 py-3 text-center truncate">Kode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Metode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Jumlah</th>
@@ -109,7 +115,7 @@ const closeModal = () => {
                             <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td class="px-3 py-3 text-center truncate">{{ payment.id }}</td>
+                                <td class="px-3 py-3 text-center truncate">{{ payment.payment_code }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
                                     <a href="#" type="button" @click="showModalUpdatePayment(payment)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
@@ -118,10 +124,10 @@ const closeModal = () => {
                                     </a>
                                 </td>
                                 <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
-                                <td class="px-3 py-3 truncate">Rp {{ payment.amount }}</td>
+                                <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
-                                    <a href="#" type="button" @click="showModalPayments(payment)"
+                                    <a href="#" type="button" @click="showModalPayment(payment)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-gray-600 hover:underline">
                                         <CardHeading width="16" height="16" />Detail
                                     </a>
@@ -154,6 +160,36 @@ const closeModal = () => {
                         </svg>
                     </SecondaryButton>
                 </div>
+
+                <!-- Detail payment item modal -->
+                <Modal :show="showingModalPayment">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Detail Pesanan <strong>{{ selectedPayment.order.user.name }}</strong>
+                        </h2>
+                        <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                            <tbody>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Kode Pesanan</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.order_code }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Status</td>
+                                    <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.order.status }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Total</td>
+                                    <td class="pe-6 py-1.5 truncate">{{
+                                        $formatCurrency(selectedPayment.order.total_amount) }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-6 flex justify-start">
+                            <PrimaryButton @click="closeModal">Ok</PrimaryButton>
+                        </div>
+                    </div>
+                </Modal>
 
                 <Modal :show="confirmingPaymentDeletion">
                     <div class="p-6">

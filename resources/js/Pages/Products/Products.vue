@@ -158,7 +158,7 @@ const closeModal = () => {
                                     <div class="font-normal text-gray-500">{{ product.description }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div class="font-normal text-gray-500">Rp {{ product.price }}</div>
+                                    <div class="font-normal text-gray-500">{{ $formatCurrency(product.price) }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
                                     <div class="font-normal text-gray-500">{{ product.weight }} Kg</div>
@@ -212,7 +212,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus status layanan <strong>{{
                                 selectedProduct.status
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah status layanan <strong>{{ selectedProduct.status }}</strong> dihapus,

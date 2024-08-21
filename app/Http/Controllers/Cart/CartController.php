@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Cart;
 use App\Http\Controllers\Controller;
 use App\Models\Cart\Cart;
 use App\Models\Cart\CartItem;
+use App\Models\Order\Order;
+use App\Models\Order\OrderItem;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +85,53 @@ class CartController extends Controller
         ]);
 
         return redirect()->route('show.carts');
+    }
+
+    /**
+     * Melakukan checkout dari keranjang dan membuat pesanan.
+     */
+    public function checkout(Request $request)
+    {
+        $userId = Auth::id();
+
+        // Ambil semua item keranjang pengguna
+        $carts = Cart::where('user_id', $userId)->get();
+
+        if ($carts->isEmpty()) {
+            return redirect()->route('show.carts');
+        }
+
+        $totalAmount = 0;
+
+        // Buat pesanan baru
+        $order = Order::create([
+            'user_id' => $userId,
+            'status' => 'pending', // Set default status
+            'total_amount' => 0, // Akan diperbarui setelah item ditambahkan
+        ]);
+
+        // Pindahkan item dari keranjang ke order
+        foreach ($carts as $cart) {
+            $product = Product::findOrFail($cart->product_id);
+            $orderItemTotal = $product->price * $cart->quantity;
+
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $cart->product_id,
+                'quantity' => $cart->quantity,
+                'price' => $product->price,
+            ]);
+
+            $totalAmount += $orderItemTotal;
+        }
+
+        // Perbarui total amount pada order
+        $order->update(['total_amount' => $totalAmount]);
+
+        // Hapus semua item keranjang setelah checkout
+        Cart::where('user_id', $userId)->delete();
+
+        return redirect()->route('show.orders');
     }
 
     /**

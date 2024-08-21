@@ -106,7 +106,7 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
                                 <td class="px-3 py-3 truncate">{{ cart.product.name }}</td>
                                 <td class="px-3 py-3 truncate">{{ cart.product.weight }} Kg</td>
-                                <td class="px-3 py-3 truncate">Rp {{ cart.product.price }}</td>
+                                <td class="px-3 py-3 truncate">{{ $formatCurrency(cart.product.price) }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <a href="#" type="button" @click="showModalUpdateCart(cart)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
@@ -114,7 +114,8 @@ const closeModal = () => {
                                         <PencilSquare width="16" height="16" />
                                     </a>
                                 </td>
-                                <td class="px-3 py-3 truncate">Rp {{ cart.product.price * cart.quantity }}</td>
+                                <td class="px-3 py-3 truncate">{{ $formatCurrency(cart.product.price * cart.quantity) }}
+                                </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Delete cart -->
                                     <a href="#" type="button" @click="confirmCartDeletion(cart)"

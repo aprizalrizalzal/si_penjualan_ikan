@@ -6,6 +6,7 @@ use App\Models\Order\Order;
 use App\Models\Payment\Payment;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PaymentsSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class PaymentsSeeder extends Seeder
         // Loop melalui setiap order dan buat payment
         foreach ($orders as $order) {
             Payment::create([
+                'payment_code' => Str::upper(Str::random(8)),
                 'order_id' => $order->id,
                 'payment_method' => $this->getRandomPaymentMethod(),
                 'amount' => $order->total_amount,

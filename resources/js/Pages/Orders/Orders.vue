@@ -106,7 +106,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 text-center truncate">ID Pesanan</th>
+                                <th scope="col" class="px-3 py-3 text-center truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
                                 <th scope="col" class="px-2 py-3 text-center truncate" colspan="2">Aksi</th>
@@ -116,7 +116,7 @@ const closeModal = () => {
                             <tr v-for="(order, index) in paginatedOrders" :key="order.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td class="px-3 py-3 text-center truncate">{{ order.id }}</td>
+                                <td class="px-3 py-3 text-center truncate">{{ order.order_code }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
                                     <a href="#" type="button" @click="showModalUpdateOrder(order)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
@@ -124,7 +124,7 @@ const closeModal = () => {
                                         <PencilSquare width="16" height="16" />
                                     </a>
                                 </td>
-                                <td class="px-3 py-3 truncate">Rp {{ order.total_amount }}</td>
+                                <td class="px-3 py-3 truncate">{{ $formatCurrency(order.total_amount) }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
                                     <a href="#" type="button" @click="showModalOrderItems(order)"
@@ -168,6 +168,15 @@ const closeModal = () => {
                             Detail Pesanan <strong>{{ selectedOrder.user.name }}</strong>
                         </h2>
                         <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="pe-6 py-1.5 truncate">No.</th>
+                                    <th scope="col" class="pe-6 py-1.5 truncate">Produk</th>
+                                    <th scope="col" class="pe-6 py-1.5 truncate">Berat</th>
+                                    <th scope="col" class="pe-6 py-1.5 truncate">Harga</th>
+                                    <th scope="col" class="pe-6 py-1.5 truncate">Kuantitas</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
                                     class="bg-white border-b hover:bg-blue-100">
@@ -175,7 +184,7 @@ const closeModal = () => {
                                     <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
                                     <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
                                         Kg</td>
-                                    <td class="pe-6 py-1.5 truncate">Rp {{ orderItem.price }} </td>
+                                    <td class="pe-6 py-1.5 truncate">{{ $formatCurrency(orderItem.price) }} </td>
                                     <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
                                 </tr>
                             </tbody>

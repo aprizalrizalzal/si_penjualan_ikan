@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -20,7 +21,7 @@ class OrderController extends Controller
             $orders = Order::with('user', 'orderItems.product')->get();
         } else {
             // User melihat pesanan mereka sendiri
-            $orders = Order::where('user_id', Auth::id())->with('orderItems.product')->get();
+            $orders = Order::where('user_id', Auth::id())->with('user', 'orderItems.product')->get();
         }
 
         return Inertia::render('Orders/Orders', [
@@ -28,9 +29,12 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Membuat pesanan baru (hanya digunakan untuk admin atau keperluan khusus).
+     */
     public function store(Request $request)
     {
-        // Validasi input
+        // Metode ini tetap bisa digunakan oleh admin untuk membuat pesanan secara manual
         $request->validate([
             'status' => [
                 'required',
@@ -44,6 +48,7 @@ class OrderController extends Controller
         $userId = Auth::user()->hasRole('admin') ? $request->user_id : Auth::id();
 
         $order = Order::create([
+            'order_code' => Str::upper(Str::random(8)),
             'user_id' => $userId,
             'status' => $request->status,
             'total_amount' => 0, // Nilai sementara, akan diperbarui setelah item ditambahkan
