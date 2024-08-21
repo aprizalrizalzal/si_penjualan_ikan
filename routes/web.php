@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -37,9 +38,16 @@ Route::middleware(['role:admin'])->group(function () {
 
     Route::post('/user/assign-role', [RoleController::class, 'assignRole'])->name('assign.roles');
     Route::delete('/user/remove-role', [RoleController::class, 'removeRole'])->name('remove.role');
+
+    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
+    Route::post('/order', [OrderController::class, 'store'])->name('store.order');
+    Route::put('/order', [OrderController::class, 'update'])->name('update.order');
+    Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
 });
 
-Route::middleware(['role:user'])->group(function () {});
+Route::middleware(['role:user'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

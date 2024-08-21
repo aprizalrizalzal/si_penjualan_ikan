@@ -2,7 +2,7 @@
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import SearchInput from '@/Components/SearchInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, onMounted, ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -68,7 +68,6 @@ const selectedUser = ref(null);
 const confirmingUserDeletion = ref(false);
 
 const form = useForm({
-    id: null,
 });
 
 const confirmUserDeletion = (user) => {
@@ -78,7 +77,7 @@ const confirmUserDeletion = (user) => {
 };
 
 const deleteUser = () => {
-    form.delete(route('destroy.user'), {
+    router.delete(route('destroy.user', { id: selectedUser.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();

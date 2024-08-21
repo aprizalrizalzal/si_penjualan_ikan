@@ -62,7 +62,6 @@ const selectedCategory = ref(null);
 const confirmingCategoryDeletion = ref(false);
 
 const form = useForm({
-    id: null,
 });
 
 const confirmcategoryDeletion = (category) => {
@@ -72,7 +71,7 @@ const confirmcategoryDeletion = (category) => {
 };
 
 const deleteCategory = () => {
-    form.delete(route('destroy.category'), {
+    router.delete(route('destroy.category', { id: selectedCategory.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
@@ -193,7 +192,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus status layanan <strong>{{
                                 selectedCategory.status
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah status layanan <strong>{{ selectedCategory.status }}</strong> dihapus,

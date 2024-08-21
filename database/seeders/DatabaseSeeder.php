@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Seeders\Table\CategoriesSeeder;
+use Database\Seeders\Table\OrderItemsSeeder;
+use Database\Seeders\Table\OrdersSeeder;
 use Database\Seeders\Table\ProductsSeeder;
 use Database\Seeders\Table\RolesSeeder;
 use Database\Seeders\Table\RoleUserSeeder;
@@ -31,6 +33,7 @@ class DatabaseSeeder extends Seeder
             RoleUserSeeder::class,
             CategoriesSeeder::class,
             ProductsSeeder::class,
+            OrdersSeeder::class,
         ]);
     }
 }

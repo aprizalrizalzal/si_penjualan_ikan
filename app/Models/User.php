@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Order\Order;
 use App\Models\Role\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,13 +48,44 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relasi dengan model Role.
+     * User milik satu banyak Role.
+     */
     public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
 
+    /**
+     * Cek apakah user memiliki peran (role) tertentu.
+     *
+     * @param  string  $role  Nama peran yang ingin diperiksa.
+     * @return bool           Mengembalikan true jika user memiliki peran, sebaliknya false.
+     */
     public function hasRole($role)
     {
         return $this->roles()->where('name', $role)->exists();
+    }
+
+    /**
+     * Relasi dengan model Order.
+     * User milik banyak Order.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Scope untuk memfilter order berdasarkan status.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $status
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('name', $name);
     }
 }

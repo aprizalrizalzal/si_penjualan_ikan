@@ -2,7 +2,7 @@
 
 namespace App\Models\Product;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Order\OrderItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,17 +10,42 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'stock', 'weight', 'category_id'];
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'stock',
+        'weight',
+        'category_id'
+    ];
 
+    /**
+     * Relasi dengan model Category.
+     * Product miliki satu Category.
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    protected static function booted()
+    /**
+     * Relasi dengan model OrderItem.
+     * Product miliki banyak OrderItem.
+     */
+    public function orderItems()
     {
-        static::addGlobalScope('order', function (Builder $builder) {
-            $builder->orderBy('name');
-        });
+        return $this->belongsTo(OrderItem::class);
+    }
+
+    /**
+     * Scope untuk memfilter order berdasarkan status.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $status
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('name', $name);
     }
 }

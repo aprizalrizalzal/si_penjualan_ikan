@@ -63,7 +63,6 @@ const selectedProduct = ref(null);
 const confirmingProductDeletion = ref(false);
 
 const form = useForm({
-    id: null,
 });
 
 const confirmProductDeletion = (product) => {
@@ -73,7 +72,7 @@ const confirmProductDeletion = (product) => {
 };
 
 const deleteProduct = () => {
-    form.delete(route('destroy.product'), {
+    router.delete(route('destroy.product', { id: selectedProduct.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
@@ -213,7 +212,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus status layanan <strong>{{
                                 selectedProduct.status
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah status layanan <strong>{{ selectedProduct.status }}</strong> dihapus,
