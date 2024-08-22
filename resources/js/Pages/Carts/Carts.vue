@@ -67,6 +67,7 @@ const selectedCart = ref(null);
 
 const showingModalQuantityUpdate = ref(false);
 const confirmingCartDeletion = ref(false);
+const confirmingCartCheckout = ref(false);
 
 const showModalQuantityUpdate = (cart) => {
     showingModalQuantityUpdate.value = true;
@@ -107,6 +108,10 @@ const deleteCart = () => {
             closeModal();
         },
     });
+};
+
+const confirmCartCheckout = () => {
+    confirmingCartCheckout.value = true;
 };
 
 const checkout = () => {
@@ -216,7 +221,7 @@ const closeModal = () => {
                         </tfoot>
                     </table>
                     <div class="flex items-center pt-4 m-1">
-                        <PrimaryButton v-if="carts.length > 0" @click="checkout"
+                        <PrimaryButton v-if="carts.length > 0" @click="confirmCartCheckout"
                             class="flex items-center justify-center w-full gap-2">
                             <PlusCircle width="16" height="16" />Pesan
                         </PrimaryButton>
@@ -283,6 +288,22 @@ const closeModal = () => {
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
                             <DangerButton class="ms-3" @click="deleteCart">Hapus</DangerButton>
+                        </div>
+                    </div>
+                </Modal>
+
+                <!-- Delete cart modal -->
+                <Modal :show="confirmingCartCheckout">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Konfirmasi Pesanan
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-700">
+                            Setelah produk dipesan, semua pesanan akan diteruskan ke metode pembayaran.
+                        </p>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton @click="closeModal">Batal</SecondaryButton>
+                            <PrimaryButton class="ms-3" @click="checkout">Pesan</PrimaryButton>
                         </div>
                     </div>
                 </Modal>
