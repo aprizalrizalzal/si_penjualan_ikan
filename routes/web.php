@@ -27,8 +27,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    Route::get('/banners', [BannerController::class, 'show'])->name('show.banners');
     Route::post('/banner', [BannerController::class, 'store'])->name('store.banner');
+    Route::post('/banner-image', [BannerController::class, 'update_image'])->name('update.banner.image');
     Route::put('/banner', [BannerController::class, 'update'])->name('update.banner');
     Route::delete('/banner', [BannerController::class, 'destroy'])->name('destroy.banner');
 
@@ -37,8 +37,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/product', [ProductController::class, 'update'])->name('update.product');
     Route::delete('/product', [ProductController::class, 'destroy'])->name('destroy.product');
 
-    Route::post('/product/images', [ProductImageController::class, 'store'])->name('store.product.image');
-    Route::delete('/product/images', [ProductImageController::class, 'destroy'])->name('destroy.product.image');
+    Route::post('/product/image', [ProductImageController::class, 'store'])->name('store.product.image');
+    Route::post('/product/image-image', [ProductImageController::class, 'update_image'])->name('update.product.image.image');
+    Route::put('/product/image', [ProductImageController::class, 'update'])->name('update.product.image');
+    Route::delete('/product/image', [ProductImageController::class, 'destroy'])->name('destroy.product.image');
 
     Route::get('/categories', [CategoryController::class, 'show'])->name('show.categories');
     Route::post('/category', [CategoryController::class, 'store'])->name('store.category');
