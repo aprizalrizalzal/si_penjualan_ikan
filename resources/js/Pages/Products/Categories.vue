@@ -41,7 +41,7 @@ const filteredCategoriesSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 4;
 
 const paginatedCategories = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
@@ -275,7 +275,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus kategori <strong>{{
                                 selectedCategory.name
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah kategori <strong>{{ selectedCategory.name }}</strong> dihapus,

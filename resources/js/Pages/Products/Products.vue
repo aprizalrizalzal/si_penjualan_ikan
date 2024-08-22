@@ -17,7 +17,6 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
 import Product from './Detail/Product.vue';
-import ButtonImage from '@/Components/ButtonImage.vue';
 
 const props = defineProps({
     products: Array,
@@ -50,7 +49,7 @@ const filteredProductsSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 4;
 
 const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;

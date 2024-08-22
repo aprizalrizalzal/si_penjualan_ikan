@@ -39,7 +39,7 @@ const filteredCartsSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 5;
+const itemsPerPage = 4;
 
 const paginatedCarts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
