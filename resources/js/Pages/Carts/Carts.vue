@@ -215,7 +215,7 @@ const closeModal = () => {
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="flex items-center pt-4">
+                    <div class="flex items-center pt-4 m-1">
                         <PrimaryButton v-if="carts.length > 0" @click="checkout"
                             class="flex items-center justify-center w-full gap-2">
                             <PlusCircle width="16" height="16" />Pesan
