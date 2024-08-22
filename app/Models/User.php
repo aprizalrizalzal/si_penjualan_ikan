@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Cart\Cart;
+use App\Models\Customer\Customer;
 use App\Models\Order\Order;
 use App\Models\Role\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,6 +68,15 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         return $this->roles()->where('name', $role)->exists();
+    }
+
+    /**
+     * Relasi dengan model Customer.
+     * User milik satu Customer.
+     */
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
     }
 
     /**
