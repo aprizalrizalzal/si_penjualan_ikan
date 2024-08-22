@@ -11,9 +11,17 @@ import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
 import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 import BoxArrowLeft from '@/Components/Icons/BoxArrowLeft.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
 
 const props = defineProps({
     categories: Array,
+});
+
+const form = useForm({
+    name: '',
+    description: '',
 });
 
 const goToProducts = () => {
@@ -59,16 +67,58 @@ const previousPage = () => {
 
 const selectedCategory = ref(null);
 
+const showingModalCategory = ref(false);
 const confirmingCategoryDeletion = ref(false);
 
-const form = useForm({
-});
+const showModalCategory = (category) => {
+    showingModalCategory.value = true;
+    selectedCategory.value = category;
+
+    if (category) {
+        form.name = category.name;
+        form.description = category.description;
+    }
+};
 
 const confirmcategoryDeletion = (category) => {
     confirmingCategoryDeletion.value = true;
     selectedCategory.value = category;
     form.id = category.id;
 };
+
+const submitForm = () => {
+    if (!selectedCategory.value.id) {
+        form.post(route('store.category'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: (errors) => {
+                if (errors.name || errors.description) {
+                    alert('Category failed!');
+                } else {
+                    const errorMessages = Object.values(errors).flat();
+                    alert(`${errorMessages}`);
+                }
+            }
+        });
+    } else {
+        form.put(route('update.category', { id: selectedCategory.value.id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: (errors) => {
+                if (errors.name || errors.description) {
+                    alert('Category failed!');
+                } else {
+                    const errorMessages = Object.values(errors).flat();
+                    alert(`${errorMessages}`);
+                }
+            }
+        });
+    }
+}
 
 const deleteCategory = () => {
     router.delete(route('destroy.category', { id: selectedCategory.value.id }), {
@@ -88,6 +138,7 @@ const deleteCategory = () => {
 };
 
 const closeModal = () => {
+    showingModalCategory.value = false;
     confirmingCategoryDeletion.value = false;
 };
 </script>
@@ -106,7 +157,7 @@ const closeModal = () => {
                 <div
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2 me-auto">
-                        <PrimaryButton class="gap-2 shadow-none py-2.5 capitalize">
+                        <PrimaryButton @click="showModalCategory" class="gap-2 shadow-none py-2.5 capitalize">
                             <PlusCircle width="16" height="16" />Kategori
                         </PrimaryButton>
                         <span>/</span>
@@ -114,7 +165,7 @@ const closeModal = () => {
                             <BoxArrowLeft width="16" height="16" /> Produk
                         </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari kategori Produk" />
+                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -152,7 +203,7 @@ const closeModal = () => {
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Edit -->
-                                    <a href="#" type="button" @click="showModalassignRole(category)"
+                                    <a href="#" type="button" @click="showModalCategory(category)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-blue-600 hover:underline">
                                         <PencilSquare width="16" height="16" />Sunting
                                     </a>
@@ -168,7 +219,7 @@ const closeModal = () => {
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center gap-4 items-center p-6">
+                <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-chevron-left" viewBox="0 0 16 16">
@@ -186,16 +237,48 @@ const closeModal = () => {
                     </SecondaryButton>
                 </div>
 
+                <!-- Store/Update category modal -->
+                <Modal :show="showingModalCategory">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 v-if="!selectedCategory" class="text-lg font-medium text-gray-900">
+                                Tambah Kategori
+                            </h2>
+                            <h2 class="text-lg font-medium text-gray-900">
+                                Kategori <strong>{{ selectedCategory.name }}</strong>
+                            </h2>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <form @submit.prevent="submitForm" class="mt-3 space-y-3">
+                            <div>
+                                <InputLabel for="name" value="Nama" />
+                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
+                                    placeholder="Nama Kategori" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.name" />
+                            </div>
+                            <div>
+                                <InputLabel for="description" value="Deskripsi" />
+                                <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    v-model="form.description" placeholder="Deskripsi" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.description" />
+                            </div>
+                            <div class="mt-6 flex justify-start">
+                                <PrimaryButton>Simpan</PrimaryButton>
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
+
                 <!-- Delete category modal -->
                 <Modal :show="confirmingCategoryDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus status layanan <strong>{{
-                                selectedCategory.status
-                            }}</strong>?
+                            Apakah Anda yakin ingin menghapus kategori <strong>{{
+                                selectedCategory.name
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah status layanan <strong>{{ selectedCategory.status }}</strong> dihapus,
+                            Setelah kategori <strong>{{ selectedCategory.name }}</strong> dihapus,
                             semua
                             sumber daya
                             dan

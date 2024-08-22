@@ -12,9 +12,24 @@ import Trash3 from '@/Components/Icons/Trash3.vue';
 import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 import BoxArrowInRight from '@/Components/Icons/BoxArrowInRight.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import DropdownSelect from '@/Components/DropdownSelect.vue';
+import Product from './Detail/Product.vue';
 
 const props = defineProps({
     products: Array,
+    categories: Array,
+});
+
+const form = useForm({
+    name: '',
+    description: '',
+    price: '',
+    stock: '',
+    weight: '',
+    category_id: '',
 });
 
 const goToCategories = () => {
@@ -60,16 +75,68 @@ const previousPage = () => {
 
 const selectedProduct = ref(null);
 
+const showingModalProduct = ref(false);
+const showingModalProductDetail = ref(false);
 const confirmingProductDeletion = ref(false);
 
-const form = useForm({
-});
+const showModalProduct = (product) => {
+    showingModalProduct.value = true;
+    selectedProduct.value = product;
+
+    if (product) {
+        form.name = product.name;
+        form.description = product.description;
+        form.price = product.price;
+        form.stock = product.stock;
+        form.weight = product.weight;
+        form.category_id = product.category_id;
+    }
+};
+
+const showModalProductDetail = (product) => {
+    selectedProduct.value = product;
+    showingModalProductDetail.value = true;
+};
 
 const confirmProductDeletion = (product) => {
     confirmingProductDeletion.value = true;
     selectedProduct.value = product;
     form.id = product.id;
 };
+
+const submitForm = () => {
+    if (!selectedProduct.value.id) {
+        form.post(route('store.product'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: (errors) => {
+                if (errors.name || errors.description || errors.price || errors.stock || errors.waight || errors.categori_id) {
+                    alert('Product failed!');
+                } else {
+                    const errorMessages = Object.values(errors).flat();
+                    alert(`${errorMessages}`);
+                }
+            }
+        });
+    } else {
+        form.put(route('update.product', { id: selectedProduct.value.id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: (errors) => {
+                if (errors.name || errors.description || errors.price || errors.stock || errors.waight || errors.categori_id) {
+                    alert('Product failed!');
+                } else {
+                    const errorMessages = Object.values(errors).flat();
+                    alert(`${errorMessages}`);
+                }
+            }
+        });
+    }
+}
 
 const deleteProduct = () => {
     router.delete(route('destroy.product', { id: selectedProduct.value.id }), {
@@ -89,6 +156,8 @@ const deleteProduct = () => {
 };
 
 const closeModal = () => {
+    showingModalProduct.value = false;
+    showingModalProductDetail.value = false;
     confirmingProductDeletion.value = false;
 };
 </script>
@@ -107,7 +176,7 @@ const closeModal = () => {
                 <div
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2 me-auto">
-                        <PrimaryButton class="gap-2 shadow-none py-2.5 capitalize">
+                        <PrimaryButton @click="showModalProduct" class="gap-2 shadow-none py-2.5 capitalize">
                             <PlusCircle width="16" height="16" />Produk
                         </PrimaryButton>
                         <span>/</span>
@@ -115,7 +184,7 @@ const closeModal = () => {
                             <BoxArrowInRight width="16" height="16" /> Kategori
                         </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari Produk" />
+                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -165,14 +234,14 @@ const closeModal = () => {
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Edit-->
-                                    <a href="#" type="button" @click="showModalassignRole(product)"
+                                    <a href="#" type="button" @click="showModalProduct(product)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-blue-600 hover:underline">
                                         <PencilSquare width="16" height="16" />Sunting
                                     </a>
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
-                                    <a href="#" type="button" @click="goToSparePartDetail(sparePart)"
+                                    <a href="#" type="button" @click="showModalProductDetail(product)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-gray-600 hover:underline">
                                         <CardHeading width="16" height="16" />Detail
                                     </a>
@@ -188,7 +257,7 @@ const closeModal = () => {
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center gap-4 items-center p-6">
+                <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-chevron-left" viewBox="0 0 16 16">
@@ -206,16 +275,85 @@ const closeModal = () => {
                     </SecondaryButton>
                 </div>
 
+                <!-- Update product modal -->
+                <Modal :show="showingModalProduct">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 v-if="!selectedProduct" class="text-lg font-medium text-gray-900">
+                                Tambah Product
+                            </h2>
+                            <h2 v-else class="text-lg font-medium text-gray-900">
+                                Product <strong>{{ selectedProduct.name }}</strong>
+                            </h2>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <form @submit.prevent="submitForm" class="mt-3 space-y-3">
+                            <div>
+                                <InputLabel for="name" value="Nama" />
+                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
+                                    placeholder="Nama Ikan" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.name" />
+                            </div>
+                            <div>
+                                <DropdownSelect id="category_id" label="Kategori" optionProperty="name"
+                                    valueProperty="id" :options="categories" v-model="form.category_id"
+                                    :placeholder='selectedProduct && selectedProduct.category ? selectedProduct.category.name : "Pilih Kategori"'
+                                    class="w-full" />
+                                <InputError class="mt-2" :message="form.errors.category_id" />
+                            </div>
+                            <div>
+                                <InputLabel for="description" value="Deskripsi" />
+                                <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    v-model="form.description" placeholder="Deskripsi" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.description" />
+                            </div>
+                            <div>
+                                <InputLabel for="price" value="Harga (Rp)" />
+                                <TextInput id="price" type="text" class="mt-1 block w-full" v-model="form.price"
+                                    placeholder="Harga (Rp)" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.price" />
+                            </div>
+                            <div>
+                                <InputLabel for="stock" value="Stok" />
+                                <TextInput id="stock" type="text" class="mt-1 block w-full" v-model="form.stock"
+                                    placeholder="Stok" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.stock" />
+                            </div>
+                            <div>
+                                <InputLabel for="weight" value="Berat (Kg)" />
+                                <TextInput id="weight" type="text" class="mt-1 block w-full" v-model="form.weight"
+                                    placeholder="Berat (Kg)" required autofocus />
+                                <InputError class="mt-2" :message="form.errors.weight" />
+                            </div>
+                            <div class="mt-6 flex justify-start">
+                                <PrimaryButton>Simpan</PrimaryButton>
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
+
+                <!-- Detail product modal -->
+                <Modal maxWidth="6xl" :show="showingModalProductDetail">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center text-blue-900">
+                            <h2 class="text-lg font-medium text-gray-900">{{ selectedProduct.name }}
+                            </h2>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <Product :product="selectedProduct" />
+                    </div>
+                </Modal>
+
                 <!-- Delete product modal -->
                 <Modal :show="confirmingProductDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus status layanan <strong>{{
-                                selectedProduct.status
-                                }}</strong>?
+                            Apakah Anda yakin ingin menghapus produk <strong>{{
+                                selectedProduct.name
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah status layanan <strong>{{ selectedProduct.status }}</strong> dihapus,
+                            Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,
                             semua
                             sumber daya
                             dan

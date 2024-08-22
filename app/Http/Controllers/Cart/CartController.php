@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart\Cart;
-use App\Models\Cart\CartItem;
 use App\Models\Order\Order;
 use App\Models\Order\OrderItem;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
@@ -88,6 +88,26 @@ class CartController extends Controller
     }
 
     /**
+     * Menghapus item dari keranjang.
+     */
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:carts,id',
+        ]);
+
+        $userId = Auth::id();
+
+        $cart = Cart::where('user_id', $userId)
+            ->where('id', $request->id)
+            ->firstOrFail();
+
+        $cart->delete();
+
+        return redirect()->route('show.carts');
+    }
+
+    /**
      * Melakukan checkout dari keranjang dan membuat pesanan.
      */
     public function checkout(Request $request)
@@ -105,6 +125,7 @@ class CartController extends Controller
 
         // Buat pesanan baru
         $order = Order::create([
+            'order_code' => Str::upper(Str::random(8)),
             'user_id' => $userId,
             'status' => 'pending', // Set default status
             'total_amount' => 0, // Akan diperbarui setelah item ditambahkan
@@ -132,25 +153,5 @@ class CartController extends Controller
         Cart::where('user_id', $userId)->delete();
 
         return redirect()->route('show.orders');
-    }
-
-    /**
-     * Menghapus item dari keranjang.
-     */
-    public function destroy(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:carts,id',
-        ]);
-
-        $userId = Auth::id();
-
-        $cart = Cart::where('user_id', $userId)
-            ->where('id', $request->id)
-            ->firstOrFail();
-
-        $cart->delete();
-
-        return redirect()->route('show.carts');
     }
 }

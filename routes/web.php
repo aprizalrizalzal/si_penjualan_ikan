@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/cart', [CartController::class, 'update'])->name('update.cart');
     Route::delete('/cart', [CartController::class, 'destroy'])->name('destroy.cart');
 
+    Route::post('/cart/orders', [CartController::class, 'checkout'])->name('checkout.cart.orders');
+
     Route::get('/payments', [PaymentController::class, 'show'])->name('show.payments');
     Route::post('/payment', [PaymentController::class, 'store'])->name('store.payment');
     Route::put('/payment', [PaymentController::class, 'update'])->name('update.payment');

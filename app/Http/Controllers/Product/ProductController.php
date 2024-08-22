@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product\Category;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,10 +14,12 @@ class ProductController extends Controller
     public function show()
     {
         // Mengambil semua produk dengan kategori terkait
-        $products = Product::with('category')->get();
+        $products = Product::with('category', 'productImages')->get();
+        $categories = Category::all();
 
         return Inertia::render('Products/Products', [
-            'products' => $products
+            'products' => $products,
+            'categories' => $categories
         ]);
     }
 

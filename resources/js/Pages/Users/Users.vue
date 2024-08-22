@@ -132,7 +132,7 @@ const closeModal = () => {
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2">
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari pengguna" />
+                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -207,7 +207,7 @@ const closeModal = () => {
                         </tbody>
                     </table>
                 </div>
-                <div class="flex justify-center gap-4 items-center p-6">
+                <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-chevron-left" viewBox="0 0 16 16">

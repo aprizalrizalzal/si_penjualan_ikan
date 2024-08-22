@@ -39,10 +39,10 @@ class ProductImagesSeeder extends Seeder
     private function getRandomImageName()
     {
         $images = [
-            'product_image_1.jpg',
-            'product_image_2.jpg',
-            'product_image_3.jpg',
-            'product_image_4.jpg',
+            'storage/images/products/product_image_1.jpg',
+            'storage/images/products/product_image_2.jpg',
+            'storage/images/products/product_image_3.jpg',
+            'storage/images/products/product_image_4.jpg',
         ];
 
         return $images[array_rand($images)];

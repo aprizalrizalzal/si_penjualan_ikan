@@ -10,10 +10,16 @@ import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CreditCard from '@/Components/Icons/CreditCard.vue';
+import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 
 const props = defineProps({
     orders: Array,
 });
+
+const goToPayments = () => {
+    router.visit(route('show.payments'))
+}
 
 const searchQuery = ref('');
 
@@ -22,7 +28,7 @@ const filteredOrdersSearch = computed(() => {
         return props.orders;
     }
     return props.orders.filter(order =>
-        order.id.toString().includes(searchQuery.value.toLowerCase()) ||
+        order.order_code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         order.status.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
@@ -78,6 +84,17 @@ const deleteOrder = () => {
     });
 };
 
+const totalAmount = computed(() => {
+    return filteredOrdersSearch.value.reduce((total, order) => {
+        const amount = parseFloat(order.total_amount);
+        return total + (isNaN(amount) ? 0 : amount);
+    }, 0);
+});
+
+const goToCart = () => {
+    router.visit(route('show.carts'))
+}
+
 const closeModal = () => {
     showingModalOrderItems.value = false;
     confirmingOrderDeletion.value = false;
@@ -98,15 +115,18 @@ const closeModal = () => {
                 <div
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2">
+                        <SecondaryButton @click="goToPayments" class="gap-2 shadow-none py-2.5 capitalize">
+                            <CreditCard width="16" height="16" /> Pembayaran
+                        </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari Pesanan" />
+                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 text-center truncate">Kode Pesanan</th>
+                                <th scope="col" class="px-3 py-3 truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
                                 <th scope="col" class="px-2 py-3 text-center truncate" colspan="2">Aksi</th>
@@ -116,14 +136,8 @@ const closeModal = () => {
                             <tr v-for="(order, index) in paginatedOrders" :key="order.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td class="px-3 py-3 text-center truncate">{{ order.order_code }}</td>
-                                <td class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdateOrder(order)"
-                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        {{ order.status }}
-                                        <PencilSquare width="16" height="16" />
-                                    </a>
-                                </td>
+                                <td class="px-3 py-3 truncate">{{ order.order_code }}</td>
+                                <td class="px-3 py-3 text-blue-600 truncate capitalize">{{ order.status }}</td>
                                 <td class="px-3 py-3 truncate">{{ $formatCurrency(order.total_amount) }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
@@ -141,9 +155,35 @@ const closeModal = () => {
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
+                            <tr>
+                                <td class="px-3 py-3 text-center truncate">
+                                    #
+                                </td>
+                                <td class="px-3 py-3 font-bold truncate" colspan="2">
+                                    Total Bayar
+                                </td>
+                                <td class="px-3 py-3 font-bold truncate" colspan="3">
+                                    {{ $formatCurrency(totalAmount) }}
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
+                    <div class="flex items-center pt-4">
+                        <PrimaryButton v-if="orders.length > 0" @click="checkout"
+                            class="flex items-center justify-center w-full gap-2">
+                            <PlusCircle width="16" height="16" />Bayar
+                        </PrimaryButton>
+                        <div v-else class="flex items-center justify-center w-full">
+                            <a href="#" type="button" @click="goToCart"
+                                class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
+                                Pesanan masih kosong
+                                <PlusCircle width="16" height="16" />
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex justify-center gap-4 items-center p-6">
+                <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-chevron-left" viewBox="0 0 16 16">
@@ -160,12 +200,41 @@ const closeModal = () => {
                         </svg>
                     </SecondaryButton>
                 </div>
+                <div class="p-2 bg-white">
+                    <h3 class="text-sm font-semibold mb-2 text-gray-800">Keterangan Status</h3>
+                    <ul class="space-y-1">
+                        <li class="flex items-start">
+                            <strong class="w-20 text-gray-800 text-sm">Pending:</strong>
+                            <span class="text-gray-800 text-sm">Pesanan dibuat, menunggu pembayaran atau
+                                konfirmasi.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <strong class="w-20 text-gray-800 text-sm">Paid:</strong>
+                            <span class="text-gray-800 text-sm">Pembayaran diterima, pesanan siap diproses.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <strong class="w-20 text-gray-800 text-sm">Shipped:</strong>
+                            <span class="text-gray-800 text-sm">Pesanan telah dikirim, dalam perjalanan ke
+                                pelanggan.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <strong class="w-20 text-gray-800 text-sm">Completed:</strong>
+                            <span class="text-gray-800 text-sm">Pesanan selesai dan diterima oleh pelanggan.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <strong class="w-20 text-gray-800 text-sm">Cancelled:</strong>
+                            <span class="text-gray-800 text-sm">Pesanan dibatalkan, tidak akan diproses lebih
+                                lanjut.</span>
+                        </li>
+                    </ul>
+                </div>
 
                 <!-- Detail order item modal -->
                 <Modal :show="showingModalOrderItems">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail Pesanan <strong>{{ selectedOrder.user.name }}</strong>
+                            Detail <strong>{{ selectedOrder.user.name }}</strong>, kode pesanan <strong>{{
+                                selectedOrder.order_code }}</strong>
                         </h2>
                         <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
                             <thead>
@@ -198,10 +267,13 @@ const closeModal = () => {
                 <Modal :show="confirmingOrderDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedOrder.id }}</strong>?
+                            Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
+                                selectedOrder.order_code
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah pesanan ID <strong>{{ selectedOrder.id }}</strong> dihapus, semua
+                            Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,
+                            semua
                             sumber daya dan datanya akan dihapus secara permanen.
                         </p>
                         <div class="mt-6 flex justify-end">
