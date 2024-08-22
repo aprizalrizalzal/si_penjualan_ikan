@@ -51,7 +51,7 @@ class ProductController extends Controller
             ProductImage::create([
                 'image' => 'storage/images/productImages/image.jpg',
                 'product_id' => $product->id,
-                'alt' => 'max:1024kb' . $i,
+                'alt' => 'image' . $i,
             ]);
         }
 
