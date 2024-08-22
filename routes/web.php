@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Banner\BannerController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\User\UserController;
@@ -25,10 +27,18 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
+    Route::get('/banners', [BannerController::class, 'show'])->name('show.banners');
+    Route::post('/banner', [BannerController::class, 'store'])->name('store.banner');
+    Route::put('/banner', [BannerController::class, 'update'])->name('update.banner');
+    Route::delete('/banner', [BannerController::class, 'destroy'])->name('destroy.banner');
+
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');
     Route::post('/product', [ProductController::class, 'store'])->name('store.product');
     Route::put('/product', [ProductController::class, 'update'])->name('update.product');
     Route::delete('/product', [ProductController::class, 'destroy'])->name('destroy.product');
+
+    Route::post('/product/images', [ProductImageController::class, 'store'])->name('store.product.image');
+    Route::delete('/product/images', [ProductImageController::class, 'destroy'])->name('destroy.product.image');
 
     Route::get('/categories', [CategoryController::class, 'show'])->name('show.categories');
     Route::post('/category', [CategoryController::class, 'store'])->name('store.category');
