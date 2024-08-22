@@ -15,7 +15,7 @@ onMounted(() => {
             <Link href="/">
             <ApplicationLogo class="w-40 h-auto" />
             </Link>
-            <h1 class="text-gray-800 font-bold">Sistem Informasi Penjualan Ikan (SIPI)</h1>
+            <h1 class="text-gray-800 font-bold">Sistem Informasi Penjualan Ikan (Desa Soro)</h1>
         </div>
 
         <div

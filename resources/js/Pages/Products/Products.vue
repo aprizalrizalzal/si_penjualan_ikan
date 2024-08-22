@@ -17,6 +17,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
 import Product from './Detail/Product.vue';
+import ButtonImage from '@/Components/ButtonImage.vue';
 
 const props = defineProps({
     products: Array,
@@ -194,6 +195,9 @@ const closeModal = () => {
                                     No.
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
+                                    Gambar
+                                </th>
+                                <th scope="col" class="px-3 py-3 truncate">
                                     Nama
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
@@ -214,6 +218,24 @@ const closeModal = () => {
                             <tr v-for="(product, index) in paginatedProducts" :key="product.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center"> {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
+                                </td>
+                                <td class="px-3 py-3 truncate max-w-xs">
+                                    <div class="flex items-center">
+                                        <div v-for="(productImage) in product.product_images" :key="productImage.id"
+                                            class="relative me-2">
+                                            <img :src="`${productImage.image}`" :alt="productImage.alt"
+                                                class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
+                                            <botton @click="confirmProductImageDeletion(productImage.id)"
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
+                                            </botton>
+                                        </div>
+                                        <botton v-if="product.product_images.length < 4"
+                                            @click="showModalProductAddImages(product)"
+                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
+                                        </botton>
+                                    </div>
                                 </td>
                                 <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
                                     <div class="flex flex-col">
@@ -350,7 +372,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

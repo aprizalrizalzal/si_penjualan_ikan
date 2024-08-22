@@ -74,8 +74,8 @@ onUnmounted(() => {
                                 <ApplicationLogo class="w-16 h-auto" />
                                 </Link>
                                 <h1 class="px-4 text-lg text-gray-800 truncate">
-                                    <span class="block sm:hidden">SIPI</span>
-                                    <span class="hidden sm:block">Sistem Informasi Penjualan Ikan (SIPI)</span>
+                                    <span class="block sm:hidden">SIPI Desa Soro</span>
+                                    <span class="hidden sm:block">Sistem Informasi Penjualan Ikan (Desa Soro)</span>
                                 </h1>
                             </div>
                             <!-- Navigation Links -->
@@ -170,7 +170,7 @@ onUnmounted(() => {
                 class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
-                    Menu SIPI - Admin
+                    SIPI Desa Soro - Admin
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-admin" aria-controls="drawer-navigation-admin"
@@ -261,7 +261,7 @@ onUnmounted(() => {
                 class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
-                    Menu SIPI - Pembeli
+                    SIPI Desa Soro - Pembeli
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-user" aria-controls="drawer-navigation-user"

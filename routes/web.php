@@ -28,8 +28,6 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/banner', [BannerController::class, 'store'])->name('store.banner');
-    Route::post('/banner-image', [BannerController::class, 'update_image'])->name('update.banner.image');
-    Route::put('/banner', [BannerController::class, 'update'])->name('update.banner');
     Route::delete('/banner', [BannerController::class, 'destroy'])->name('destroy.banner');
 
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');
@@ -38,8 +36,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/product', [ProductController::class, 'destroy'])->name('destroy.product');
 
     Route::post('/product/image', [ProductImageController::class, 'store'])->name('store.product.image');
-    Route::post('/product/image-image', [ProductImageController::class, 'update_image'])->name('update.product.image.image');
-    Route::put('/product/image', [ProductImageController::class, 'update'])->name('update.product.image');
     Route::delete('/product/image', [ProductImageController::class, 'destroy'])->name('destroy.product.image');
 
     Route::get('/categories', [CategoryController::class, 'show'])->name('show.categories');

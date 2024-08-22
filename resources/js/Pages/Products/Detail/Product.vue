@@ -33,8 +33,8 @@ watch(() => props.product.product_images.image, (newValue) => {
             <img :src="selectedImage" :alt="product.name" class="w-full rounded">
             <div v-if="productImages.length" class="mt-6">
                 <div class="grid grid-cols-4 gap-4 mt-4">
-                    <div v-for="(productImage, index) in productImages" :key="index" class="relative">
-                        <img :src="productImage.image" :alt="productImage.image"
+                    <div v-for="(productImage, index) in productImages" :key="index" class="flex relative">
+                        <img :src="productImage.image" :alt="productImage.alt"
                             class="h-auto w-64 object-cover rounded cursor-pointer"
                             @click="selectImage(productImage.image)" />
                     </div>

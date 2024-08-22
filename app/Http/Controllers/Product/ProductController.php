@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
+use App\Models\Product\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class ProductController extends Controller
         ]);
 
         // Membuat produk baru
-        Product::create([
+        $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
@@ -45,8 +46,18 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
         ]);
 
+        // Tambahkan 4 gambar kosong
+        for ($i = 1; $i <= 4; $i++) {
+            ProductImage::create([
+                'image' => 'storage/images/productImages/image.jpg',
+                'product_id' => $product->id,
+                'alt' => 'max:1024kb' . $i,
+            ]);
+        }
+
         return redirect()->route('show.products');
     }
+
 
     public function update(Request $request)
     {
