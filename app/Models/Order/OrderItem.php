@@ -34,4 +34,16 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    /**
+     * Scope untuk memfilter order berdasarkan quantity.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $quantity
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByQuantity($query, $quantity)
+    {
+        return $query->where('quantity', $quantity);
+    }
 }

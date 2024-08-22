@@ -4,8 +4,10 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import Footer from './Footer.vue';
+import Banners from './Welcome/Banners.vue';
 
-defineProps({
+const props = defineProps({
+    banners: Array,
     canLogin: {
         type: Boolean,
     },
@@ -130,6 +132,13 @@ onUnmounted(() => {
 
                 <main class="animate-fade shadow-sm mb-2">
                     <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
+                        <div>
+                            <!-- <Banners :banners="props.banners" /> -->
+                        </div>
+
+                        <div>
+                            <!-- <Products :products="props.products" /> -->
+                        </div>
                     </div>
                 </main>
 

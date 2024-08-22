@@ -26,4 +26,16 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    /**
+     * Scope untuk memfilter order berdasarkan status.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $status
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
 }
