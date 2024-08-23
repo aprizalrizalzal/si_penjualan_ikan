@@ -1,5 +1,6 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import { initFlowbite } from 'flowbite'
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
@@ -133,14 +134,15 @@ onUnmounted(() => {
                 </nav>
 
                 <main class="animate-fade mb-2">
-                    <div class="mt-20 w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <!-- Tambahkan padding untuk mencegah overlap dengan navigasi -->
-                        <div class="animate-fade-down pt-4">
+                    <div class="mt-20 w-full max-w-2xl px-6 lg:max-w-7xl pt-4">
+
+                        <div class="animate-fade-down">
                             <Banners :banners="props.banners" />
                         </div>
 
                         <div class="animate-fade-up">
-                            <Products :products="props.products" />
+                            <Products :products="props.products" :canLogin="props.canLogin"
+                                :canRegister="props.canRegister" />
                         </div>
                     </div>
                 </main>

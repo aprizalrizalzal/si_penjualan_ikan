@@ -59,17 +59,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
-    Route::post('/order', [OrderController::class, 'store'])->name('store.order');
-    Route::put('/order', [OrderController::class, 'update'])->name('update.order');
-    Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
+    Route::post('/product/carts', [ProductController::class, 'store_cart'])->name('store.product.carts');
+    Route::post('/cart/orders', [CartController::class, 'store_order'])->name('store.cart.orders');
 
     Route::get('/carts', [CartController::class, 'show'])->name('show.carts');
     Route::post('/cart', [CartController::class, 'store'])->name('store.cart');
     Route::put('/cart', [CartController::class, 'update'])->name('update.cart');
     Route::delete('/cart', [CartController::class, 'destroy'])->name('destroy.cart');
 
-    Route::post('/cart/orders', [CartController::class, 'checkout'])->name('checkout.cart.orders');
+
+    Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
+    Route::post('/order', [OrderController::class, 'store'])->name('store.order');
+    Route::put('/order', [OrderController::class, 'update'])->name('update.order');
+    Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
 
     Route::get('/payments', [PaymentController::class, 'show'])->name('show.payments');
     Route::post('/payment', [PaymentController::class, 'store'])->name('store.payment');

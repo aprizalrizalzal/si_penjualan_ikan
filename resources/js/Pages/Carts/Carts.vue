@@ -67,7 +67,7 @@ const selectedCart = ref(null);
 
 const showingModalQuantityUpdate = ref(false);
 const confirmingCartDeletion = ref(false);
-const confirmingCartCheckout = ref(false);
+const confirmingCartOrder = ref(false);
 
 const showModalQuantityUpdate = (cart) => {
     showingModalQuantityUpdate.value = true;
@@ -110,19 +110,19 @@ const deleteCart = () => {
     });
 };
 
-const confirmCartCheckout = () => {
-    confirmingCartCheckout.value = true;
+const confirmCartOrder = () => {
+    confirmingCartOrder.value = true;
 };
 
-const checkout = () => {
-    router.post(route('checkout.cart.orders'), {
+const cartOrder = () => {
+    router.post(route('store.cart.orders'), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
         },
         onError: (errors) => {
             if (errors) {
-                alert('Checkout failed!');
+                alert('Order failed!');
             } else {
                 const errorMessages = Object.values(errors).flat();
                 alert(`${errorMessages}`);
@@ -221,7 +221,7 @@ const closeModal = () => {
                         </tfoot>
                     </table>
                     <div class="flex items-center pt-4 m-1">
-                        <PrimaryButton v-if="carts.length > 0" @click="confirmCartCheckout"
+                        <PrimaryButton v-if="carts.length > 0" @click="confirmCartOrder"
                             class="flex items-center justify-center w-full gap-2">
                             <PlusCircle width="16" height="16" />Pesan
                         </PrimaryButton>
@@ -293,17 +293,17 @@ const closeModal = () => {
                 </Modal>
 
                 <!-- Delete cart modal -->
-                <Modal :show="confirmingCartCheckout">
+                <Modal :show="confirmingCartOrder">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
                             Konfirmasi Pesanan
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah produk dipesan, semua pesanan akan diteruskan ke metode pembayaran.
+                            Setelah produk dipesan, semua produk akan diteruskan ke pesanan.
                         </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <PrimaryButton class="ms-3" @click="checkout">Pesan</PrimaryButton>
+                            <PrimaryButton class="ms-3" @click="cartOrder">Pesan</PrimaryButton>
                         </div>
                     </div>
                 </Modal>

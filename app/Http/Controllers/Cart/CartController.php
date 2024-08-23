@@ -108,9 +108,9 @@ class CartController extends Controller
     }
 
     /**
-     * Melakukan checkout dari keranjang dan membuat pesanan.
+     * Melakukan store orders dari keranjang dan membuat pesanan.
      */
-    public function checkout(Request $request)
+    public function store_order()
     {
         $userId = Auth::id();
 
@@ -149,7 +149,7 @@ class CartController extends Controller
         // Perbarui total amount pada order
         $order->update(['total_amount' => $totalAmount]);
 
-        // Hapus semua item keranjang setelah checkout
+        // Hapus semua item keranjang setelah store order
         Cart::where('user_id', $userId)->delete();
 
         return redirect()->route('show.orders');

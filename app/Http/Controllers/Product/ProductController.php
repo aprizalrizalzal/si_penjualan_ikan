@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart\Cart;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -104,5 +106,40 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('show.products');
+    }
+
+    /**
+     * Melakukan store carts dari product dan membuat keranjang.
+     */
+    public function store_cart(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $userId = Auth::id();
+
+        // Check if the product already exists in the cart
+        $cart = Cart::where('user_id', $userId)
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($cart) {
+            // If product exists, update the quantity
+            $cart->update([
+                'quantity' => $cart->quantity + $request->quantity,
+            ]);
+        } else {
+            // If product doesn't exist, create a new cart entry
+            Cart::create([
+                'user_id' => $userId, // Use Authenticated user ID
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+            ]);
+        }
+
+        return redirect()->route('welcome');
     }
 }

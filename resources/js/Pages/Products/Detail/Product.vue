@@ -1,6 +1,4 @@
 <script setup>
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps({

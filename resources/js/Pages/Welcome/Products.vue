@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { router, usePage } from '@inertiajs/vue3';
 import CardView from '@/Components/CardView.vue';
 import SearchInput from '@/Components/SearchInput.vue';
 import Modal from '@/Components/Modal.vue';
@@ -12,7 +13,21 @@ import CardHeading from '@/Components/Icons/CardHeading.vue';
 
 const props = defineProps({
     products: Array,
+
+    canLogin: {
+        type: Boolean,
+    },
+    canRegister: {
+        type: Boolean,
+    },
 });
+
+const { auth } = usePage().props;
+const userId = ref('');
+
+if (auth.user !== null) {
+    userId = ref(auth.user.id);
+}
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -86,6 +101,32 @@ const getRandomImage = (product) => {
         return null;
     }
 };
+
+const storeCart = (product) => {
+    if (userId.value === null) {
+        router.get(route('login'));
+    }
+
+    router.post(route('store.product.carts', {
+        user_id: userId.value,
+        product_id: product.id,
+        quantity: 1, // Default quantity
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors.name || errors.description || errors.price || errors.stock || errors.waight || errors.categori_id) {
+                alert('Product failed!');
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
+
+}
 </script>
 
 <template>
@@ -112,7 +153,7 @@ const getRandomImage = (product) => {
                             <CardHeading width="16" height="16" />
                         </SecondaryButton>
                         <PrimaryButton>
-                            <CartPlus width="16" height="16" />
+                            <CartPlus @click="storeCart(product)" width="16" height="16" />
                         </PrimaryButton>
                     </div>
                 </template>
