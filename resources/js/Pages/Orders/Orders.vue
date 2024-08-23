@@ -34,7 +34,7 @@ const filteredOrdersSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 4;
+const itemsPerPage = 10;
 
 const paginatedOrders = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
@@ -266,7 +266,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
                                 selectedOrder.order_code
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,

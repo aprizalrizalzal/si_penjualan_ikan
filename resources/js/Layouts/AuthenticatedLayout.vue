@@ -40,7 +40,7 @@ onUnmounted(() => {
     <div>
         <div class="min-h-screen bg-white">
             <nav :class="[
-                'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300',
+                'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 z-50',
                 { 'shadow-sm': hasScrolled },
             ]">
                 <!-- Primary Navigation Menu -->

@@ -32,7 +32,7 @@ const filteredPaymentsSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 4;
+const itemsPerPage = 10;
 
 const paginatedPayments = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;

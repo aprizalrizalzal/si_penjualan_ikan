@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\Table\BannersSeeder;
 use Database\Seeders\Table\CartsSeeder;
 use Database\Seeders\Table\CategoriesSeeder;
 use Database\Seeders\Table\OrderItemsSeeder;
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            BannersSeeder::class,
             UsersSeeder::class,
             RolesSeeder::class,
             RoleUserSeeder::class,

@@ -18,7 +18,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        // 'banners' => Banner::all(),
+        'banners' => Banner::all(),
         'products' => Product::with('category', 'productImages')->get(),
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),

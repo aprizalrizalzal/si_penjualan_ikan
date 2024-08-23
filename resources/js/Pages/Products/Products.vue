@@ -50,7 +50,7 @@ const filteredProductsSearch = computed(() => {
 });
 
 const currentPage = ref(1);
-const itemsPerPage = 4;
+const itemsPerPage = 10;
 
 const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
@@ -439,7 +439,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

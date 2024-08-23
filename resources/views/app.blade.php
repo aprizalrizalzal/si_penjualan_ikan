@@ -19,7 +19,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased overflow-y-auto">
+<body class="font-sans antialiased overflow-y-auto selection:bg-[#FF2D20] selection:text-white">
     @inertia
 </body>
 

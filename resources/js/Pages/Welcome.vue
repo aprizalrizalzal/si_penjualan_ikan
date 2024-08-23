@@ -47,11 +47,10 @@ onUnmounted(() => {
 
     <Head title="Welcome" />
     <div class="min-h-screen bg-white">
-        <div
-            class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
+        <div class="relative min-h-screen flex flex-col items-center justify-center">
             <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                 <nav v-if="canLogin"
-                    :class="[{ 'shadow-sm': hasScrolled }, 'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 ease-in-out']">
+                    :class="[{ 'shadow-sm': hasScrolled }, 'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 ease-in-out z-50']">
                     <!-- Primary Navigation Menu -->
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="flex items-center h-20">
@@ -135,8 +134,9 @@ onUnmounted(() => {
 
                 <main class="animate-fade mb-2">
                     <div class="mt-20 w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <div>
-                            <!-- <Banners :banners="props.banners" /> -->
+                        <!-- Tambahkan padding untuk mencegah overlap dengan navigasi -->
+                        <div class="animate-fade-down pt-4">
+                            <Banners :banners="props.banners" />
                         </div>
 
                         <div class="animate-fade-up">
