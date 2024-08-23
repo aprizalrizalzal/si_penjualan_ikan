@@ -91,6 +91,13 @@ const totalAmount = computed(() => {
     }, 0);
 });
 
+const detailTotalAmount = computed(() => {
+    return selectedOrderItems.value.reduce((total, orderItems) => {
+        const totalAmount = parseFloat(orderItems.product.price * orderItems.quantity);
+        return total + (isNaN(totalAmount) ? 0 : totalAmount);
+    }, 0);
+});
+
 const goToCart = () => {
     router.visit(route('show.carts'))
 }
@@ -157,7 +164,7 @@ const closeModal = () => {
                         </tbody>
                         <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
-                                <td class="px-3 py-3 text-center truncate">
+                                <td class="w-4 p-4 text-center truncate">
                                     #
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="2">
@@ -230,13 +237,13 @@ const closeModal = () => {
                 <Modal :show="showingModalOrderItems">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail <strong>{{ selectedOrder.user.name }}</strong>, kode pesanan <strong>{{
+                            Detail kode pesanan <strong>{{
                                 selectedOrder.order_code }}</strong>
                         </h2>
                         <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
-                            <thead>
+                            <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                                 <tr>
-                                    <th scope="col" class="pe-6 py-1.5 truncate">No.</th>
+                                    <th scope="col" class="ps-3 pe-6 py-1.5 truncate">No.</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Produk</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Berat</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Harga</th>
@@ -246,7 +253,7 @@ const closeModal = () => {
                             <tbody>
                                 <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
                                     class="bg-white border-b hover:bg-blue-100">
-                                    <td class="w-4 pe-3 py-1.5 text-center">{{ index + 1 }}.</td>
+                                    <td class="w-2 p-2 text-center">{{ index + 1 }}.</td>
                                     <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
                                     <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
                                         Kg</td>
@@ -254,9 +261,23 @@ const closeModal = () => {
                                     <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
                                 </tr>
                             </tbody>
+                            <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
+                                <tr>
+                                    <td class="w-2 p-2 text-center truncate">
+                                        #
+                                    </td>
+                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="2">
+                                        Total
+                                    </td>
+                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="2">
+                                        {{ $formatCurrency(detailTotalAmount) }}
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
-                        <div class="mt-6 flex justify-start">
-                            <PrimaryButton @click="closeModal">Ok</PrimaryButton>
+                        <div class="mt-6 flex gap-4 justify-end">
+                            <SecondaryButton @click="closeModal">Batal</SecondaryButton>
+                            <PrimaryButton @click="closeModal">Bayar</PrimaryButton>
                         </div>
                     </div>
                 </Modal>
@@ -266,7 +287,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
                                 selectedOrder.order_code
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,

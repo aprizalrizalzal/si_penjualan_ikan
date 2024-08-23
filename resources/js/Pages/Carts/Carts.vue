@@ -195,7 +195,7 @@ const closeModal = () => {
                         </tbody>
                         <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
-                                <td class="px-3 py-3 text-center truncate">
+                                <td class="w-4 p-4 text-center truncate">
                                     #
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="4">
