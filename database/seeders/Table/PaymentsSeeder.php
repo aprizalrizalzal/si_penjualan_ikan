@@ -25,7 +25,7 @@ class PaymentsSeeder extends Seeder
                 'order_id' => $order->id,
                 'payment_method' => $this->getRandomPaymentMethod(),
                 'amount' => $order->total_amount,
-                'status' => 'completed', // Sesuaikan status sesuai kebutuhan
+                'status' => 'pending', // Sesuaikan status sesuai kebutuhan
             ]);
         }
     }

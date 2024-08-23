@@ -26,7 +26,7 @@ class ProductImagesSeeder extends Seeder
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image' => $this->getRandomImageName(),
-                    'alt' => 'Image for ' . $product->name,
+                    'alt' => $product->name,
                 ]);
             }
         }

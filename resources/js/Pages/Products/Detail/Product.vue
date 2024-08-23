@@ -7,9 +7,9 @@ const props = defineProps({
 
 const productImages = ref(props.product.product_images || []);
 const initialImage = ref(
-    props.product.product_images[
-        Math.floor(Math.random() * props.product.product_images.length)
-    ].image
+    productImages.value.length > 0
+        ? productImages.value[Math.floor(Math.random() * productImages.value.length)].image
+        : null
 );
 const selectedImage = ref(initialImage.value);
 
@@ -21,9 +21,11 @@ const selectImage = (imagePath) => {
     selectedImage.value = (selectedImage.value === imagePath) ? initialImage.value : imagePath;
 };
 
-watch(() => props.product.product_images.image, (newValue) => {
-    initialImage.value = newValue;
-    selectedImage.value = newValue;
+watch(() => props.product.product_images, (newValue) => {
+    initialImage.value = newValue.length > 0
+        ? newValue[Math.floor(Math.random() * newValue.length)].image
+        : null;
+    selectedImage.value = initialImage.value;
 });
 </script>
 

@@ -161,7 +161,7 @@ const closeModal = () => {
                                     #
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="2">
-                                    Total Bayar
+                                    Total
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="3">
                                     {{ $formatCurrency(totalAmount) }}
@@ -170,15 +170,8 @@ const closeModal = () => {
                         </tfoot>
                     </table>
                     <div class="flex items-center pt-4 m-1">
-                        <PrimaryButton v-if="orders.length > 0" @click="checkout"
-                            class="flex items-center justify-center w-full gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-wallet" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a2 2 0 0 1-1-.268M1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1" />
-                            </svg>Bayar
-                        </PrimaryButton>
-                        <div v-else class="flex items-center justify-center w-full">
+
+                        <div v-if="orders.length < 1" class="flex items-center justify-center w-full">
                             <a href="#" type="button" @click="goToCart"
                                 class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
                                 Pesanan masih kosong

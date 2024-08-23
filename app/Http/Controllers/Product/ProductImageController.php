@@ -19,7 +19,7 @@ class ProductImageController extends Controller
 
         $existingImagesCount = ProductImage::where('product_id', $request->product_id)->count();
         if ($existingImagesCount >= 4) {
-            return redirect()->route('show.products')->withErrors(['image' => 'Maksimal 4 gambar per spare part.']);
+            return redirect()->route('show.products')->withErrors(['image' => 'Maksimal 4 gambar per produk.']);
         }
 
         $originalName = $request->file('image')->getClientOriginalName();

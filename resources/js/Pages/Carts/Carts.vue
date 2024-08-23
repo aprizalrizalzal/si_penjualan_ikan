@@ -212,7 +212,7 @@ const closeModal = () => {
                                     #
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="4">
-                                    Total Bayar
+                                    Total
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="2">
                                     {{ $formatCurrency(totalAmount) }}

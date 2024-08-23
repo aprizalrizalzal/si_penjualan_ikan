@@ -9,7 +9,7 @@ import ButtonImage from '@/Components/ButtonImage.vue';
 import BackIcon from '@/Components/Icon/BackIcon.vue';
 import NextIcon from '@/Components/Icon/NextIcon.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import Product from './Products/Detail/Product.vue';
+import Product from '../Products/Detail/Product.vue';
 
 const props = defineProps({
     products: Array,
@@ -24,7 +24,7 @@ const filteredProducts = computed(() => {
         return props.products;
     }
     return props.products.filter(product =>
-        product.category_spare_part.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        product.category.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         product.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
@@ -47,10 +47,6 @@ const showAllProduct = () => {
 
 const hideSomeProduct = () => {
     itemsPerPage.value = 12;
-};
-
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 };
 
 const nextPage = () => {
@@ -85,21 +81,19 @@ const closeModal = () => {
 <template>
     <div class="bg-white flex justify-between items-center py-4 px-8 rounded mt-2 gap-4">
         <div class="flex items-center">
-            <h2 class="flex items-center gap-2 font-bold text-lg text-green-900 leading-4 flex-none py-4">
-                <span>Spare Part</span>
+            <h2 class="flex items-center gap-2 font-bold text-lg text-blue-900 leading-4 flex-none py-4">
+                <span>Produk</span>
             </h2>
         </div>
         <div class="flex w-full items-center">
-            <SearchInput v-model:searchQuery="searchQuery"
-                placeholder="Search for the part name, category or description" />
+            <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
         </div>
 
-
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 my-2 text-sm font-bold text-green-900">
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 my-2 text-sm font-bold text-blue-900">
         <div v-for="product in paginatedProducts" :key="product.id">
-            <CardView @click="showModalProductDetail(product)" :category="product.category_spare_part.name"
-                :name="product.name" :price="formatCurrency(product.price)">
+            <CardView @click="showModalProductDetail(product)" :category="product.category.name" :name="product.name"
+                :price="$formatCurrency(product.price)">
                 <template #img>
                     <img :src="product.image_path" :alt="product.name"
                         class="h-33 sm:h-44 w-full object-cover shadow" />
@@ -128,23 +122,32 @@ const closeModal = () => {
         </SecondaryButton>
     </div>
 
-    <div class="flex justify-center gap-4 items-center pt-6">
-        <ButtonImage class="py-2" @click="previousPage" :disabled="currentPage === 1">
-            <BackIcon />
-        </ButtonImage>
+    <div class="flex justify-center gap-4 items-center p-2">
+        <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+            </svg>
+        </SecondaryButton>
         <span>{{ currentPage }} / {{ totalPages }}</span>
-        <ButtonImage class="py-2" @click="nextPage" :disabled="currentPage === totalPages">
-            <NextIcon />
-        </ButtonImage>
+        <SecondaryButton @click="nextPage" :disabled="currentPage === totalPages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-chevron-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+            </svg>
+        </SecondaryButton>
     </div>
 
-    <Modal maxWidth="7xl" :show="showingModalProductDetail">
-        <div class="m-6">
-            <div class="flex justify-between items-center ps-6 ms-6 text-green-900">
-                <span class="font-bold text-center w-full">Detail Spare Part</span>
+    <!-- Detail product modal -->
+    <Modal maxWidth="6xl" :show="showingModalProductDetail">
+        <div class="p-6">
+            <div class="flex justify-between items-center text-blue-900">
+                <h2 class="text-lg font-medium text-gray-900">{{ selectedProduct.name }}
+                </h2>
                 <DangerButton @click="closeModal">X</DangerButton>
             </div>
-            <hr class="mt-4 mb-2">
             <Product :product="selectedProduct" />
         </div>
     </Modal>

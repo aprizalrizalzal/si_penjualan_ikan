@@ -17,6 +17,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
 import Product from './Detail/Product.vue';
+import Images from './Images.vue';
 
 const props = defineProps({
     products: Array,
@@ -74,8 +75,11 @@ const previousPage = () => {
 };
 
 const selectedProduct = ref(null);
+const selectedProductImage = ref(null);
 
 const showingModalProduct = ref(false);
+const showingModalAddProductImages = ref(false);
+const confirmingProductImageDeletion = ref(false);
 const showingModalProductDetail = ref(false);
 const confirmingProductDeletion = ref(false);
 
@@ -91,6 +95,33 @@ const showModalProduct = (product) => {
         form.weight = product.weight;
         form.category_id = product.category_id;
     }
+};
+
+const showModalAddProductImages = (product) => {
+    selectedProduct.value = product;
+    showingModalAddProductImages.value = true;
+};
+
+const confirmProductImageDeletion = (productImage) => {
+    selectedProductImage.value = productImage;
+    confirmingProductImageDeletion.value = true;
+};
+
+const deleteProductImage = () => {
+    router.delete(route('destroy.product.image', { id: selectedProductImage.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors) {
+                closeModal();
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
 };
 
 const showModalProductDetail = (product) => {
@@ -157,6 +188,8 @@ const deleteProduct = () => {
 
 const closeModal = () => {
     showingModalProduct.value = false;
+    showingModalAddProductImages.value = false;
+    confirmingProductImageDeletion.value = false;
     showingModalProductDetail.value = false;
     confirmingProductDeletion.value = false;
 };
@@ -224,13 +257,13 @@ const closeModal = () => {
                                             class="relative me-2">
                                             <img :src="`${productImage.image}`" :alt="productImage.alt"
                                                 class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
-                                            <botton @click="confirmProductImageDeletion(productImage.id)"
+                                            <botton @click="confirmProductImageDeletion(productImage)"
                                                 class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
                                                 <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
                                             </botton>
                                         </div>
                                         <botton v-if="product.product_images.length < 4"
-                                            @click="showModalProductAddImages(product)"
+                                            @click="showModalAddProductImages(product)"
                                             class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
                                             <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
                                         </botton>
@@ -295,6 +328,41 @@ const closeModal = () => {
                         </svg>
                     </SecondaryButton>
                 </div>
+
+                <!-- Store product image modal-->
+                <Modal :show="showingModalAddProductImages">
+                    <div class="m-6">
+                        <div class="flex justify-between items-center ps-6 ms-6 text-blue-900">
+                            <span class="font-bold text-center w-full">Tambah Gambar</span>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <Images :product="selectedProduct" @addProductImage="closeModal" />
+                    </div>
+                </Modal>
+
+                <Modal :show="confirmingProductImageDeletion">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Apakah Anda yakin ingin menghapus gambar produk
+                            <strong>{{ selectedProductImage.alt }}</strong>?
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-700">
+                            Setelah gambar produck <strong>{{ selectedProductImage.alt }}</strong> dihapus,
+                            semua
+                            sumber daya
+                            dan
+                            datanya
+                            akan dihapus secara permanen.
+                        </p>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                            <DangerButton class="ms-3" :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing" @click="deleteProductImage">
+                                Delete
+                            </DangerButton>
+                        </div>
+                    </div>
+                </Modal>
 
                 <!-- Update product modal -->
                 <Modal :show="showingModalProduct">
@@ -371,7 +439,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,
