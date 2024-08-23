@@ -10,12 +10,16 @@ use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\User\UserController;
+use App\Models\Banner\Banner;
+use App\Models\Product\Product;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
+        // 'banners' => Banner::all(),
+        'products' => Product::with('category', 'productImages')->get(),
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);

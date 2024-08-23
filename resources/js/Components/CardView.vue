@@ -1,6 +1,6 @@
 <template>
     <div
-        class="h-full flex flex-col justify-between items-stretch max-w-sm rounded text-sm/relaxed overflow-hidden shadow bg-white hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:ring-offset-2 hover:rounded-none hover:ring-blue-300 ring-1 ring-white/[0.05] transition ease-in-out duration-150">
+        class="h-full flex flex-col justify-between items-stretch max-w-sm rounded text-sm/relaxed overflow-hidden hover:shadow bg-white hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:ring-offset-2 hover:rounded-none hover:ring-blue-300 ring-1 ring-white/[0.05] transition ease-in-out duration-150">
         <div class="h-full flex justify-between items-stretch m-2">
             <slot name="img"></slot>
         </div>
@@ -15,6 +15,9 @@
             <span class="inline-block bg-blue-100 rounded mt-2 px-2 text-gray-700 mx-2 truncate">
                 {{ price }}
             </span>
+        </div>
+        <div class="flex flex-col gap-2 m-2">
+            <slot name="button"></slot>
         </div>
     </div>
 </template>

@@ -5,9 +5,12 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import Footer from './Footer.vue';
 import Banners from './Welcome/Banners.vue';
+import Products from './Welcome/Products.vue';
 
 const props = defineProps({
     banners: Array,
+    products: Array,
+
     canLogin: {
         type: Boolean,
     },
@@ -130,14 +133,14 @@ onUnmounted(() => {
                     </div>
                 </nav>
 
-                <main class="animate-fade shadow-sm mb-2">
-                    <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
+                <main class="animate-fade mb-2">
+                    <div class="mt-20 w-full max-w-2xl px-6 lg:max-w-7xl">
                         <div>
                             <!-- <Banners :banners="props.banners" /> -->
                         </div>
 
-                        <div>
-                            <!-- <Products :products="props.products" /> -->
+                        <div class="animate-fade-up">
+                            <Products :products="props.products" />
                         </div>
                     </div>
                 </main>

@@ -2,14 +2,13 @@
 import { ref, computed, watch } from 'vue';
 import CardView from '@/Components/CardView.vue';
 import SearchInput from '@/Components/SearchInput.vue';
-import productDetail from '../product/productDetail.vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import ButtonImage from '@/Components/ButtonImage.vue';
-import BackIcon from '@/Components/Icon/BackIcon.vue';
-import NextIcon from '@/Components/Icon/NextIcon.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Product from '../Products/Detail/Product.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CartPlus from '@/Components/Icons/CartPlus.vue';
+import CardHeading from '@/Components/Icons/CardHeading.vue';
 
 const props = defineProps({
     products: Array,
@@ -76,29 +75,49 @@ const showModalProductDetail = (product) => {
 const closeModal = () => {
     showingModalProductDetail.value = false;
 };
+
+const getRandomImage = (product) => {
+    const images = product.product_images;
+    if (images.length > 1) {
+        return images[Math.floor(Math.random() * images.length)].image;
+    } else if (images.length === 1) {
+        return images[0].image;
+    } else {
+        return null;
+    }
+};
 </script>
 
 <template>
-    <div class="bg-white flex justify-between items-center py-4 px-8 rounded mt-2 gap-4">
-        <div class="flex items-center">
-            <h2 class="flex items-center gap-2 font-bold text-lg text-blue-900 leading-4 flex-none py-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 sm:px-0 bg-white">
+            <div class="flex items-center gap-2 me-auto">
                 <span>Produk</span>
-            </h2>
-        </div>
-        <div class="flex w-full items-center">
+            </div>
             <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
         </div>
-
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 my-2 text-sm font-bold text-blue-900">
         <div v-for="product in paginatedProducts" :key="product.id">
-            <CardView @click="showModalProductDetail(product)" :category="product.category.name" :name="product.name"
-                :price="$formatCurrency(product.price)">
+            <CardView :category="product.category.name" :name="product.name" :price="$formatCurrency(product.price)">
                 <template #img>
-                    <img :src="product.image_path" :alt="product.name"
-                        class="h-33 sm:h-44 w-full object-cover shadow" />
+                    <div v-if="getRandomImage(product)">
+                        <img :src="getRandomImage(product)" :alt="product.name"
+                            class="h-33 sm:h-44 w-full object-cover" />
+                    </div>
+                </template>
+                <template #button>
+                    <div class="flex justify-between gap-4">
+                        <SecondaryButton @click="showModalProductDetail(product)">
+                            <CardHeading width="16" height="16" />
+                        </SecondaryButton>
+                        <PrimaryButton>
+                            <CartPlus width="16" height="16" />
+                        </PrimaryButton>
+                    </div>
                 </template>
             </CardView>
+
         </div>
     </div>
 

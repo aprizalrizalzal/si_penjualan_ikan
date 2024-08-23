@@ -49,7 +49,7 @@ class ProductController extends Controller
         // Tambahkan 4 gambar kosong
         for ($i = 1; $i <= 4; $i++) {
             ProductImage::create([
-                'image' => 'storage/images/productImages/image.jpg',
+                'image' => 'storage/images/products/image.jpg',
                 'product_id' => $product->id,
                 'alt' => 'image' . $i,
             ]);

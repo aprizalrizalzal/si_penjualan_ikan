@@ -1,4 +1,6 @@
 <script setup>
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -32,19 +34,18 @@ watch(() => props.product.product_images, (newValue) => {
 <template>
     <div class="grid sm:grid-cols-2 grid-cols-1 gap-4 mt-4">
         <div class="h-full">
-            <img :src="selectedImage" :alt="product.name" class="w-full rounded">
+            <img :src="selectedImage" :alt="product.name" class="w-full">
             <div v-if="productImages.length" class="mt-6">
                 <div class="grid grid-cols-4 gap-4 mt-4">
                     <div v-for="(productImage, index) in productImages" :key="index" class="flex relative">
                         <img :src="productImage.image" :alt="productImage.alt"
-                            class="h-auto w-64 object-cover rounded cursor-pointer"
-                            @click="selectImage(productImage.image)" />
+                            class="h-auto w-64 object-cover cursor-pointer" @click="selectImage(productImage.image)" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="text-start">
-            <p class="text-lg font-medium rounded text-gray-700">
+            <p class="text-lg font-medium text-gray-700">
                 {{ product.name }} <span class="text-gray-500">({{ product.category.name }})</span>
             </p>
             <p class="text-gray-500 text-sm font-bold">
@@ -57,7 +58,7 @@ watch(() => props.product.product_images, (newValue) => {
             <p class="text-gray-700 text-sm overflow-hidden" v-html="formatDescription(product.description)">
             </p>
             <hr>
-            <p class="inline-block py-2 rounded font-bold text-gray-900">
+            <p class="inline-block py-2 font-bold text-gray-900">
                 {{ $formatCurrency(product.price) }}
             </p>
         </div>
