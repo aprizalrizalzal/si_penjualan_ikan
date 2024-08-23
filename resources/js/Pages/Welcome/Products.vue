@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { router, usePage, useForm } from '@inertiajs/vue3';
 import CardView from '@/Components/CardView.vue';
 import SearchInput from '@/Components/SearchInput.vue';
 import Modal from '@/Components/Modal.vue';
@@ -26,8 +26,15 @@ const { auth } = usePage().props;
 const userId = ref('');
 
 if (auth.user !== null) {
-    userId = ref(auth.user.id);
+    userId.value = auth.user.id;
 }
+
+const form = useForm({
+    user_id: userId.value,
+    product_id: '',
+    quantity: 1, // Default quantity
+});
+
 
 const searchQuery = ref('');
 const currentPage = ref(1);
@@ -80,6 +87,7 @@ watch(searchQuery, () => {
 });
 
 const showingModalProductDetail = ref(false);
+const confirmingProductCart = ref(false);
 const selectedProduct = ref(null);
 
 const showModalProductDetail = (product) => {
@@ -87,8 +95,17 @@ const showModalProductDetail = (product) => {
     showingModalProductDetail.value = true;
 };
 
+const confirmProductCart = (product) => {
+    confirmingProductCart.value = true;
+    selectedProduct.value = product;
+    if (product) {
+        form.product_id = product.id;
+    }
+};
+
 const closeModal = () => {
     showingModalProductDetail.value = false;
+    confirmingProductCart.value = false;
 };
 
 const getRandomImage = (product) => {
@@ -102,30 +119,25 @@ const getRandomImage = (product) => {
     }
 };
 
-const storeCart = (product) => {
+const storeCart = () => {
     if (userId.value === null) {
         router.get(route('login'));
-    }
-
-    router.post(route('store.product.carts', {
-        user_id: userId.value,
-        product_id: product.id,
-        quantity: 1, // Default quantity
-    }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            closeModal();
-        },
-        onError: (errors) => {
-            if (errors.name || errors.description || errors.price || errors.stock || errors.waight || errors.categori_id) {
-                alert('Product failed!');
-            } else {
-                const errorMessages = Object.values(errors).flat();
-                alert(`${errorMessages}`);
+    } else {
+        form.post(route('store.product.carts'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal();
+            },
+            onError: (errors) => {
+                if (errors) {
+                    alert('Cart failed!');
+                } else {
+                    const errorMessages = Object.values(errors).flat();
+                    alert(`${errorMessages}`);
+                }
             }
-        }
-    });
-
+        });
+    }
 }
 </script>
 
@@ -153,7 +165,7 @@ const storeCart = (product) => {
                             <CardHeading width="16" height="16" />
                         </SecondaryButton>
                         <PrimaryButton>
-                            <CartPlus @click="storeCart(product)" width="16" height="16" />
+                            <CartPlus @click="confirmProductCart(product)" width="16" height="16" />
                         </PrimaryButton>
                     </div>
                 </template>
@@ -209,6 +221,22 @@ const storeCart = (product) => {
                 <DangerButton @click="closeModal">X</DangerButton>
             </div>
             <Product :product="selectedProduct" />
+        </div>
+    </Modal>
+
+    <!-- Confirm cart modal -->
+    <Modal :show="confirmingProductCart">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900">
+                Konfirmasi Produk
+            </h2>
+            <p class="mt-1 text-sm text-gray-700">
+                Setelah produk dipesan, produk akan diteruskan ke keranjang.
+            </p>
+            <div class="mt-6 flex justify-end">
+                <SecondaryButton @click="closeModal">Batal</SecondaryButton>
+                <PrimaryButton class="ms-3" @click="storeCart">Pesan</PrimaryButton>
+            </div>
         </div>
     </Modal>
 </template>

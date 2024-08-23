@@ -115,20 +115,7 @@ const confirmCartOrder = () => {
 };
 
 const cartOrder = () => {
-    router.post(route('store.cart.orders'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            closeModal();
-        },
-        onError: (errors) => {
-            if (errors) {
-                alert('Order failed!');
-            } else {
-                const errorMessages = Object.values(errors).flat();
-                alert(`${errorMessages}`);
-            }
-        }
-    });
+    router.post(route('store.cart.orders'));
 }
 
 const totalAmount = computed(() => {
@@ -292,7 +279,7 @@ const closeModal = () => {
                     </div>
                 </Modal>
 
-                <!-- Delete cart modal -->
+                <!-- Confirm cart modal -->
                 <Modal :show="confirmingCartOrder">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">

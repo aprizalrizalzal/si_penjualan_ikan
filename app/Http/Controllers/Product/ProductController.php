@@ -9,6 +9,7 @@ use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -140,6 +141,6 @@ class ProductController extends Controller
             ]);
         }
 
-        return redirect()->route('welcome');
+        return Redirect::back();
     }
 }
