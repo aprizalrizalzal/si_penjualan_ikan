@@ -71,18 +71,12 @@ const selectedPaymentImage = ref(null);
 
 const showingModalPayment = ref(false);
 const showingModalUploadProofPayment = ref(false);
-const showingModalPaymentImage = ref(false);
 const confirmingPaymentImageDeletion = ref(false);
 const confirmingPaymentDeletion = ref(false);
 
 const showModalUploadProofPayment = (payment) => {
     showingModalUploadProofPayment.value = true;
     selectedPayment.value = payment;
-};
-
-const showModalPaymentImage = (paymentImage) => {
-    showingModalPaymentImage.value = true;
-    selectedPaymentImage.value = paymentImage;
 };
 
 const confirmPaymentImageDeletion = (paymentImage) => {
@@ -184,7 +178,6 @@ const closeModal = () => {
     showingModalPayment.value = false;
     showingModalStatusUpdate.value = false;
     showingModalUploadProofPayment.value = false;
-    showingModalPaymentImage.value = false;
     confirmingPaymentImageDeletion.value = false;
     confirmingPaymentDeletion.value = false;
 };
@@ -236,8 +229,7 @@ const closeModal = () => {
                                     <div class="flex items-center">
                                         <div v-for="(paymentImages) in payment.payment_images" :key="paymentImages.id"
                                             class="relative me-2">
-                                            <img @click="showModalPaymentImage(paymentImages)"
-                                                :src="`${paymentImages.image}`" :alt="paymentImages.alt"
+                                            <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
                                                 class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
                                             <botton @click="confirmPaymentImageDeletion(paymentImages)"
                                                 class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
@@ -411,7 +403,7 @@ const closeModal = () => {
                 </Modal>
 
                 <!-- Detail payment item modal -->
-                <Modal :show="showingModalPayment">
+                <Modal maxWidth="4xl" :show="showingModalPayment">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
                             Detail Pesanan <strong>{{ selectedPayment.order.user.name }}</strong>
@@ -442,8 +434,23 @@ const closeModal = () => {
                                     pembayaran Anda untuk mempercepat proses verifikasi.</div>
                             </tfoot>
                         </table>
+                        <div v-if="selectedPayment.payment_images" class="mt-2">
+                            <p class="text-md text-center font-medium text-gray-900 mb-2">Bukti Pembayaran</p>
+                            <div class="flex flex-col sm:flex-row gap-4 m-auto">
+                                <div v-for="(paymentImages) in selectedPayment.payment_images" :key="paymentImages.id"
+                                    class="m-auto">
+                                    <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
+                                        class="h-64 w-128 m-auto object-cover rounded " style="max-width: 1080px;" />
+                                </div>
+                            </div>
+                            <p class="text-md text-center font-medium text-gray-900 mt-2">Jika gambar terlihat terlalu
+                                kecil,
+                                klik kanan pada gambar dan pilih 'Buka gambar di tab
+                                baru'
+                                untuk melihatnya dalam ukuran penuh.</p>
+                        </div>
 
-                        <div class="mt-6 flex justify-start">
+                        <div class="mt-6 flex justify-end">
                             <PrimaryButton @click="closeModal">Ok</PrimaryButton>
                         </div>
                     </div>
@@ -456,23 +463,6 @@ const closeModal = () => {
                             <DangerButton @click="closeModal">X</DangerButton>
                         </div>
                         <Images :payment="selectedPayment" @uploadProofPaymentImage="closeModal" />
-                    </div>
-                </Modal>
-
-                <Modal maxWidth="6xl" :show="showingModalPaymentImage">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center ps-6 ms-6 text-blue-900">
-                            <span class="font-bold text-center w-full">Bukti Pembayaran</span>
-                            <DangerButton @click="closeModal">X</DangerButton>
-                        </div>
-                        <div class="flex items-center">
-                            <div v-for="(paymentImages) in selectedPaymentImage" :key="paymentImages.id"
-                                class="relative me-2">
-                                {{ selectedPaymentImage.image }}
-                                <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
-                                    class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
-                            </div>
-                        </div>
                     </div>
                 </Modal>
 
