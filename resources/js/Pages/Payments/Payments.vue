@@ -136,7 +136,7 @@ const closeModal = () => {
                             <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td v-if="payment.status === 'pending' || 'paid' || 'shipped' || 'completed' || 'cancelled'"
+                                <td v-if="['pending', 'paid', 'shipped', 'completed', 'cancelled'].includes(payment.status)"
                                     class="px-3 py-3 truncate capitalize">
                                     <a href="#" type="button" @click="showModalUpdatePayment(payment)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
