@@ -356,8 +356,7 @@ const closeModal = () => {
                         </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
-                            <DangerButton class="ms-3" :class="{ 'opacity-25': form.processing }"
-                                :disabled="form.processing" @click="deleteProductImage">
+                            <DangerButton @click="deleteProductImage" class="ms-3">
                                 Delete
                             </DangerButton>
                         </div>
@@ -414,7 +413,8 @@ const closeModal = () => {
                                     placeholder="Berat (Kg)" required autofocus />
                                 <InputError class="mt-2" :message="form.errors.weight" />
                             </div>
-                            <div class="mt-6 flex justify-start">
+                            <div class="mt-6 flex justify-start" :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing">
                                 <PrimaryButton>Simpan</PrimaryButton>
                             </div>
                         </form>
@@ -439,7 +439,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

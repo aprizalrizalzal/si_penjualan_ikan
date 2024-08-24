@@ -255,7 +255,8 @@ const closeModal = () => {
                                     placeholder="Kuantitas" required autofocus />
                                 <InputError class="mt-2" :message="form.errors.quantity" />
                             </div>
-                            <div class="mt-6 flex justify-start">
+                            <div class="mt-6 flex justify-start" :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing">
                                 <PrimaryButton>Simpan</PrimaryButton>
                             </div>
                         </form>

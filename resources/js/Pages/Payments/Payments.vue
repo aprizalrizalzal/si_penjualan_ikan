@@ -11,6 +11,17 @@ import Trash3 from '@/Components/Icons/Trash3.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PlusCircle from '@/Components/Icons/PlusCircle.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import DropdownSelect from '@/Components/DropdownSelect.vue';
+
+const { auth } = usePage().props;
+const roles = ref(auth.roles);
+const hasRole = (role) => roles.value.includes(role);
+
+const isAdmin = computed(() => hasRole('admin'));
+const isUser = computed(() => hasRole('user'));
 
 const props = defineProps({
     payments: Array,
@@ -88,8 +99,55 @@ const totalAmount = computed(() => {
     }, 0);
 });
 
+const form = useForm({
+    amount: '',
+    payment_method: '',
+    status: '',
+});
+
+const status = [
+    { id: 1, name: 'check' },
+    { id: 2, name: 'pending' },
+    { id: 3, name: 'paid' },
+    { id: 4, name: 'shipped' },
+    { id: 5, name: 'completed' },
+    { id: 6, name: 'cancelled' }
+];
+
+const showingModalStatusUpdate = ref(false);
+
+const showModalStatusUpdate = (payment) => {
+    showingModalStatusUpdate.value = true;
+    selectedPayment.value = payment;
+
+    if (payment) {
+        form.amount = payment.amount;
+        form.payment_method = payment.payment_method;
+        form.status = payment.status;
+    }
+};
+
+const submitForm = () => {
+    form.put(route('update.payment', { id: selectedPayment.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.data();
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors.status) {
+                alert('update failed!');
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
+};
+
 const closeModal = () => {
     showingModalPayment.value = false;
+    showingModalStatusUpdate.value = false;
     confirmingPaymentDeletion.value = false;
 };
 </script>
@@ -138,7 +196,7 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
                                 <td v-if="['pending', 'paid', 'shipped', 'completed', 'cancelled'].includes(payment.status)"
                                     class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
+                                    <a href="#" type="button" @click="showModalUpdatePayment(payments)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
                                         Lihat
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -158,7 +216,7 @@ const closeModal = () => {
                                 </td>
                                 <td class="px-3 py-3 truncate">{{ payment.payment_code }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
+                                    <a href="#" type="button" @click="showModalStatusUpdate(payment)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
                                         {{ payment.status }}
                                         <PencilSquare width="16" height="16" />
@@ -249,6 +307,79 @@ const closeModal = () => {
                         </li>
                     </ul>
                 </div>
+
+                <!-- Update payment item modal -->
+                <Modal :show="showingModalStatusUpdate">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-medium text-gray-900">
+                                Pembayaran <strong>{{ selectedPayment.payment_code }}</strong>
+                            </h2>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <form @submit.prevent="submitForm" class="mt-3 space-y-3">
+                            <div v-if="selectedPayment.amount" class="hidden">
+                                <InputLabel for="amount" value="Total" />
+                                <TextInput id="amount" type="text" class="mt-1 block w-full" v-model="form.amount"
+                                    placeholder="Total" required />
+                                <InputError class="mt-2" :message="form.errors.amount" />
+                            </div>
+                            <div v-if="selectedPayment.payment_method" class="hidden">
+                                <InputLabel for="payment_method" value="Metode Pembayaran" />
+                                <TextInput id="payment_method" type="text" class="mt-1 block w-full"
+                                    v-model="form.payment_method" placeholder="Metode Pembayaran" required />
+                                <InputError class="mt-2" :message="form.errors.payment_method" />
+                            </div>
+                            <div>
+                                <DropdownSelect id="status" label="Status" optionProperty="name" valueProperty="name"
+                                    :options="status" v-model="form.status"
+                                    :placeholder='selectedPayment ? selectedPayment.status : "Pilih Status"'
+                                    class="capitalize w-full" />
+                                <InputError class="mt-2" :message="form.errors.status" />
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2 text-gray-800">Keterangan Status</h3>
+                            <ul class="space-y-1">
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Check:</strong>
+                                    <span class="text-gray-800 text-sm">Pesanan sedang dalam pengecekan awal sebelum
+                                        diproses
+                                        lebih
+                                        lanjut.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Pending:</strong>
+                                    <span class="text-gray-800 text-sm">Pesanan dibuat, menunggu pembayaran atau
+                                        konfirmasi.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Paid:</strong>
+                                    <span class="text-gray-800 text-sm">Pembayaran diterima, pesanan siap
+                                        diproses.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Shipped:</strong>
+                                    <span class="text-gray-800 text-sm">Pesanan telah dikirim, dalam perjalanan ke
+                                        pelanggan.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Completed:</strong>
+                                    <span class="text-gray-800 text-sm">Pesanan selesai dan diterima oleh
+                                        pelanggan.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <strong class="w-24 text-gray-800 text-sm">Cancelled:</strong>
+                                    <span class="text-gray-800 text-sm">Pesanan dibatalkan, tidak akan diproses lebih
+                                        lanjut.</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 flex justify-end" :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing">
+                                <PrimaryButton>Simpan</PrimaryButton>
+                            </div>
+                        </form>
+
+                    </div>
+                </Modal>
 
                 <!-- Detail payment item modal -->
                 <Modal :show="showingModalPayment">

@@ -24,7 +24,7 @@ class PaymentImageController extends Controller
 
         $originalName = $request->file('image')->getClientOriginalName();
         $uniqueName = time() . '_' . $originalName;
-        $path = $request->file('image')->storeAs('images/paymentImages', $uniqueName, 'public');
+        $path = $request->file('image')->storeAs('images/payments', $uniqueName, 'public');
 
         PaymentImage::create([
             'image' => 'storage/' . $path,

@@ -20,13 +20,6 @@ const props = defineProps({
     },
 });
 
-const { auth } = usePage().props;
-const roles = ref(auth.roles);
-const hasRole = (role) => roles.value.includes(role);
-
-const isAdmin = computed(() => hasRole('admin'));
-const isUser = computed(() => hasRole('user'));
-
 const showingNavigationDropdown = ref(false);
 const hasScrolled = ref(false);
 

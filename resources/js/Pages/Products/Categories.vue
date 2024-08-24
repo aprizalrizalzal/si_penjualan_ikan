@@ -262,7 +262,8 @@ const closeModal = () => {
                                     v-model="form.description" placeholder="Deskripsi" required autofocus />
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
-                            <div class="mt-6 flex justify-start">
+                            <div class="mt-6 flex justify-start" :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing">
                                 <PrimaryButton>Simpan</PrimaryButton>
                             </div>
                         </form>
@@ -275,7 +276,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus kategori <strong>{{
                                 selectedCategory.name
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah kategori <strong>{{ selectedCategory.name }}</strong> dihapus,

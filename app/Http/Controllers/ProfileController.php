@@ -19,7 +19,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        $customer = Customer::where('user_id', Auth::id())->first();
+        $customer = Customer::where('user_id', Auth::id())->with('customerImage')->first();
 
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,

@@ -24,7 +24,7 @@ class ProductImageController extends Controller
 
         $originalName = $request->file('image')->getClientOriginalName();
         $uniqueName = time() . '_' . $originalName;
-        $path = $request->file('image')->storeAs('images/productImages', $uniqueName, 'public');
+        $path = $request->file('image')->storeAs('images/products', $uniqueName, 'public');
 
         ProductImage::create([
             'image' => 'storage/' . $path,
