@@ -71,7 +71,7 @@ const handleClickOutside = (event) => {
                 </svg>
             </span>
             <div v-if="showDropdown"
-                class="absolute z-10 bg-white border border-blue-700 rounded mt-1 w-full max-h-30 overflow-auto">
+                class="absolute z-10 bg-white border border-blue-700 rounded mt-1 w-full max-h-20 overflow-auto">
                 <ul>
                     <li v-for="option in filteredOptions" :key="option[valueProperty]" @click="selectOption(option)"
                         class="p-2 text-sm hover:bg-blue-100 cursor-pointer">

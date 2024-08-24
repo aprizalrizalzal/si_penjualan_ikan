@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
@@ -40,10 +41,13 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'payment_code' => Str::upper(Str::random(8)),
             'order_id' => 'required|exists:orders,id',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
+            'status' => [
+                'required',
+                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
+            ],
         ]);
 
         $userId = Auth::id();
@@ -53,10 +57,11 @@ class PaymentController extends Controller
 
         // Membuat pembayaran baru
         Payment::create([
+            'payment_code' => Str::upper(Str::random(8)),
             'order_id' => $order->id,
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
-            'status' => 'pending',
+            'status' => $request->status,
         ]);
 
         return redirect()->route('show.payments');
@@ -71,7 +76,10 @@ class PaymentController extends Controller
             'id' => 'required|exists:payments,id',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
-            'status' => 'required|string|in:pending,completed,failed',
+            'status' => [
+                'required',
+                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
+            ],
         ]);
 
         $userId = Auth::id();
@@ -105,6 +113,40 @@ class PaymentController extends Controller
 
         // Menghapus pembayaran
         $payment->delete();
+
+        return redirect()->route('show.payments');
+    }
+
+    /**
+     * Melakukan store payment dari order dan membuat pembayaran.
+     */
+    public function store_payment(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|string',
+            'status' => [
+                'required',
+                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
+            ],
+        ]);
+
+        $userId = Auth::id();
+        $order = Order::where('user_id', $userId)
+            ->where('id', $request->order_id)
+            ->firstOrFail();
+
+        // Membuat pembayaran baru
+        Payment::create([
+            'payment_code' => Str::upper(Str::random(8)),
+            'order_id' => $order->id,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'status' => $request->status,
+        ]);
+
+        $order->update(['status' => $request->status]);
 
         return redirect()->route('show.payments');
     }

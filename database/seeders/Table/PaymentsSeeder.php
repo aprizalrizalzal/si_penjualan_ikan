@@ -25,7 +25,7 @@ class PaymentsSeeder extends Seeder
                 'order_id' => $order->id,
                 'payment_method' => $this->getRandomPaymentMethod(),
                 'amount' => $order->total_amount,
-                'status' => 'pending', // Sesuaikan status sesuai kebutuhan
+                'status' => 'check', // Sesuaikan status sesuai kebutuhan
             ]);
         }
     }
@@ -35,7 +35,7 @@ class PaymentsSeeder extends Seeder
      */
     private function getRandomPaymentMethod()
     {
-        $methods = ['credit_card', 'bank_transfer', 'paypal', 'cash'];
+        $methods = ['Credit Card', 'Bank Transfer', 'PayPal', 'Cash on Delivery', 'E-Wallet'];
         return $methods[array_rand($methods)];
     }
 }

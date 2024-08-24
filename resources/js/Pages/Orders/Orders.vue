@@ -6,15 +6,22 @@ import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import CreditCard from '@/Components/Icons/CreditCard.vue';
 import PlusCircle from '@/Components/Icons/PlusCircle.vue';
+import DropdownSelect from '@/Components/DropdownSelect.vue';
 
 const props = defineProps({
     orders: Array,
+});
+
+const form = useForm({
+    order_id: '',
+    amount: '',
+    payment_method: '',
+    status: '',
 });
 
 const goToPayments = () => {
@@ -63,6 +70,7 @@ const selectedOrderItems = ref(null);
 
 const showingModalOrderItems = ref(false);
 const confirmingOrderDeletion = ref(false);
+const confirmingOrderPayment = ref(false);
 
 const showModalOrderItems = (order) => {
     showingModalOrderItems.value = true;
@@ -98,6 +106,41 @@ const detailTotalAmount = computed(() => {
     }, 0);
 });
 
+const paymentMethods = [
+    { id: 1, name: 'Credit Card' },
+    { id: 2, name: 'Bank Transfer' },
+    { id: 3, name: 'PayPal' },
+    { id: 4, name: 'Cash on Delivery' },
+    { id: 5, name: 'E-Wallet' }
+];
+
+const confirmOrderPayment = (order) => {
+    confirmingOrderPayment.value = true;
+    selectedOrder.value = order;
+    if (order) {
+        form.order_id = order.id;
+        form.amount = order.total_amount;
+        form.status = 'pending';
+    }
+};
+
+const storePayment = () => {
+    form.post(route('store.order.payment'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors) {
+                alert('Cart failed!');
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
+}
+
 const goToCart = () => {
     router.visit(route('show.carts'))
 }
@@ -105,6 +148,7 @@ const goToCart = () => {
 const closeModal = () => {
     showingModalOrderItems.value = false;
     confirmingOrderDeletion.value = false;
+    confirmingOrderPayment.value = false;
 };
 </script>
 
@@ -205,30 +249,25 @@ const closeModal = () => {
                     </SecondaryButton>
                 </div>
                 <div class="p-2 bg-white">
-                    <h3 class="text-sm font-semibold mb-2 text-gray-800">Keterangan Status</h3>
+                    <h3 class="text-sm font-semibold mb-2 text-gray-800">Cara Bayar</h3>
                     <ul class="space-y-1">
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Pending:</strong>
-                            <span class="text-gray-800 text-sm">Pesanan dibuat, menunggu pembayaran atau
-                                konfirmasi.</span>
+                            <strong class="w-20 text-gray-800 text-sm">Langkah 1:</strong>
+                            <span class="text-gray-800 text-sm">Pilih salah satu metode pembayaran: <strong>Bank
+                                    Transfer, Cash
+                                    on Delivery, atau E-Wallet</strong>.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Paid:</strong>
-                            <span class="text-gray-800 text-sm">Pembayaran diterima, pesanan siap diproses.</span>
+                            <strong class="w-20 text-gray-800 text-sm">Langkah 2:</strong>
+                            <span class="text-gray-800 text-sm">Tekan tombol <strong>"Detail"</strong> untuk melihat
+                                daftar
+                                pesanan Anda.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Shipped:</strong>
-                            <span class="text-gray-800 text-sm">Pesanan telah dikirim, dalam perjalanan ke
-                                pelanggan.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Completed:</strong>
-                            <span class="text-gray-800 text-sm">Pesanan selesai dan diterima oleh pelanggan.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Cancelled:</strong>
-                            <span class="text-gray-800 text-sm">Pesanan dibatalkan, tidak akan diproses lebih
-                                lanjut.</span>
+                            <strong class="w-20 text-gray-800 text-sm">Langkah 3:</strong>
+                            <span class="text-gray-800 text-sm">Setelah memeriksa daftar pesanan, tekan tombol
+                                <strong>"Bayar"</strong> untuk melihat informasi pembayaran seperti nomor rekening atau
+                                instruksi lainnya.</span>
                         </li>
                     </ul>
                 </div>
@@ -277,7 +316,12 @@ const closeModal = () => {
                         </table>
                         <div class="mt-6 flex gap-4 justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <PrimaryButton @click="closeModal">Bayar</PrimaryButton>
+                            <PrimaryButton v-if="selectedOrder.status === 'check'"
+                                @click="confirmOrderPayment(selectedOrder)">
+                                Bayar</PrimaryButton>
+                            <PrimaryButton v-else @click="goToPayments">
+                                <CreditCard widht="16" height="16" />Pembayaran
+                            </PrimaryButton>
                         </div>
                     </div>
                 </Modal>
@@ -297,6 +341,46 @@ const closeModal = () => {
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
                             <DangerButton class="ms-3" @click="deleteOrder">Hapus</DangerButton>
+                        </div>
+                    </div>
+                </Modal>
+
+                <!-- Confirm order modal -->
+                <Modal :show="confirmingOrderPayment">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Konfirmasi Pesanan
+                        </h2>
+                        <p class="my-1 text-sm text-gray-700">
+                            Setelah pesanan dibayar, status pesanan akan terupdate. Silahkan pilih metode pembayarannya.
+                        </p>
+                        <div>
+                            <DropdownSelect id="payment_method" label="Metode Pembayaran" optionProperty="name"
+                                valueProperty="name" :options="paymentMethods" v-model="form.payment_method"
+                                placeholder="Pilih Metode Pembayaran" class="w-full" />
+                            <InputError class="mt-2" :message="form.errors.payment_method" />
+                        </div>
+                        <ul class="pt-2 space-y-1">
+                            <li class="flex items-start">
+                                <strong class="w-32 text-gray-800 text-sm">Bank Transfer:</strong>
+                                <span class="text-gray-800 text-sm">Nomor Rekening: 1234567890 (Bank XYZ) a.n. PT. Toko
+                                    Online</span>
+                            </li>
+                            <li class="flex items-start">
+                                <strong class="w-32 text-gray-800 text-sm">Cash on Delivery:</strong>
+                                <span class="text-gray-800 text-sm">Silahkan siapkan jumlah uang yang tepat saat pesanan
+                                    Anda
+                                    tiba.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <strong class="w-32 text-gray-800 text-sm">E-Wallet:</strong>
+                                <span class="text-gray-800 text-sm">Nomor E-Wallet: 081234567890 (GoPay, OVO,
+                                    Dana)</span>
+                            </li>
+                        </ul>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton @click="closeModal">Batal</SecondaryButton>
+                            <PrimaryButton class="ms-3" @click="storePayment">Pesan</PrimaryButton>
                         </div>
                     </div>
                 </Modal>

@@ -10,6 +10,7 @@ import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 
 const props = defineProps({
     payments: Array,
@@ -123,6 +124,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
+                                <th scope="col" class="px-3 py-3 truncate">Bukti Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Metode Pembayaran</th>
@@ -134,6 +136,26 @@ const closeModal = () => {
                             <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
+                                <td v-if="payment.status === 'pending' || 'paid' || 'shipped' || 'completed' || 'cancelled'"
+                                    class="px-3 py-3 truncate capitalize">
+                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
+                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
+                                        Lihat
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                            <path
+                                                d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z" />
+                                        </svg>
+                                    </a>
+                                </td>
+                                <td v-else class="px-3 py-3 truncate capitalize">
+                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
+                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
+                                        Upload
+                                        <PlusCircle width="16" height="16" />
+                                    </a>
+                                </td>
                                 <td class="px-3 py-3 truncate">{{ payment.payment_code }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
                                     <a href="#" type="button" @click="showModalUpdatePayment(payment)"
@@ -165,7 +187,7 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center truncate">
                                     #
                                 </td>
-                                <td class="px-3 py-3 font-bold truncate" colspan="3">
+                                <td class="px-3 py-3 font-bold truncate" colspan="4">
                                     Total
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="3">
@@ -197,25 +219,31 @@ const closeModal = () => {
                     <h3 class="text-sm font-semibold mb-2 text-gray-800">Keterangan Status</h3>
                     <ul class="space-y-1">
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Pending:</strong>
+                            <strong class="w-24 text-gray-800 text-sm">Check:</strong>
+                            <span class="text-gray-800 text-sm">Pesanan sedang dalam pengecekan awal sebelum diproses
+                                lebih
+                                lanjut.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <strong class="w-24 text-gray-800 text-sm">Pending:</strong>
                             <span class="text-gray-800 text-sm">Pesanan dibuat, menunggu pembayaran atau
                                 konfirmasi.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Paid:</strong>
+                            <strong class="w-24 text-gray-800 text-sm">Paid:</strong>
                             <span class="text-gray-800 text-sm">Pembayaran diterima, pesanan siap diproses.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Shipped:</strong>
+                            <strong class="w-24 text-gray-800 text-sm">Shipped:</strong>
                             <span class="text-gray-800 text-sm">Pesanan telah dikirim, dalam perjalanan ke
                                 pelanggan.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Completed:</strong>
+                            <strong class="w-24 text-gray-800 text-sm">Completed:</strong>
                             <span class="text-gray-800 text-sm">Pesanan selesai dan diterima oleh pelanggan.</span>
                         </li>
                         <li class="flex items-start">
-                            <strong class="w-20 text-gray-800 text-sm">Cancelled:</strong>
+                            <strong class="w-24 text-gray-800 text-sm">Cancelled:</strong>
                             <span class="text-gray-800 text-sm">Pesanan dibatalkan, tidak akan diproses lebih
                                 lanjut.</span>
                         </li>
@@ -236,7 +264,7 @@ const closeModal = () => {
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Status</td>
-                                    <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.order.status }}</td>
+                                    <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.status }}</td>
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Total</td>

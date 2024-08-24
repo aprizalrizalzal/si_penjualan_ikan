@@ -127,7 +127,7 @@ class CartController extends Controller
         $order = Order::create([
             'order_code' => Str::upper(Str::random(8)),
             'user_id' => $userId,
-            'status' => 'pending', // Set default status
+            'status' => 'check', // Set default status
             'total_amount' => 0, // Akan diperbarui setelah item ditambahkan
         ]);
 

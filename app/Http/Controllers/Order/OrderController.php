@@ -38,7 +38,7 @@ class OrderController extends Controller
         $request->validate([
             'status' => [
                 'required',
-                Rule::in(['pending', 'paid', 'shipped', 'completed', 'cancelled']),
+                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
             ],
             'order_items' => 'required|array',
             'order_items.*.product_id' => 'required|exists:products,id',
@@ -84,7 +84,7 @@ class OrderController extends Controller
             'id' => 'required|exists:orders,id',
             'status' => [
                 'required',
-                Rule::in(['pending', 'paid', 'shipped', 'completed', 'cancelled']),
+                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
             ],
             'order_items' => 'required|array',
             'order_items.*.product_id' => 'required|exists:products,id',

@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/product/carts', [ProductController::class, 'store_cart'])->name('store.product.carts');
     Route::post('/cart/orders', [CartController::class, 'store_order'])->name('store.cart.orders');
+    Route::post('/order/payments', [PaymentController::class, 'store_payment'])->name('store.order.payment');
 
     Route::get('/carts', [CartController::class, 'show'])->name('show.carts');
     Route::post('/cart', [CartController::class, 'store'])->name('store.cart');
