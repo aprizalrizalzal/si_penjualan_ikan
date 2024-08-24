@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
@@ -64,8 +65,6 @@ class PaymentController extends Controller
             'status' => $request->status,
         ]);
 
-        $order->update(['status' => $request->status]);
-
         return redirect()->route('show.payments');
     }
 
@@ -76,6 +75,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'id' => 'required|exists:payments,id',
+            'order_id' => 'required|exists:orders,id',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
             'status' => [
@@ -84,17 +84,25 @@ class PaymentController extends Controller
             ],
         ]);
 
-        $userId = Auth::id();
-        $payment = Payment::whereHas('order', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })->where('id', $request->id)->firstOrFail();
+        // Cek apakah user memiliki peran admin
+        if (!Auth::user()->hasRole('admin')) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        // Admin dapat update semua pembayaran
+        $payment = Payment::where('id', $request->id)->firstOrFail();
 
         // Memperbarui pembayaran
         $payment->update([
+            'order_id' => $request->order_id,
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
             'status' => $request->status,
         ]);
+
+        // Mengupdate status pada order yang bersangkutan
+        $order = Order::where('id', $request->order_id)->firstOrFail();
+        $order->update(['status' => $request->status]);
 
         return redirect()->route('show.payments');
     }

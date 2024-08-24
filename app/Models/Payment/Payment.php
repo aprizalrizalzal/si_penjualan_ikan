@@ -33,7 +33,7 @@ class Payment extends Model
      */
     public function paymentImages()
     {
-        return $this->belongsTo(PaymentImage::class);
+        return $this->hasMany(PaymentImage::class);
     }
 
     /**

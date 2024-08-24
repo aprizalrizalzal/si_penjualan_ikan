@@ -4,23 +4,14 @@ import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     product: Object,
 });
 
 const form = useForm({
-    product_id: '',
     image: null,
-    alt: '',
 });
-
-if (props.product) {
-    const productId = props.product.id;
-    form.product_id = productId;
-    form.alt = props.product.name;
-}
 
 const previewUrl = ref(null);
 
@@ -33,7 +24,10 @@ const handleFileChange = (event) => {
 };
 
 const submitForm = () => {
-    form.post(route('store.product.image'), {
+    form.post(route('store.product.image', {
+        product_id: props.product.id,
+        alt: props.product.name,
+    }), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset('image');
@@ -58,20 +52,10 @@ const emit = defineEmits(['addProductImage']);
     <div class="relative flex w-full flex-1 items-stretch">
         <div class="w-full">
             <form @submit.prevent="submitForm" class="mt-3 space-y-3">
-                <div v-if="props.product" class="hidden">
-                    <InputLabel for="product_id" value="Product ID" />
-                    <TextInput id="product_id" type="text" inputmode="numeric" class="mt-1 block w-full"
-                        v-model="form.product_id" placeholder="Product ID" required />
-                </div>
                 <div>
                     <InputLabel for="image" value="Gambar" />
                     <input type="file" id="image" @change="handleFileChange" class="mt-1 block w-full" />
                     <InputError :message="form.errors.image" />
-                </div>
-                <div v-if="props.product" class="hidden">
-                    <InputLabel for="alt" value="Alt" />
-                    <TextInput id="alt" type="text" class="mt-1 block w-full" v-model="form.alt"
-                        placeholder="Product ID" required />
                 </div>
                 <div v-if="previewUrl" class="my-4">
                     <p class="font-semibold">Pratinjau</p>

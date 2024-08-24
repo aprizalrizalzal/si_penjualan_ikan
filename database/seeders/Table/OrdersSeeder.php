@@ -31,7 +31,7 @@ class OrdersSeeder extends Seeder
             $order = Order::create([
                 'order_code' => Str::upper(Str::random(8)),
                 'user_id' => $user->id,
-                'status' => 'check',
+                'status' => 'pending',
                 'total_amount' => 0, // Nilai sementara, akan diperbarui setelah item ditambahkan
             ]);
 

@@ -107,11 +107,9 @@ const detailTotalAmount = computed(() => {
 });
 
 const paymentMethods = [
-    { id: 1, name: 'Credit Card' },
-    { id: 2, name: 'Bank Transfer' },
-    { id: 3, name: 'PayPal' },
-    { id: 4, name: 'Cash on Delivery' },
-    { id: 5, name: 'E-Wallet' }
+    { id: 1, name: 'Bank Transfer' },
+    { id: 2, name: 'Cash on Delivery' },
+    { id: 3, name: 'E-Wallet' }
 ];
 
 const confirmOrderPayment = (order) => {

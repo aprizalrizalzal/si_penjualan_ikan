@@ -12,7 +12,7 @@ class UserController extends Controller
     public function show()
     {
         // Mengambil semua pengguna dengan peran terkait
-        $users = User::with('roles')->get();
+        $users = User::with('customer', 'roles')->get();
 
         return Inertia::render('Users/Users', [
             'users' => $users

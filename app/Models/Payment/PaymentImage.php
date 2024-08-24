@@ -9,11 +9,11 @@ class PaymentImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'image', 'alt'];
+    protected $fillable = ['payment_id', 'image', 'alt'];
 
     /**
-     * Relasi dengan model Category.
-     * Product miliki satu Category.
+     * Relasi dengan model PaymentImage.
+     * Payment miliki satu PaymentImage.
      */
     public function payment()
     {

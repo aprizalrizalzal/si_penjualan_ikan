@@ -347,7 +347,7 @@ const closeModal = () => {
                             <strong>{{ selectedProductImage.alt }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah gambar produck <strong>{{ selectedProductImage.alt }}</strong> dihapus,
+                            Setelah gambar produk <strong>{{ selectedProductImage.alt }}</strong> dihapus,
                             semua
                             sumber daya
                             dan
@@ -439,7 +439,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

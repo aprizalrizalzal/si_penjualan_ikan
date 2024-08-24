@@ -11,17 +11,15 @@ import Trash3 from '@/Components/Icons/Trash3.vue';
 import CardHeading from '@/Components/Icons/CardHeading.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PlusCircle from '@/Components/Icons/PlusCircle.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
+import Images from './Images.vue';
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);
 const hasRole = (role) => roles.value.includes(role);
 
 const isAdmin = computed(() => hasRole('admin'));
-const isUser = computed(() => hasRole('user'));
 
 const props = defineProps({
     payments: Array,
@@ -69,9 +67,45 @@ const previousPage = () => {
 };
 
 const selectedPayment = ref(null);
+const selectedPaymentImage = ref(null);
 
 const showingModalPayment = ref(false);
+const showingModalUploadProofPayment = ref(false);
+const showingModalPaymentImage = ref(false);
+const confirmingPaymentImageDeletion = ref(false);
 const confirmingPaymentDeletion = ref(false);
+
+const showModalUploadProofPayment = (payment) => {
+    showingModalUploadProofPayment.value = true;
+    selectedPayment.value = payment;
+};
+
+const showModalPaymentImage = (paymentImage) => {
+    showingModalPaymentImage.value = true;
+    selectedPaymentImage.value = paymentImage;
+};
+
+const confirmPaymentImageDeletion = (paymentImage) => {
+    selectedPaymentImage.value = paymentImage;
+    confirmingPaymentImageDeletion.value = true;
+};
+
+const deletePaymentImage = () => {
+    router.delete(route('destroy.payment.image', { id: selectedPaymentImage.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors) {
+                closeModal();
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
+};
 
 const showModalPayment = (payment) => {
     showingModalPayment.value = true;
@@ -100,8 +134,6 @@ const totalAmount = computed(() => {
 });
 
 const form = useForm({
-    amount: '',
-    payment_method: '',
     status: '',
 });
 
@@ -121,14 +153,17 @@ const showModalStatusUpdate = (payment) => {
     selectedPayment.value = payment;
 
     if (payment) {
-        form.amount = payment.amount;
-        form.payment_method = payment.payment_method;
         form.status = payment.status;
     }
 };
 
 const submitForm = () => {
-    form.put(route('update.payment', { id: selectedPayment.value.id }), {
+    form.put(route('update.payment', {
+        id: selectedPayment.value.id,
+        order_id: selectedPayment.value.order_id,
+        amount: selectedPayment.value.amount,
+        payment_method: selectedPayment.value.payment_method,
+    }), {
         preserveScroll: true,
         onSuccess: () => {
             form.data();
@@ -148,6 +183,9 @@ const submitForm = () => {
 const closeModal = () => {
     showingModalPayment.value = false;
     showingModalStatusUpdate.value = false;
+    showingModalUploadProofPayment.value = false;
+    showingModalPaymentImage.value = false;
+    confirmingPaymentImageDeletion.value = false;
     confirmingPaymentDeletion.value = false;
 };
 </script>
@@ -194,33 +232,36 @@ const closeModal = () => {
                             <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
-                                <td v-if="['pending', 'paid', 'shipped', 'completed', 'cancelled'].includes(payment.status)"
-                                    class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdatePayment(payments)"
-                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        Lihat
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-                                            <path
-                                                d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z" />
-                                        </svg>
-                                    </a>
-                                </td>
-                                <td v-else class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalUpdatePayment(payment)"
-                                        class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        Upload
-                                        <PlusCircle width="16" height="16" />
-                                    </a>
+                                <td class="px-3 py-3 truncate ">
+                                    <div class="flex items-center">
+                                        <div v-for="(paymentImages) in payment.payment_images" :key="paymentImages.id"
+                                            class="relative me-2">
+                                            <img @click="showModalPaymentImage(paymentImages)"
+                                                :src="`${paymentImages.image}`" :alt="paymentImages.alt"
+                                                class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
+                                            <botton @click="confirmPaymentImageDeletion(paymentImages)"
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
+                                            </botton>
+                                        </div>
+                                        <botton v-if="payment.payment_images.length < 2"
+                                            @click="showModalUploadProofPayment(payment)"
+                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
+                                        </botton>
+                                    </div>
                                 </td>
                                 <td class="px-3 py-3 truncate">{{ payment.payment_code }}</td>
                                 <td class="px-3 py-3 truncate capitalize">
-                                    <a href="#" type="button" @click="showModalStatusUpdate(payment)"
+                                    <a v-if="isAdmin" href="#" type="button" @click="showModalStatusUpdate(payment)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
                                         {{ payment.status }}
                                         <PencilSquare width="16" height="16" />
                                     </a>
+                                    <p v-else class="flex gap-2 items-center font-normal text-blue-600 hover:font-bold">
+                                        {{ payment.status }}
+                                    </p>
+
                                 </td>
                                 <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
                                 <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
@@ -318,18 +359,6 @@ const closeModal = () => {
                             <DangerButton @click="closeModal">X</DangerButton>
                         </div>
                         <form @submit.prevent="submitForm" class="mt-3 space-y-3">
-                            <div v-if="selectedPayment.amount" class="hidden">
-                                <InputLabel for="amount" value="Total" />
-                                <TextInput id="amount" type="text" class="mt-1 block w-full" v-model="form.amount"
-                                    placeholder="Total" required />
-                                <InputError class="mt-2" :message="form.errors.amount" />
-                            </div>
-                            <div v-if="selectedPayment.payment_method" class="hidden">
-                                <InputLabel for="payment_method" value="Metode Pembayaran" />
-                                <TextInput id="payment_method" type="text" class="mt-1 block w-full"
-                                    v-model="form.payment_method" placeholder="Metode Pembayaran" required />
-                                <InputError class="mt-2" :message="form.errors.payment_method" />
-                            </div>
                             <div>
                                 <DropdownSelect id="status" label="Status" optionProperty="name" valueProperty="name"
                                     :options="status" v-model="form.status"
@@ -420,13 +449,64 @@ const closeModal = () => {
                     </div>
                 </Modal>
 
+                <Modal :show="showingModalUploadProofPayment">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center ps-6 ms-6 text-blue-900">
+                            <span class="font-bold text-center w-full">Tambah Gambar</span>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <Images :payment="selectedPayment" @uploadProofPaymentImage="closeModal" />
+                    </div>
+                </Modal>
+
+                <Modal maxWidth="6xl" :show="showingModalPaymentImage">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center ps-6 ms-6 text-blue-900">
+                            <span class="font-bold text-center w-full">Bukti Pembayaran</span>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <div class="flex items-center">
+                            <div v-for="(paymentImages) in selectedPaymentImage" :key="paymentImages.id"
+                                class="relative me-2">
+                                {{ selectedPaymentImage.image }}
+                                <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
+                                    class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+
+                <Modal :show="confirmingPaymentImageDeletion">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Apakah Anda yakin ingin menghapus gambar bukti pembayaran
+                            <strong>{{ selectedPaymentImage.alt }}</strong>?
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-700">
+                            Setelah gambar bukti pembayaran <strong>{{ selectedPaymentImage.alt }}</strong> dihapus,
+                            semua
+                            sumber daya
+                            dan
+                            datanya
+                            akan dihapus secara permanen.
+                        </p>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                            <DangerButton @click="deletePaymentImage" class="ms-3">
+                                Delete
+                            </DangerButton>
+                        </div>
+                    </div>
+                </Modal>
+
                 <Modal :show="confirmingPaymentDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus pesanan ID <strong>{{ selectedPayment.id }}</strong>?
+                            Apakah Anda yakin ingin menghapus pembayaran <strong>{{ selectedPayment.payment_code
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah pesanan ID <strong>{{ selectedPayment.id }}</strong> dihapus, semua
+                            Setelah pembayaran <strong>{{ selectedPayment.payment_code }}</strong> dihapus, semua
                             sumber daya dan datanya akan dihapus secara permanen.
                         </p>
                         <div class="mt-6 flex justify-end">

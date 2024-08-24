@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -95,7 +96,7 @@ class OrderController extends Controller
 
         // Periksa jika pengguna adalah user dan tidak memiliki hak atas pesanan ini
         if (!Auth::user()->hasRole('admin') && $order->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+            abort(Response::HTTP_NOT_FOUND);
         }
 
         // Memperbarui status pesanan
@@ -139,7 +140,7 @@ class OrderController extends Controller
 
         // Periksa jika pengguna adalah user dan tidak memiliki hak atas pesanan ini
         if (!Auth::user()->hasRole('admin') && $order->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+            abort(Response::HTTP_NOT_FOUND);
         }
 
         // Menghapus item pesanan terkait

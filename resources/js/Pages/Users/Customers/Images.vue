@@ -11,16 +11,8 @@ const props = defineProps({
 });
 
 const form = useForm({
-    customer_id: '',
     image: null,
-    alt: '',
 });
-
-if (props.customer) {
-    const customerId = props.customer.id;
-    form.customer_id = customerId;
-    form.alt = props.customer.phone;
-}
 
 const previewUrl = ref(null);
 
@@ -33,7 +25,10 @@ const handleFileChange = (event) => {
 };
 
 const submitForm = () => {
-    form.post(route('store.customer.image'), {
+    form.post(route('store.customer.image', {
+        customer_id: props.customer.id,
+        alt: props.customer.phone,
+    }), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset('image');
@@ -58,20 +53,10 @@ const emit = defineEmits(['addCustomerImage']);
     <div class="relative flex w-full flex-1 items-stretch">
         <div class="w-full">
             <form @submit.prevent="submitForm" class="mt-3 space-y-3">
-                <div v-if="props.customer" class="hidden">
-                    <InputLabel for="customer_id" value="Customer ID" />
-                    <TextInput id="customer_id" type="text" inputmode="numeric" class="mt-1 block w-full"
-                        v-model="form.customer_id" placeholder="Customer ID" required />
-                </div>
                 <div>
                     <InputLabel for="image" value="Gambar" />
                     <input type="file" id="image" @change="handleFileChange" class="mt-1 block w-full" />
                     <InputError :message="form.errors.image" />
-                </div>
-                <div v-if="props.customer" class="hidden">
-                    <InputLabel for="alt" value="Alt" />
-                    <TextInput id="alt" type="text" class="mt-1 block w-full" v-model="form.alt"
-                        placeholder="Customer ID" required />
                 </div>
                 <div v-if="previewUrl" class="my-4">
                     <p class="font-semibold">Pratinjau</p>

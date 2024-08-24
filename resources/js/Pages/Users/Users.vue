@@ -145,6 +145,12 @@ const closeModal = () => {
                                     Nama
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
+                                    Telepon
+                                </th>
+                                <th scope="col" class="px-3 py-3 truncate">
+                                    Alamat
+                                </th>
+                                <th scope="col" class="px-3 py-3 truncate">
                                     Peran
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
@@ -166,6 +172,12 @@ const closeModal = () => {
                                         <div class="font-normal text-gray-500">{{ user.email }}</div>
                                     </div>
                                 </th>
+                                <td class="px-3 py-3 truncate max-w-xs">
+                                    <div class="font-normal text-gray-500">{{ user.customer.phone }}</div>
+                                </td>
+                                <td class="px-3 py-3 truncate max-w-xs">
+                                    <div class="font-normal text-gray-500">{{ user.customer.address }}</div>
+                                </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
                                     <a href="#" type="button" @click="showModalAssignRole(user)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">

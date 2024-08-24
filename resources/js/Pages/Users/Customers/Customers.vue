@@ -90,11 +90,10 @@ const closeModal = () => {
     <Modal :show="confirmingCustomerImageDeletion">
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900">
-                Apakah Anda yakin ingin menghapus gambar produk
-                <strong>{{ selectedCustomerImage.alt }}</strong>?
+                Apakah Anda yakin ingin menghapus foto profil?
             </h2>
             <p class="mt-1 text-sm text-gray-700">
-                Setelah gambar produck <strong>{{ selectedCustomerImage.alt }}</strong> dihapus,
+                Setelah foto profil dihapus,
                 semua
                 sumber daya
                 dan
