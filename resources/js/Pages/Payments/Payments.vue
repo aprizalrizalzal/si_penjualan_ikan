@@ -273,7 +273,16 @@ const closeModal = () => {
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <div v-if="selectedPayment.status === 'check'" class="pt-4">Saat ini status pembayaran
+                                    Anda
+                                    masih dalam tahap pengecekan. Silakan
+                                    upload
+                                    bukti
+                                    pembayaran Anda untuk mempercepat proses verifikasi.</div>
+                            </tfoot>
                         </table>
+
                         <div class="mt-6 flex justify-start">
                             <PrimaryButton @click="closeModal">Ok</PrimaryButton>
                         </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Customer\Customer;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +19,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $customer = Customer::where('user_id', Auth::id())->first();
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'customer' => $customer,
         ]);
     }
 
@@ -36,6 +40,17 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        $validated = $request->only('phone', 'address');
+
+        $customer = Customer::where('user_id', Auth::id())->first();
+
+        if ($customer) {
+            $customer->update($validated);
+        } else {
+            // Optionally create a new customer record if not found
+            Customer::create(array_merge($validated, ['user_id' => Auth::id()]));
+        }
 
         return Redirect::route('profile.edit');
     }

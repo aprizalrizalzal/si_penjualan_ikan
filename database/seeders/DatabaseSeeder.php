@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\Table\BannersSeeder;
 use Database\Seeders\Table\CartsSeeder;
 use Database\Seeders\Table\CategoriesSeeder;
+use Database\Seeders\Table\CustomersSeeder;
 use Database\Seeders\Table\OrderItemsSeeder;
 use Database\Seeders\Table\OrdersSeeder;
 use Database\Seeders\Table\PaymentsSeeder;
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BannersSeeder::class,
             UsersSeeder::class,
+            CustomersSeeder::class,
             RolesSeeder::class,
             RoleUserSeeder::class,
             CategoriesSeeder::class,

@@ -28,6 +28,15 @@ class Payment extends Model
     }
 
     /**
+     * Relasi ke tabel Payments.
+     * Satu pembayaran miliki banyak PaymentImages.
+     */
+    public function paymentImages()
+    {
+        return $this->belongsTo(PaymentImage::class);
+    }
+
+    /**
      * Scope untuk memfilter order berdasarkan status.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

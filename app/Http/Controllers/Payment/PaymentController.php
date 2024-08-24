@@ -22,12 +22,12 @@ class PaymentController extends Controller
 
         if (Auth::user()->hasRole('admin')) {
             // Admin dapat melihat semua pembayaran
-            $payments = Payment::with('order', 'order.user')->get();
+            $payments = Payment::with('order', 'order.user', 'paymentImages')->get();
         } else {
             // User hanya dapat melihat pembayaran mereka sendiri
             $payments = Payment::whereHas('order', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
-            })->with('order', 'order.user')->get();
+            })->with('order', 'order.user', 'paymentImages')->get();
         }
 
         return Inertia::render('Payments/Payments', [

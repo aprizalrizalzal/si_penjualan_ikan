@@ -5,7 +5,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 
-defineProps({
+const props = defineProps({
+    customer: Object,
     mustVerifyEmail: {
         type: Boolean,
     },
@@ -15,11 +16,15 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const customer = props.customer;
 
 const form = useForm({
     name: user.name,
     email: user.email,
+    phone: customer.phone,
+    address: customer.address,
 });
+
 </script>
 
 <template>
@@ -51,7 +56,24 @@ const form = useForm({
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
+            <div>
+                <InputLabel for="phone" value="Telepon" />
+
+                <TextInput id="phone" type="text" inputmode="numeric" class="mt-1 block w-full" v-model="form.phone"
+                    required />
+
+                <InputError class="mt-2" :message="form.errors.phone" />
+            </div>
+
+            <div>
+                <InputLabel for="address" value="Alamat" />
+
+                <TextInput id="address" type="text" class="mt-1 block w-full" v-model="form.address" required />
+
+                <InputError class="mt-2" :message="form.errors.address" />
+            </div>
+
+            <div v-if="props.mustVerifyEmail && user.email_verified_at === null">
                 <p class="text-sm mt-2 text-gray-800">
                     Alamat email Anda belum diverifikasi.
                     <Link :href="route('verification.send')" method="post" as="button"
@@ -60,7 +82,7 @@ const form = useForm({
                     </Link>
                 </p>
 
-                <div v-show="status === 'verification-link-sent'" class="mt-2 font-medium text-sm text-gray-600">
+                <div v-show="props.status === 'verification-link-sent'" class="mt-2 font-medium text-sm text-gray-600">
                     Tautan verifikasi baru telah dikirim ke alamat email Anda.
                 </div>
             </div>

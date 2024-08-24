@@ -20,4 +20,13 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Relasi dengan model User.
+     * User milik satu User.
+     */
+    public function customerImage()
+    {
+        return $this->hasOne(CustomerImage::class);
+    }
 }
