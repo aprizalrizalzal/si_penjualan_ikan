@@ -434,7 +434,7 @@ const closeModal = () => {
                                     pembayaran Anda untuk mempercepat proses verifikasi.</div>
                             </tfoot>
                         </table>
-                        <div v-if="selectedPayment.payment_images" class="mt-2">
+                        <div v-if="selectedPayment.payment_images.length > 0" class="mt-2">
                             <p class="text-md text-center font-medium text-gray-900 mb-2">Bukti Pembayaran</p>
                             <div class="flex flex-col sm:flex-row gap-4 m-auto">
                                 <div v-for="(paymentImages) in selectedPayment.payment_images" :key="paymentImages.id"
