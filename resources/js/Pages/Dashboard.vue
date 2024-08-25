@@ -28,7 +28,7 @@ const isUser = computed(() => hasRole('user'));
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Check'] after:w-full after:h-1 after:border-b after:border-blue-50 after:border-4 after:inline-block ">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -40,7 +40,7 @@ const isUser = computed(() => hasRole('user'));
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-hourglass" viewBox="0 0 16 16">
                                     <path
@@ -51,14 +51,14 @@ const isUser = computed(() => hasRole('user'));
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Paid'] after:w-full after:h-1 after:border-b after:border-blue-200 after:border-4 after:inline-block">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <CreditCard />
                             </a>
                         </li>
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Shipped'] after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-truck" viewBox="0 0 16 16">
                                     <path
@@ -69,7 +69,7 @@ const isUser = computed(() => hasRole('user'));
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                     <path
@@ -80,7 +80,7 @@ const isUser = computed(() => hasRole('user'));
                         <li
                             class="flex w-full items-center text-red-500 after:content-['Cancelled'] after:w-full after:h-1 after:border-b after:border-red-400 after:border-4 after:inline-block">
                             <a href="#"
-                                class="flex items-center justify-center w-10 h-10 bg-red-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-red-200 w-10 h-10 bg-red-100 rounded-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-x-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
