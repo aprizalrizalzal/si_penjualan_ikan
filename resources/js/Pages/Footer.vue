@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
 const currentYear = computed(() => {
     return new Date().getFullYear();

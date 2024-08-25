@@ -9,7 +9,6 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Product from '../Products/Detail/Product.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import CartPlus from '@/Components/Icons/CartPlus.vue';
-import CardHeading from '@/Components/Icons/CardHeading.vue';
 
 const props = defineProps({
     products: Array,
