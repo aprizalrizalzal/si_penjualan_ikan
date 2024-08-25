@@ -34,11 +34,17 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $userId = Auth::id();
 
+    // Inisialisasi variabel dengan nilai default
+    $products = [];
+    $users = [];
+    $orders = [];
+    $payments = [];
+
     if (Auth::user()->hasRole('admin')) {
         // Admin dapat melihat semua pembayaran
-        $productsCount = Product::count();
-        $usersCount = User::count();
-        $ordersCount = Order::count();
+        $products = Product::get();
+        $users = User::get();
+        $orders = Order::get();
         $payments = Payment::with('order', 'order.user')->get();
     } else {
         // User hanya dapat melihat pembayaran mereka sendiri
@@ -46,10 +52,11 @@ Route::get('/dashboard', function () {
             $query->where('user_id', $userId);
         })->with('order', 'order.user')->get();
     }
+
     return Inertia::render('Dashboard', [
-        'productsCount' => $productsCount,
-        'usersCount' => $usersCount,
-        'ordersCount' => $ordersCount,
+        'products' => $products,
+        'users' => $users,
+        'orders' => $orders,
         'payments' => $payments,
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

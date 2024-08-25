@@ -1,7 +1,8 @@
 <script setup>
 import CardButton from '@/Components/CardButton.vue';
+import DateTimePicker from '@/Components/DateTimePicker.vue';
+import ArrowClockwise from '@/Components/Icons/ArrowClockwise.vue';
 import BoxSeam from '@/Components/Icons/BoxSeam.vue';
-import Chart from '@/Components/Icons/Chart.vue';
 import CreditCard from '@/Components/Icons/CreditCard.vue';
 import Inbox from '@/Components/Icons/Inbox.vue';
 import People from '@/Components/Icons/People.vue';
@@ -12,9 +13,9 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps({
-    productsCount: Number,
-    usersCount: Number,
-    ordersCount: Number,
+    products: Number,
+    users: Number,
+    orders: Number,
     payments: Array,
 })
 
@@ -45,7 +46,7 @@ const start_date_line_chart = ref('');
 const end_date_line_chart = ref('');
 
 const defaultStartDate = new Date();
-defaultStartDate.setDate(defaultStartDate.getDate() - 30);
+defaultStartDate.setDate(defaultStartDate.getDate() - 7);
 const defaultEndDate = new Date();
 
 const datePickerKeys = ref({
@@ -82,10 +83,17 @@ const computeFilteredDateLineChart = () => {
     if (start_date_line_chart.value && end_date_line_chart.value) {
         // Filter untuk semua entitas
         filteredDataLineChart = {
+            payments: props.payments.filter(payment => {
+                const createdDate = new Date(payment.created_at);
+                const start = new Date(start_date_line_chart.value);
+                const end = new Date(end_date_line_chart.value);
+                return createdDate >= start && createdDate <= end;
+            }),
         };
     } else {
         // Jika tidak ada rentang tanggal yang dipilih, gunakan semua data
         filteredDataLineChart = {
+            payments: props.payments,
         };
     }
 
@@ -94,6 +102,7 @@ const computeFilteredDateLineChart = () => {
 
 const updateDataCharts = () => {
     if (isAdmin.value) {
+        const filteredData = computeFilteredDateLineChart();
         const statusCounts = {
             check: 0,
             pending: 0,
@@ -103,7 +112,7 @@ const updateDataCharts = () => {
             cancelled: 0
         };
 
-        props.payments.forEach(payment => {
+        filteredData.payments.forEach(payment => {
             if (statusCounts.hasOwnProperty(payment.status)) {
                 statusCounts[payment.status]++;
             }
@@ -177,7 +186,7 @@ const totalAmount = computed(() => {
                                 </template>
                                 <template #end>
                                     <div class="bg-blue-100 p-4 rounded-br-3xl">
-                                        <p class="text-md p-0.5 font-bold">{{ productsCount }}</p>
+                                        <p class="text-md p-0.5 font-bold">{{ products.length }}</p>
                                     </div>
                                 </template>
                             </CardButton>
@@ -190,7 +199,7 @@ const totalAmount = computed(() => {
                                 </template>
                                 <template #end>
                                     <div class="bg-blue-100 p-4 rounded-br-3xl">
-                                        <p class="text-md p-0.5 font-bold">{{ usersCount }}</p>
+                                        <p class="text-md p-0.5 font-bold">{{ users.length }}</p>
                                     </div>
                                 </template>
                             </CardButton>
@@ -203,7 +212,7 @@ const totalAmount = computed(() => {
                                 </template>
                                 <template #end>
                                     <div class="bg-blue-100 p-4 rounded-br-3xl">
-                                        <p class="text-md p-0.5 font-bold">{{ ordersCount }}</p>
+                                        <p class="text-md p-0.5 font-bold">{{ orders.length }}</p>
                                     </div>
                                 </template>
                             </CardButton>
@@ -223,23 +232,32 @@ const totalAmount = computed(() => {
                         </div>
                         <hr>
                         <div class="flex flex-col items-center sm:justify-start justify-center gap-4 mx-2">
-                            <div class="flex justify-start items-center gap-4">
-                                <PrimaryButton @click="resetDateLineChartFilters">Reset
-                                </PrimaryButton>
+                            <div class="flex flex-col items-center gap-2 me-auto">
+                                <div class="flex items-center gap-2 bg-white">
+                                    <DateTimePicker :key="datePickerKeys.startDate" id="start_date_line_chart"
+                                        label="Tanggal awal" v-model="start_date_line_chart" />
+                                    <DateTimePicker :key="datePickerKeys.endDate" id="end_date_line_chart"
+                                        label="Tanggal akhir" v-model="end_date_line_chart" />
+                                    <PrimaryButton @click="resetDateLineChartFilters"
+                                        class="mt-auto gap-2 shadow-none py-3 capitalize">
+                                        <ArrowClockwise width="16" height="16" /> Atur Ulang
+                                    </PrimaryButton>
+                                </div>
                             </div>
                             <LineChart :lableCharts="lableCharts" :dataCharts="dataCharts" />
                         </div>
                     </div>
                 </div>
-                <div v-if="isUser" class="bg-white overflow-hidden hover:shadow-sm sm:rounded-lg py-6">
-                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-8">
+                <div v-if="isUser" class="bg-white overflow-hidden sm:rounded-lg py-6">
+                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-6">
                         <li
-                            class="flex w-full items-center text-blue-500 after:content-['Check'] after:w-full after:h-1 after:border-b after:border-blue-50 after:border-4 after:inline-block ">
-                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
-                                statusCounts.check }}
+                            class="flex w-full text-xs items-center text-blue-500 after:content-['Check'] after:w-full after:h-1 after:border-b after:border-blue-50 after:border-4 after:inline-block ">
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">
+                                {{
+                                    statusCounts.check }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'check'"
+                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -249,12 +267,12 @@ const totalAmount = computed(() => {
                             </a>
                         </li>
                         <li
-                            class="flex w-full items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                            class="flex w-full text-xs items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
                                 statusCounts.pending }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'pending'"
+                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-hourglass" viewBox="0 0 16 16">
                                     <path
@@ -263,22 +281,22 @@ const totalAmount = computed(() => {
                             </a>
                         </li>
                         <li
-                            class="flex w-full items-center text-blue-500 after:content-['Paid'] after:w-full after:h-1 after:border-b after:border-blue-200 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                            class="flex w-full text-xs items-center text-blue-500 after:content-['Paid'] after:w-full after:h-1 after:border-b after:border-blue-200 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
                                 statusCounts.paid }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'paid'"
+                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <CreditCard />
                             </a>
                         </li>
                         <li
-                            class="flex w-full items-center text-blue-500 after:content-['Shipped'] after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                            class="flex w-full text-xs items-center text-blue-500 after:content-['Shipped'] after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
                                 statusCounts.shipped }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'shipped'"
+                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-truck" viewBox="0 0 16 16">
                                     <path
@@ -287,13 +305,13 @@ const totalAmount = computed(() => {
                             </a>
                         </li>
                         <li
-                            class="flex w-full items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                            class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
                                 statusCounts.completed
-                            }}
+                                }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'completed'"
+                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                     <path
@@ -302,12 +320,12 @@ const totalAmount = computed(() => {
                             </a>
                         </li>
                         <li
-                            class="flex w-full items-center text-red-500 after:content-['Cancelled'] after:w-full after:h-1 after:border-b after:border-red-400 after:border-4 after:inline-block">
-                            <div class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                            class="flex w-full text-xs items-center text-red-500 after:content-['Cancelled'] after:w-full after:h-1 after:border-b after:border-red-400 after:border-4 after:inline-block">
+                            <div class="bg-red-100 text-red-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
                                 statusCounts.cancelled }}
                             </div>
-                            <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-red-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
+                            <a href="#" @click="selectedStatus = 'cancelled'"
+                                class="flex items-center justify-center w-10 h-10 bg-red-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-x-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
