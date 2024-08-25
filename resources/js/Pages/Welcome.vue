@@ -7,6 +7,14 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import Footer from './Footer.vue';
 import Banners from './Welcome/Banners.vue';
 import Products from './Welcome/Products.vue';
+import CartPlus from '@/Components/Icons/CartPlus.vue';
+
+const { auth } = usePage().props;
+const roles = ref(auth.roles);
+const hasRole = (role) => roles.value.includes(role);
+
+const isAdmin = computed(() => hasRole('admin'));
+const isUser = computed(() => hasRole('user'));
 
 const props = defineProps({
     banners: Array,
@@ -62,6 +70,10 @@ onUnmounted(() => {
                             </div>
 
                             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                                <Link class="shadow-sm rounded-full hover:bg-blue-100 p-2"
+                                    v-if="$page.props.auth.user && isUser" :href="route('show.carts')">
+                                <CartPlus class="text-blue-500" width="16" height="16" />
+                                </Link>
                                 <div class="ms-3 relative">
                                     <Link v-if="$page.props.auth.user" :href="route('dashboard')"
                                         class="rounded-md px-3 py-2 text-sm text-gray-500 ring-1 ring-transparent transition hover:text-gray-700 focus:outline-none focus-visible:ring-[#FF2D20]">
@@ -107,6 +119,10 @@ onUnmounted(() => {
                     <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                         class="sm:hidden">
                         <div v-if="canLogin" class="pt-2 pb-3 space-y-1">
+                            <ResponsiveNavLink v-if="$page.props.auth.user && isUser" :href="route('show.carts')"
+                                :active="route().current('show.carts')">
+                                Keranjang
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink v-if="$page.props.auth.user" :href="route('dashboard')"
                                 :active="route().current('dashboard')">
                                 Dashboard

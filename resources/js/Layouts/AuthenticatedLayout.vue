@@ -40,7 +40,7 @@ onUnmounted(() => {
     <div>
         <div class="min-h-screen bg-white">
             <nav :class="[
-                'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 z-50',
+                'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 z-0',
                 { 'shadow-sm': hasScrolled },
             ]">
                 <!-- Primary Navigation Menu -->
@@ -74,10 +74,12 @@ onUnmounted(() => {
                                 <Link :href="route('welcome')">
                                 <ApplicationLogo class="w-16 h-auto" />
                                 </Link>
+                                <Link :href="route('welcome')">
                                 <h1 class="px-4 text-lg text-gray-800 truncate">
                                     <span class="block sm:hidden">SIPI Desa Soro</span>
                                     <span class="hidden sm:block">Sistem Informasi Penjualan Ikan (Desa Soro)</span>
                                 </h1>
+                                </Link>
                             </div>
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -168,7 +170,7 @@ onUnmounted(() => {
             </header>
             <!-- drawer admin component -->
             <div v-if="isAdmin" id="drawer-navigation-admin"
-                class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
+                class="fixed top-0 left-0 z-50 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
                     SIPI Desa Soro - Admin
@@ -259,7 +261,7 @@ onUnmounted(() => {
 
             <!-- drawer user component -->
             <div v-if="isUser" id="drawer-navigation-user"
-                class="fixed top-0 left-0 z-40 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
+                class="fixed top-0 left-0 z-50 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
                     SIPI Desa Soro - Pembeli
