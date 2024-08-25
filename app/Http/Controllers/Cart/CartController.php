@@ -122,8 +122,25 @@ class CartController extends Controller
         }
 
         $totalAmount = 0;
+        $errors = [];
 
-        // Buat pesanan baru
+        // Cek stok untuk setiap produk dalam keranjang
+        foreach ($carts as $cart) {
+            $product = Product::findOrFail($cart->product_id);
+
+            // Cek apakah kuantitas lebih besar dari stok
+            if ($cart->quantity > $product->stock) {
+                // Tambahkan pesan error untuk produk ini
+                $errors[] = "Stok untuk produk {$product->name} hanya tersisa {$product->stock}. Anda mencoba memesan {$cart->quantity}.";
+            }
+        }
+
+        // Jika ada error, kembalikan dengan pesan error yang dikumpulkan
+        if (count($errors) > 0) {
+            return back()->withErrors(['messages' => $errors]);
+        }
+
+        // Jika tidak ada error, buat pesanan baru
         $order = Order::create([
             'order_code' => Str::upper(Str::random(8)),
             'user_id' => $userId,
@@ -134,6 +151,7 @@ class CartController extends Controller
         // Pindahkan item dari keranjang ke order
         foreach ($carts as $cart) {
             $product = Product::findOrFail($cart->product_id);
+
             $orderItemTotal = $product->price * $cart->quantity;
 
             OrderItem::create([
@@ -142,6 +160,9 @@ class CartController extends Controller
                 'quantity' => $cart->quantity,
                 'price' => $product->price,
             ]);
+
+            // Kurangi stok produk
+            $product->update(['stock' => $product->stock - $cart->quantity]);
 
             $totalAmount += $orderItemTotal;
         }

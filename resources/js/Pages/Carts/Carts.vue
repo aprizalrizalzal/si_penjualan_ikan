@@ -17,6 +17,7 @@ import Inbox from '@/Components/Icons/Inbox.vue';
 
 const props = defineProps({
     carts: Array,
+    errors: Object,
 });
 
 const form = useForm({
@@ -131,6 +132,7 @@ const goToWelcome = () => {
 
 const closeModal = () => {
     showingModalQuantityUpdate.value = false;
+    confirmingCartOrder.value = false;
     confirmingCartDeletion.value = false;
 };
 </script>
@@ -289,6 +291,7 @@ const closeModal = () => {
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produk dipesan, semua produk akan diteruskan ke pesanan.
                         </p>
+                        <p v-if="props.errors" class="mt-2 text-sm text-red-900">{{ props.errors.messages }}</p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
                             <PrimaryButton class="ms-3" @click="cartOrder">Pesan</PrimaryButton>

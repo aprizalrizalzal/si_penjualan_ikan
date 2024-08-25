@@ -152,7 +152,8 @@ const storeCart = () => {
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 my-2 text-sm font-bold text-blue-900">
         <div v-for="product in paginatedProducts" :key="product.id">
-            <CardView :category="product.category.name" :name="product.name" :price="$formatCurrency(product.price)">
+            <CardView :category="product.category.name" :name="product.name" :stock="product.stock"
+                :price="$formatCurrency(product.price)">
                 <template #img>
                     <div v-if="getRandomImage(product)">
                         <img :src="getRandomImage(product)" :alt="product.name"
