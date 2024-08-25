@@ -119,8 +119,7 @@ onUnmounted(() => {
                     <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                         class="sm:hidden">
                         <div v-if="canLogin" class="pt-2 pb-3 space-y-1">
-                            <ResponsiveNavLink v-if="$page.props.auth.user && isUser" :href="route('show.carts')"
-                                :active="route().current('show.carts')">
+                            <ResponsiveNavLink v-if="$page.props.auth.user && isUser" :href="route('show.carts')">
                                 Keranjang
                             </ResponsiveNavLink>
                             <ResponsiveNavLink v-if="$page.props.auth.user" :href="route('dashboard')"
@@ -149,7 +148,7 @@ onUnmounted(() => {
                             <Banners :banners="props.banners" />
                         </div>
 
-                        <div class="animate-fade-up">
+                        <div class="animate-fade-up mt-4">
                             <Products :products="props.products" :canLogin="props.canLogin"
                                 :canRegister="props.canRegister" />
                         </div>
