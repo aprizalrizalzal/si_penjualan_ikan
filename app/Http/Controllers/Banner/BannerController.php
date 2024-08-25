@@ -25,7 +25,7 @@ class BannerController extends Controller
             'image' => 'storage/' . $path,
         ]);
 
-        return redirect()->route('welcome');
+        return redirect()->route('show.settings');
     }
 
     public function destroy(Request $request)
@@ -41,6 +41,6 @@ class BannerController extends Controller
 
         $banner->delete();
 
-        return redirect()->route('welcome');
+        return redirect()->route('show.settings');
     }
 }

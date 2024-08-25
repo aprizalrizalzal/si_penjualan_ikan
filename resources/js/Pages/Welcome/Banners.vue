@@ -81,7 +81,7 @@ const isPrevDisabled = computed(() => (movingForward.value && currentIndex.value
     <div v-if="banners.length">
         <div id="default-banner" class="relative w-full" data-banner="slide">
             <div class="h-auto overflow-hidden rounded md:h-auto">
-                <div id="banner-wrapper" class="banner-wrapper flex">
+                <div id="banner-wrapper" class="banner-wrapper">
                     <div v-for="(banner, index) in banners" :key="banner.id" class="banner-slide">
                         <img :src="banner.image" :alt="banner.alt">
                     </div>

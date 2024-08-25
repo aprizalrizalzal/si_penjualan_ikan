@@ -11,6 +11,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Role\RoleController;
+use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\User\UserController;
 use App\Models\Banner\Banner;
 use App\Models\Product\Product;
@@ -32,8 +33,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    Route::post('/banner', [BannerController::class, 'store'])->name('store.banner');
-    Route::delete('/banner', [BannerController::class, 'destroy'])->name('destroy.banner');
+    Route::post('/banner/image', [BannerController::class, 'store'])->name('store.banner.image');
+    Route::delete('/banner/image', [BannerController::class, 'destroy'])->name('destroy.banner.image');
 
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');
     Route::post('/product', [ProductController::class, 'store'])->name('store.product');
@@ -53,6 +54,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/user/assign-role', [RoleController::class, 'assignRole'])->name('assign.roles');
     Route::delete('/user/remove-role', [RoleController::class, 'removeRole'])->name('remove.role');
+
+    Route::get('/settings', [SettingController::class, 'show'])->name('show.settings');
 });
 
 Route::middleware('auth')->group(function () {

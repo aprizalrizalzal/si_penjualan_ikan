@@ -6,11 +6,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-    customer: Object,
+    banner: Object,
 });
 
 const form = useForm({
     image: null,
+    alt: new Date().toLocaleDateString(),
 });
 
 const previewUrl = ref(null);
@@ -24,15 +25,12 @@ const handleFileChange = (event) => {
 };
 
 const submitForm = () => {
-    form.post(route('store.customer.image', {
-        customer_id: props.customer.id,
-        alt: props.customer.phone,
-    }), {
+    form.post(route('store.banner.image'), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset('image');
             previewUrl.value = null;
-            emit('addCustomerImage');
+            emit('addBannerImage');
         },
         onError: (errors) => {
             if (errors.image) {
@@ -45,7 +43,7 @@ const submitForm = () => {
     });
 };
 
-const emit = defineEmits(['addCustomerImage']);
+const emit = defineEmits(['addBannerImage']);
 </script>
 
 <template>

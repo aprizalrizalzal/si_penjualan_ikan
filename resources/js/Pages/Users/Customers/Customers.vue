@@ -20,8 +20,8 @@ const showModalAddCustomerImages = (customer) => {
     showingModalAddCustomerImages.value = true;
 };
 
-const confirmCustomerImageDeletion = (CustomerImage) => {
-    selectedCustomerImage.value = CustomerImage;
+const confirmCustomerImageDeletion = (customerImage) => {
+    selectedCustomerImage.value = customerImage;
     confirmingCustomerImageDeletion.value = true;
 };
 

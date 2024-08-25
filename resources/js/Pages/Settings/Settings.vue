@@ -1,30 +1,78 @@
 <script setup>
-import { ref } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import Images from './Banners/Images.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PlusCircle from '@/Components/Icons/PlusCircle.vue';
+import Trash3 from '@/Components/Icons/Trash3.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
-    carousels: Array,
+    banners: Array,
 });
 
-const showModalAddCarousel = ref(false);
+const currentPage = ref(1);
+const itemsPerPage = ref(4);
 
-const showingModalAddCarouselSuccessfully = ref(false);
+const paginatedBanners = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return props.banners.slice(start, end);
+});
 
-const showModalAddCarouselSuccessfully = () => {
-    showModalAddCarousel.value = false;
-    showingModalAddCarouselSuccessfully.value = true;
+const totalPages = computed(() => {
+    return Math.ceil(props.banners.length / itemsPerPage.value);
+});
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+    }
 };
 
-const closeModalAddCarouselSuccessfully = () => {
-    showingModalAddCarouselSuccessfully.value = false;
+const previousPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+};
+
+const showingModalAddBannerImage = ref(false);
+const confirmingBannerImageDeletion = ref(false);
+const selectedBanner = ref(false);
+
+const showModalAddBanner = (banner) => {
+    selectedBanner.value = banner;
+    showingModalAddBannerImage.value = true;
+};
+
+const confirmBannerImageDeletion = (banner) => {
+    selectedBanner.value = banner;
+    confirmingBannerImageDeletion.value = true;
+};
+
+const deleteBannerImage = () => {
+    router.delete(route('destroy.banner.image', { id: selectedBanner.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors) {
+                closeModal();
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
 };
 
 const closeModal = () => {
-    showModalAddCarousel.value = false;
+    showingModalAddBannerImage.value = false;
+    confirmingBannerImageDeletion.value = false;
 };
 
 </script>
@@ -37,48 +85,115 @@ const closeModal = () => {
         <template #header>
             <div class="flex items-center ms-2">
 
-                <h2 class="font-bold text-green-700 text-lg leading-4 flex-none px-2 py-4">Setting</h2>
+                <h2 class="font-bold text-green-700 text-lg leading-4 flex-none px-2 py-4">Pengaturan</h2>
             </div>
         </template>
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded">
-                    <h2 class="font-bold mb-4 text-green-700 text-lg mb-4">Carousels</h2>
-                    <!-- <CarouselTable :carousels="props.carousels" /> -->
-                    <div class="flex flex-col my-2 items-start">
-                        <SecondaryButton @click="showModalAddCarousel = true" class="py-3 w-full">Add Carousel
+                    <div
+                        class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
+                        <div class="flex items-center gap-2 me-auto">
+                            <PrimaryButton @click="showModalAddBanner" class="gap-2 shadow-none py-2.5 capitalize">
+                                <PlusCircle width="16" height="16" />Banner
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto sm:rounded-md pb-4">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-blue-100">
+                                <tr>
+                                    <th scope="col" class="px-3 py-3 truncate">
+                                        No.
+                                    </th>
+                                    <th scope="col" class="px-3 py-3 truncate">
+                                        Gambar
+                                    </th>
+                                    <th scope="col" class="px-3 py-3 truncate">
+                                        Alt
+                                    </th>
+                                    <th scope="col" class="px-2 py-3 text-center truncate">
+                                        Aksi
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(banner, index) in paginatedBanners" :key="banner.id"
+                                    class="bg-white border-b hover:bg-blue-100">
+                                    <td class="w-4 p-4 text-center"> {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
+                                    </td>
+                                    <td class="px-3 py-3 truncate max-w-xs">
+                                        <img :src="banner.image" :alt="banner.alt"
+                                            class="h-16 w-32 object-cover rounded " style="max-width: 128px;" />
+                                    </td>
+                                    <td class="px-3 py-3 truncate max-w-xs">
+                                        <div class="font-normal text-gray-500">{{ banner.alt }}</div>
+                                    </td>
+                                    <td class="px-3 py-3 truncate">
+                                        <!-- Modal toggle Hapus-->
+                                        <a href="#" type="button" @click="confirmBannerImageDeletion(banner)"
+                                            class="flex gap-2 items-center justify-center font-normal px-2 text-red-600 hover:underline">
+                                            <Trash3 width="16" height="16" />Hapus
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex justify-center gap-4 items-center p-2">
+                        <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                            </svg>
+                        </SecondaryButton>
+                        <span>{{ currentPage }} / {{ totalPages }}</span>
+                        <SecondaryButton @click="nextPage" :disabled="currentPage === totalPages">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                            </svg>
                         </SecondaryButton>
                     </div>
                 </div>
                 <hr>
             </div>
         </div>
+        <Modal :show="showingModalAddBannerImage">
+            <div class="p-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Tambah Banner
+                    </h2>
+                    <DangerButton @click="closeModal">X</DangerButton>
+                </div>
+                <Images :banner="banners" @addBannerImage="closeModal" />
+            </div>
+        </Modal>
+
+        <Modal :show="confirmingBannerImageDeletion">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Apakah Anda yakin ingin menghapus banner?
+                </h2>
+                <p class="mt-1 text-sm text-gray-700">
+                    Setelah banner dihapus,
+                    semua
+                    sumber daya
+                    dan
+                    datanya
+                    akan dihapus secara permanen.
+                </p>
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                    <DangerButton @click="deleteBannerImage" class="ms-3">
+                        Hapus
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 
-    <Modal :show="showModalAddCarousel">
-        <div class="m-6">
-            <div class="flex justify-between items-center ps-6 ms-6 text-green-900">
-                <span class="font-bold text-center w-full">Add Carousel</span>
-                <DangerButton @click="closeModal">X</DangerButton>
-            </div>
-            <hr class="mt-4 mb-2">
-            <!-- <CarouselForm @addCarousel="showModalAddCarouselSuccessfully" /> -->
-        </div>
-    </Modal>
-
-    <Modal maxWidth="xl" :show="showingModalAddCarouselSuccessfully">
-        <div class="m-6">
-            <div class="flex justify-between items-center ps-6 ms-6 text-green-900">
-                <span class="font-bold text-center w-full">Add Carousel</span>
-                <DangerButton @click="closeModalAddCarouselSuccessfully">X</DangerButton>
-            </div>
-            <hr class="mt-4 mb-2">
-            <p class="my-4 text-sm text-green-700">
-                Carousel Add Successful!
-            </p>
-            <div class="mt-2 flex">
-                <PrimaryButton @click="closeModalAddCarouselSuccessfully">Ok</PrimaryButton>
-            </div>
-        </div>
-    </Modal>
 </template>

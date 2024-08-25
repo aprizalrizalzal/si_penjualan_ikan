@@ -37,7 +37,7 @@ const props = defineProps({
         required: true,
     },
     stock: {
-        type: String,
+        type: Number,
         required: true,
     },
     price: {
