@@ -227,11 +227,11 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
                                 <td class="px-3 py-3 truncate ">
                                     <div class="flex items-center">
-                                        <div v-for="(paymentImages) in payment.payment_images" :key="paymentImages.id"
+                                        <div v-for="(paymentImage) in payment.payment_images" :key="paymentImage.id"
                                             class="relative me-2">
-                                            <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
+                                            <img :src="`${paymentImage.image}`" :alt="paymentImage.alt"
                                                 class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
-                                            <botton @click="confirmPaymentImageDeletion(paymentImages)"
+                                            <botton @click="confirmPaymentImageDeletion(paymentImage)"
                                                 class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
                                                 <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
                                             </botton>
@@ -288,6 +288,11 @@ const closeModal = () => {
                         </tfoot>
                     </table>
                 </div>
+                <p class="px-4 text-xs font-normal text-gray-900">Jika gambar terlihat terlalu
+                    kecil,
+                    klik kanan pada gambar dan pilih 'Buka gambar di tab
+                    baru'
+                    untuk melihatnya dalam ukuran penuh.</p>
                 <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -403,7 +408,7 @@ const closeModal = () => {
                 </Modal>
 
                 <!-- Detail payment item modal -->
-                <Modal maxWidth="4xl" :show="showingModalPayment">
+                <Modal :show="showingModalPayment">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
                             Detail Pesanan <strong>{{ selectedPayment.order.user.name }}</strong>
@@ -434,22 +439,6 @@ const closeModal = () => {
                                     pembayaran Anda untuk mempercepat proses verifikasi.</div>
                             </tfoot>
                         </table>
-                        <div v-if="selectedPayment.payment_images.length > 0" class="mt-2">
-                            <p class="text-md text-center font-medium text-gray-900 mb-2">Bukti Pembayaran</p>
-                            <div class="flex flex-col sm:flex-row gap-4 m-auto">
-                                <div v-for="(paymentImages) in selectedPayment.payment_images" :key="paymentImages.id"
-                                    class="m-auto">
-                                    <img :src="`${paymentImages.image}`" :alt="paymentImages.alt"
-                                        class="h-64 w-128 m-auto object-cover rounded " style="max-width: 1080px;" />
-                                </div>
-                            </div>
-                            <p class="text-md text-center font-medium text-gray-900 mt-2">Jika gambar terlihat terlalu
-                                kecil,
-                                klik kanan pada gambar dan pilih 'Buka gambar di tab
-                                baru'
-                                untuk melihatnya dalam ukuran penuh.</p>
-                        </div>
-
                         <div class="mt-6 flex justify-end">
                             <PrimaryButton @click="closeModal">Ok</PrimaryButton>
                         </div>
