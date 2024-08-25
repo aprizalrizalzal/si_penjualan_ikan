@@ -37,38 +37,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Menambahkan pembayaran baru.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'required|exists:orders,id',
-            'amount' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
-            'status' => [
-                'required',
-                Rule::in(['check', 'pending', 'paid', 'shipped', 'completed', 'cancelled']),
-            ],
-        ]);
-
-        $userId = Auth::id();
-        $order = Order::where('user_id', $userId)
-            ->where('id', $request->order_id)
-            ->firstOrFail();
-
-        // Membuat pembayaran baru
-        Payment::create([
-            'payment_code' => Str::upper(Str::random(8)),
-            'order_id' => $order->id,
-            'amount' => $request->amount,
-            'payment_method' => $request->payment_method,
-            'status' => $request->status,
-        ]);
-
-        return redirect()->route('show.payments');
-    }
-
-    /**
      * Memperbarui pembayaran.
      */
     public function update(Request $request)

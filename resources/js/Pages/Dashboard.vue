@@ -1,9 +1,22 @@
 <script setup>
+import CardButton from '@/Components/CardButton.vue';
+import BoxSeam from '@/Components/Icons/BoxSeam.vue';
+import Chart from '@/Components/Icons/Chart.vue';
 import CreditCard from '@/Components/Icons/CreditCard.vue';
+import Inbox from '@/Components/Icons/Inbox.vue';
+import People from '@/Components/Icons/People.vue';
+import LineChart from '@/Components/LineChart.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { initFlowbite } from 'flowbite'
-import { Head, usePage } from '@inertiajs/vue3';
-import { computed, onMounted, ref } from 'vue';
+import { Head, router, usePage } from '@inertiajs/vue3';
+import { computed, ref, watchEffect } from 'vue';
+
+const props = defineProps({
+    productsCount: Number,
+    usersCount: Number,
+    ordersCount: Number,
+    payments: Array,
+})
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);
@@ -12,9 +25,133 @@ const hasRole = (role) => roles.value.includes(role);
 const isAdmin = computed(() => hasRole('admin'));
 const isUser = computed(() => hasRole('user'));
 
-onMounted(() => {
-    initFlowbite();
-})
+const goToProducts = () => {
+    router.visit(route('show.products'))
+}
+
+const goToUsers = () => {
+    router.visit(route('show.users'))
+}
+
+const goToOrders = () => {
+    router.visit(route('show.orders'))
+}
+
+const goToPayments = () => {
+    router.visit(route('show.payments'))
+}
+
+const start_date_line_chart = ref('');
+const end_date_line_chart = ref('');
+
+const defaultStartDate = new Date();
+defaultStartDate.setDate(defaultStartDate.getDate() - 30);
+const defaultEndDate = new Date();
+
+const datePickerKeys = ref({
+    startDate: 0,
+    endDate: 0,
+});
+
+const resetDateLineChartFilters = () => {
+    start_date_line_chart.value = defaultStartDate;
+    end_date_line_chart.value = defaultEndDate;
+
+    datePickerKeys.value.startDate += 1;
+    datePickerKeys.value.endDate += 1;
+};
+
+start_date_line_chart.value = defaultStartDate;
+end_date_line_chart.value = defaultEndDate;
+
+let filteredDateLineChart = ref({});
+let lableCharts = ref([
+    'Check',
+    'Pending',
+    'Paid',
+    'Shipped',
+    'Complate',
+    'Canncelled'
+]);
+
+let dataCharts = ref([]);
+
+const computeFilteredDateLineChart = () => {
+    let filteredDataLineChart = {};
+
+    if (start_date_line_chart.value && end_date_line_chart.value) {
+        // Filter untuk semua entitas
+        filteredDataLineChart = {
+        };
+    } else {
+        // Jika tidak ada rentang tanggal yang dipilih, gunakan semua data
+        filteredDataLineChart = {
+        };
+    }
+
+    return filteredDataLineChart;
+};
+
+const updateDataCharts = () => {
+    if (isAdmin.value) {
+        const statusCounts = {
+            check: 0,
+            pending: 0,
+            paid: 0,
+            shipped: 0,
+            completed: 0,
+            cancelled: 0
+        };
+
+        props.payments.forEach(payment => {
+            if (statusCounts.hasOwnProperty(payment.status)) {
+                statusCounts[payment.status]++;
+            }
+        });
+
+        dataCharts.value = Object.values(statusCounts);
+    } else {
+        dataCharts.value = [];
+    }
+};
+
+watchEffect(() => {
+    filteredDateLineChart.value = computeFilteredDateLineChart();
+    updateDataCharts();
+});
+
+// computed property untuk filter status
+const selectedStatus = ref('pending'); // Default status
+const filteredPayments = computed(() => {
+    return props.payments.filter(payment => payment.status === selectedStatus.value);
+});
+
+const statusCounts = computed(() => {
+    return props.payments.reduce((counts, payment) => {
+        if (counts.hasOwnProperty(payment.status)) {
+            counts[payment.status]++;
+        } else {
+            counts[payment.status] = 1;
+        }
+        return counts;
+    }, {
+        check: 0,
+        pending: 0,
+        paid: 0,
+        shipped: 0,
+        completed: 0,
+        cancelled: 0
+    });
+});
+
+const totalAmount = computed(() => {
+    return filteredPayments.value.reduce((total, payment) => {
+        const amount = parseFloat(payment.amount);
+        return total + (isNaN(amount) ? 0 : amount);
+    }, 0);
+});
+
+
 </script>
 
 <template>
@@ -26,159 +163,83 @@ onMounted(() => {
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-                <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-                    <div class="flex justify-between mb-5">
-                        <div class="grid gap-4 grid-cols-2">
-                            <div>
-                                <h5
-                                    class="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-                                    Clicks
-                                    <svg data-popover-target="clicks-info" data-popover-placement="bottom"
-                                        class="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path
-                                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                                    </svg>
-                                    <div data-popover id="clicks-info" role="tooltip"
-                                        class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                        <div class="p-3 space-y-2">
-                                            <h3 class="font-semibold text-gray-900 dark:text-white">Clicks growth -
-                                                Incremental
-                                            </h3>
-                                            <p>Report helps navigate cumulative growth of community activities. Ideally,
-                                                the
-                                                chart should have a growing trend, as stagnating chart signifies a
-                                                significant
-                                                decrease of community activity.</p>
-                                            <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
-                                            <p>For each date bucket, the all-time volume of activities is calculated.
-                                                This means
-                                                that activities in period n contain all activities up to period n, plus
-                                                the
-                                                activities generated by your community in period.</p>
-                                            <a href="#"
-                                                class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read
-                                                more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                                    <path stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                                                </svg></a>
-                                        </div>
-                                        <div data-popper-arrow></div>
+                <div v-if="isAdmin">
+                    <div class="flex flex-col gap-4 pb-4 ">
+                        <div class="grid grid-cols sm:grid-cols-4 mx-2 gap-4">
+                            <CardButton @click="goToProducts" title="Produk" description="Daftar Produk."
+                                class="mx-auto">
+                                <template #svg>
+                                    <div class="bg-blue-100 p-4 rounded-tl-3xl">
+                                        <BoxSeam width="24" height="24" />
                                     </div>
-                                </h5>
-                                <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">42,3k</p>
-                            </div>
-                            <div>
-                                <h5
-                                    class="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-                                    CPC
-                                    <svg data-popover-target="cpc-info" data-popover-placement="bottom"
-                                        class="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
-                                        <path
-                                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                                    </svg>
-                                    <div data-popover id="cpc-info" role="tooltip"
-                                        class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                                        <div class="p-3 space-y-2">
-                                            <h3 class="font-semibold text-gray-900 dark:text-white">CPC growth -
-                                                Incremental
-                                            </h3>
-                                            <p>Report helps navigate cumulative growth of community activities. Ideally,
-                                                the
-                                                chart should have a growing trend, as stagnating chart signifies a
-                                                significant
-                                                decrease of community activity.</p>
-                                            <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
-                                            <p>For each date bucket, the all-time volume of activities is calculated.
-                                                This means
-                                                that activities in period n contain all activities up to period n, plus
-                                                the
-                                                activities generated by your community in period.</p>
-                                            <a href="#"
-                                                class="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline">Read
-                                                more <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                                    <path stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                                                </svg></a>
-                                        </div>
-                                        <div data-popper-arrow></div>
+                                </template>
+                                <template #end>
+                                    <div class="bg-blue-100 p-4 rounded-br-3xl">
+                                        <p class="text-md p-0.5 font-bold">{{ productsCount }}</p>
                                     </div>
-                                </h5>
-                                <p class="text-gray-900 dark:text-white text-2xl leading-none font-bold">$5.40</p>
-                            </div>
+                                </template>
+                            </CardButton>
+                            <CardButton @click="goToUsers" title="Pelanggan" description="Daftar Pelanggan."
+                                class="mx-auto">
+                                <template #svg>
+                                    <div class="bg-blue-100 p-4 rounded-tl-3xl">
+                                        <People width="24" height="24" />
+                                    </div>
+                                </template>
+                                <template #end>
+                                    <div class="bg-blue-100 p-4 rounded-br-3xl">
+                                        <p class="text-md p-0.5 font-bold">{{ usersCount }}</p>
+                                    </div>
+                                </template>
+                            </CardButton>
+                            <CardButton @click="goToOrders" title="Pesanan" description="Daftar pesanan."
+                                class="mx-auto">
+                                <template #svg>
+                                    <div class="bg-blue-100 p-4 rounded-tl-3xl">
+                                        <Inbox width="24" height="24" />
+                                    </div>
+                                </template>
+                                <template #end>
+                                    <div class="bg-blue-100 p-4 rounded-br-3xl">
+                                        <p class="text-md p-0.5 font-bold">{{ ordersCount }}</p>
+                                    </div>
+                                </template>
+                            </CardButton>
+                            <CardButton @click="goToPayments" title="Pembayaran" description="Daftar pembayaran."
+                                class="mx-auto">
+                                <template #svg>
+                                    <div class="bg-blue-100 p-4 rounded-tl-3xl">
+                                        <CreditCard width="24" height="24" />
+                                    </div>
+                                </template>
+                                <template #end>
+                                    <div class="bg-blue-100 p-4 rounded-br-3xl">
+                                        <p class="text-md p-0.5 font-bold">{{ payments.length }}</p>
+                                    </div>
+                                </template>
+                            </CardButton>
                         </div>
-                        <div>
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="lastDaysdropdown"
-                                data-dropdown-placement="bottom" type="button"
-                                class="px-3 py-2 inline-flex items-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Last
-                                week <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 4 4 4-4" />
-                                </svg></button>
-                            <div id="lastDaysdropdown"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            7 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            30 days</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                            90 days</a>
-                                    </li>
-                                </ul>
+                        <hr>
+                        <div class="flex flex-col items-center sm:justify-start justify-center gap-4 mx-2">
+                            <div class="flex justify-start items-center gap-4">
+                                <PrimaryButton @click="resetDateLineChartFilters">Reset
+                                </PrimaryButton>
                             </div>
-                        </div>
-                    </div>
-                    <div id="line-chart"></div>
-                    <div
-                        class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
-                        <div class="pt-5">
-                            <a href="#"
-                                class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                <svg class="w-3.5 h-3.5 text-white me-2 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
-                                    <path
-                                        d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Zm-3 15H4.828a1 1 0 0 1 0-2h6.238a1 1 0 0 1 0 2Zm0-4H4.828a1 1 0 0 1 0-2h6.238a1 1 0 1 1 0 2Z" />
-                                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                                </svg>
-                                View full report
-                            </a>
+                            <LineChart :lableCharts="lableCharts" :dataCharts="dataCharts" />
                         </div>
                     </div>
                 </div>
-
                 <div v-if="isUser" class="bg-white overflow-hidden hover:shadow-sm sm:rounded-lg py-6">
                     <ol class="flex items-center w-full mb-4 sm:mb-5 py-8">
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Check'] after:w-full after:h-1 after:border-b after:border-blue-50 after:border-4 after:inline-block ">
+                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.check }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -189,8 +250,11 @@ onMounted(() => {
                         </li>
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.pending }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-hourglass" viewBox="0 0 16 16">
                                     <path
@@ -200,15 +264,21 @@ onMounted(() => {
                         </li>
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Paid'] after:w-full after:h-1 after:border-b after:border-blue-200 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.paid }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <CreditCard />
                             </a>
                         </li>
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Shipped'] after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.shipped }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-truck" viewBox="0 0 16 16">
                                     <path
@@ -218,8 +288,12 @@ onMounted(() => {
                         </li>
                         <li
                             class="flex w-full items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
+                            <div class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.completed
+                            }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-blue-200 w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-blue-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                     <path
@@ -229,8 +303,11 @@ onMounted(() => {
                         </li>
                         <li
                             class="flex w-full items-center text-red-500 after:content-['Cancelled'] after:w-full after:h-1 after:border-b after:border-red-400 after:border-4 after:inline-block">
+                            <div class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-s-full">{{
+                                statusCounts.cancelled }}
+                            </div>
                             <a href="#"
-                                class="flex items-center justify-center hover:w-16 hover:h-16 hover:bg-red-200 w-10 h-10 bg-red-100 rounded-full lg:h-12 lg:w-12 shrink-0">
+                                class="flex items-center justify-center hover:w-16 hover:h-16 w-10 h-10 bg-red-100 rounded-e-full lg:h-12 lg:w-12 shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                     class="bi bi-x-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -241,11 +318,55 @@ onMounted(() => {
                         </li>
                     </ol>
                     <div class="py-4">
-                        <h3 class="mb-4 text-lg font-medium leading-none text-gray-900">Details
-                        </h3>
-                        <p>
-                            Pesanan sedang dalam pengecekan awal sebelum diproses lebih lanjut.
-                        </p>
+                        <div class="overflow-x-auto sm:rounded-md pb-4">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-blue-100">
+                                    <tr>
+                                        <th scope="col" class="px-3 py-3 truncate">No.</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Status</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Metode Pembayaran</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(payment, index) in filteredPayments" :key="payment.id"
+                                        class="bg-white border-b hover:bg-blue-100">
+                                        <td class="w-4 p-4 text-center">{{ index + 1
+                                            }}.</td>
+                                        <td class="px-3 py-3 truncate">{{ payment.payment_code }}</td>
+                                        <td class="px-3 py-3 truncate capitalize">
+                                            <a v-if="isAdmin" href="#" type="button"
+                                                @click="showModalStatusUpdate(payment)"
+                                                class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
+                                                {{ payment.status }}
+                                                <PencilSquare width="16" height="16" />
+                                            </a>
+                                            <p v-else
+                                                class="flex gap-2 items-center font-normal text-blue-600 hover:font-bold">
+                                                {{ payment.status }}
+                                            </p>
+
+                                        </td>
+                                        <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
+                                        <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
+                                    <tr>
+                                        <td class="w-4 p-4 text-center truncate">
+                                            #
+                                        </td>
+                                        <td class="px-3 py-3 font-bold truncate" colspan="3">
+                                            Total
+                                        </td>
+                                        <td class="px-3 py-3 font-bold truncate" colspan="3">
+                                            {{ $formatCurrency(totalAmount) }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

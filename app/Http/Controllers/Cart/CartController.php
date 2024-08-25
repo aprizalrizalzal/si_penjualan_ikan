@@ -31,40 +31,6 @@ class CartController extends Controller
     }
 
     /**
-     * Menambahkan item ke keranjang.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        $userId = Auth::id();
-
-        // Check if the product already exists in the cart
-        $cart = Cart::where('user_id', $userId)
-            ->where('product_id', $request->product_id)
-            ->first();
-
-        if ($cart) {
-            // If product exists, update the quantity
-            $cart->update([
-                'quantity' => $cart->quantity + $request->quantity,
-            ]);
-        } else {
-            // If product doesn't exist, create a new cart entry
-            Cart::create([
-                'user_id' => $userId,
-                'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
-            ]);
-        }
-
-        return redirect()->route('show.carts');
-    }
-
-    /**
      * Memperbarui item di keranjang.
      */
     public function update(Request $request)

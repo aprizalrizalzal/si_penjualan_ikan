@@ -14,7 +14,11 @@ use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\User\UserController;
 use App\Models\Banner\Banner;
+use App\Models\Order\Order;
+use App\Models\Payment\Payment;
 use App\Models\Product\Product;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,7 +32,26 @@ Route::get('/', function () {
 })->name('welcome');;
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $userId = Auth::id();
+
+    if (Auth::user()->hasRole('admin')) {
+        // Admin dapat melihat semua pembayaran
+        $productsCount = Product::count();
+        $usersCount = User::count();
+        $ordersCount = Order::count();
+        $payments = Payment::with('order', 'order.user')->get();
+    } else {
+        // User hanya dapat melihat pembayaran mereka sendiri
+        $payments = Payment::whereHas('order', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->with('order', 'order.user')->get();
+    }
+    return Inertia::render('Dashboard', [
+        'productsCount' => $productsCount,
+        'usersCount' => $usersCount,
+        'ordersCount' => $ordersCount,
+        'payments' => $payments,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -67,22 +90,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/customer/image', [CustomerImageController::class, 'destroy'])->name('destroy.customer.image');
 
     Route::post('/product/carts', [ProductController::class, 'store_cart'])->name('store.product.carts');
-    Route::post('/cart/orders', [CartController::class, 'store_order'])->name('store.cart.orders');
-    Route::post('/order/payments', [PaymentController::class, 'store_payment'])->name('store.order.payment');
 
     Route::get('/carts', [CartController::class, 'show'])->name('show.carts');
-    Route::post('/cart', [CartController::class, 'store'])->name('store.cart'); // ?
+    Route::post('/cart/orders', [CartController::class, 'store_order'])->name('store.cart.orders');
     Route::put('/cart', [CartController::class, 'update'])->name('update.cart');
     Route::delete('/cart', [CartController::class, 'destroy'])->name('destroy.cart');
 
     Route::get('/orders', [OrderController::class, 'show'])->name('show.orders');
-    Route::post('/order', [OrderController::class, 'store'])->name('store.order'); // ?
-    Route::put('/order', [OrderController::class, 'update'])->name('update.order'); // ?
+    Route::post('/order/payments', [PaymentController::class, 'store_payment'])->name('store.order.payment');
     Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
 
     Route::get('/payments', [PaymentController::class, 'show'])->name('show.payments');
-    Route::post('/payment', [PaymentController::class, 'store'])->name('store.payment'); // ?
-    Route::put('/payment', [PaymentController::class, 'update'])->name('update.payment'); // ?
+    Route::put('/payment', [PaymentController::class, 'update'])->name('update.payment');
     Route::delete('/payment', [PaymentController::class, 'destroy'])->name('destroy.payment');
 
     Route::post('/payment/image', [PaymentImageController::class, 'store'])->name('store.payment.image');
