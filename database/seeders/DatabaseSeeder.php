@@ -15,6 +15,8 @@ use Database\Seeders\Table\ProductImagesSeeder;
 use Database\Seeders\Table\ProductsSeeder;
 use Database\Seeders\Table\RolesSeeder;
 use Database\Seeders\Table\RoleUserSeeder;
+use Database\Seeders\Table\SellerImagesSeeder;
+use Database\Seeders\Table\SellersSeeder;
 use Database\Seeders\Table\UsersSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -41,6 +43,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             RoleUserSeeder::class,
             CategoriesSeeder::class,
+            SellersSeeder::class,
+            SellerImagesSeeder::class,
             ProductsSeeder::class,
             ProductImagesSeeder::class,
             CartsSeeder::class,

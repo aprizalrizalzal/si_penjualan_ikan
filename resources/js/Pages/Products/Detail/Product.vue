@@ -100,14 +100,28 @@ const closeModal = () => {
             <p class="text-lg font-medium text-gray-700">
                 {{ product.name }} <span class="text-gray-500">({{ product.category.name }})</span>
             </p>
-            <p class="text-gray-500 text-sm font-bold">
+            <p class="text-gray-500 text-sm">
                 <span>Berat: </span>{{ product.weight }} Kg
             </p>
-            <p class="text-gray-700 text-sm font-bold mt-2">
+            <p class="text-gray-700 text-sm mt-2">
                 <span>Stok: </span>{{ product.stock }}
             </p>
             <hr>
             <p class="text-gray-700 text-sm overflow-hidden" v-html="formatDescription(product.description)">
+            </p>
+            <hr>
+            <p class="text-lg font-medium text-gray-700 overflow-hidden">
+                {{ product.seller.name }}
+            </p>
+            <p class="text-gray-700 text-sm overflow-hidden">
+                {{ product.seller.email }}
+            </p>
+            <p class="text-gray-700 text-sm overflow-hidden mt-2">
+                {{ product.seller.phone }}
+            </p>
+            <hr>
+            <p class="text-gray-700 text-sm overflow-hidden">
+                {{ product.seller.address }}
             </p>
             <hr>
             <p class="inline-block py-2 font-bold text-gray-900">

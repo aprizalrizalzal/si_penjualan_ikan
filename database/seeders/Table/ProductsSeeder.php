@@ -15,6 +15,7 @@ class ProductsSeeder extends Seeder
     {
         $products = [
             [
+                'seller_id' => 1,
                 'name' => 'Ikan Tuna',
                 'description' => 'Ikan Tuna segar langsung dari laut. Berat rata-rata sekitar 40-60 kg, tetapi bisa mencapai hingga lebih dari 200 kg.',
                 'price' => 225000,
@@ -23,6 +24,7 @@ class ProductsSeeder extends Seeder
                 'category_id' => 1,
             ],
             [
+                'seller_id' => 2,
                 'name' => 'Ikan Lele',
                 'description' => 'Ikan Lele segar dari tambak. Berat rata-rata sekitar 1-5 kg.',
                 'price' => 30000,
@@ -31,6 +33,7 @@ class ProductsSeeder extends Seeder
                 'category_id' => 2,
             ],
             [
+                'seller_id' => 3,
                 'name' => 'Udang Lobster',
                 'description' => 'Lobster laut dengan ukuran besar. Berat rata-rata sekitar 0.5-2 kg.',
                 'price' => 300000,

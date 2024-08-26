@@ -3,8 +3,8 @@
 namespace App\Models\Product;
 
 use App\Models\Cart\Cart;
-use App\Models\Cart\CartItem;
 use App\Models\Order\OrderItem;
+use App\Models\Seller\Seller;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +13,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'seller_id',
         'name',
         'description',
         'price',
@@ -28,6 +29,15 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relasi dengan model OrderItem.
+     * Product miliki banyak OrderItem.
+     */
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
     }
 
     /**
@@ -54,14 +64,14 @@ class Product extends Model
      */
     public function orderItems()
     {
-        return $this->belongsTo(OrderItem::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     /**
-     * Scope untuk memfilter order berdasarkan status.
+     * Scope untuk memfilter order berdasarkan name.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $status
+     * @param  string  $name
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByName($query, $name)

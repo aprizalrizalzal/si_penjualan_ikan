@@ -7,6 +7,7 @@ use App\Models\Cart\Cart;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
+use App\Models\Seller\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -18,12 +19,14 @@ class ProductController extends Controller
     public function show()
     {
         // Mengambil semua produk dengan kategori terkait
-        $products = Product::with('category', 'productImages')->get();
+        $products = Product::with('category', 'seller', 'productImages')->get();
         $categories = Category::all();
+        $sellers = Seller::all();
 
         return Inertia::render('Products/Products', [
             'products' => $products,
-            'categories' => $categories
+            'categories' => $categories,
+            'sellers' => $sellers,
         ]);
     }
 
@@ -31,6 +34,7 @@ class ProductController extends Controller
     {
         // Validasi input
         $request->validate([
+            'seller_id' => 'required|exists:sellers,id',
             'name' => 'required|string|max:255|unique:' . Product::class,
             'description' => 'required|string',
             'price' => 'required|numeric',
@@ -41,6 +45,7 @@ class ProductController extends Controller
 
         // Membuat produk baru
         $product = Product::create([
+            'seller_id' => $request->seller_id,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
@@ -67,6 +72,7 @@ class ProductController extends Controller
         // Validasi input
         $request->validate([
             'id' => 'required|exists:products,id',
+            'seller_id' => 'required|exists:sellers,id',
             'name' => [
                 'required',
                 'string',
@@ -84,6 +90,7 @@ class ProductController extends Controller
 
         // Memperbarui produk
         $product->update([
+            'seller_id' => $request->seller_id,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
