@@ -19,10 +19,10 @@ class OrderController extends Controller
     {
         if (Auth::user()->hasRole('admin')) {
             // Admin melihat semua pesanan
-            $orders = Order::with('user', 'orderItems.product')->get();
+            $orders = Order::with('user', 'user.customer', 'orderItems.product')->get();
         } else {
             // User melihat pesanan mereka sendiri
-            $orders = Order::where('user_id', Auth::id())->with('user', 'orderItems.product')->get();
+            $orders = Order::where('user_id', Auth::id())->with('user', 'user.customer', 'orderItems.product')->get();
         }
 
         return Inertia::render('Orders/Orders', [

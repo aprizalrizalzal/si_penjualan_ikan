@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer\Customer;
+use App\Models\Role\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -51,6 +52,12 @@ class RegisteredUserController extends Controller
             'address' => $request->address,
             'phone' => $request->phone,
         ]);
+
+        // Tambahkan role "user" ke user yang baru dibuat
+        $role = Role::where('name', 'user')->first();
+        if ($role) {
+            $user->roles()->attach($role->id, ['created_at' => now(), 'updated_at' => now()]);
+        }
 
         try {
             // Send the email

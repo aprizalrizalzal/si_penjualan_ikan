@@ -35,6 +35,7 @@ const filteredOrdersSearch = computed(() => {
         return props.orders;
     }
     return props.orders.filter(order =>
+        order.user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         order.order_code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         order.status.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
@@ -175,6 +176,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
+                                <th scope="col" class="px-3 py-3 truncate">Pelanggan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
@@ -185,6 +187,12 @@ const closeModal = () => {
                             <tr v-for="(order, index) in paginatedOrders" :key="order.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
+                                <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <div class="text-base font-semibold">{{ order.user.name }}</div>
+                                        <div class="font-normal text-gray-500">{{ order.user.email }}</div>
+                                    </div>
+                                </th>
                                 <td class="px-3 py-3 truncate">{{ order.order_code }}</td>
                                 <td class="px-3 py-3 text-blue-600 truncate capitalize">{{ order.status }}</td>
                                 <td class="px-3 py-3 truncate">{{ $formatCurrency(order.total_amount) }}</td>
@@ -209,7 +217,7 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center truncate">
                                     #
                                 </td>
-                                <td class="px-3 py-3 font-bold truncate" colspan="2">
+                                <td class="px-3 py-3 font-bold truncate" colspan="3">
                                     Total
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="3">
@@ -274,8 +282,32 @@ const closeModal = () => {
                 <Modal :show="showingModalOrderItems">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail kode pesanan <strong>{{
-                                selectedOrder.order_code }}</strong>
+                            Detail Pesanan
+                        </h2>
+                        <table class="my-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                            <tbody>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Nama</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedOrder.user.name }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Email</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedOrder.user.email }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Telepon</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedOrder.user.customer.phone }}
+                                    </td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Alamat</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedOrder.user.customer.address
+                                        }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 class="py-2 text-sm font-medium text-gray-900">
+                            Kode <strong>{{ selectedOrder.order_code }}</strong>
                         </h2>
                         <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-blue-100">
@@ -347,10 +379,11 @@ const closeModal = () => {
                 <Modal :show="confirmingOrderPayment">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Konfirmasi Pesanan
+                            Konfirmasi Pembayaran
                         </h2>
                         <p class="my-1 text-sm text-gray-700">
-                            Setelah pesanan dibayar, status pesanan akan terupdate. Silahkan pilih metode pembayarannya.
+                            Silahkan pilih metode pembayaran yang ingin di gunakan.
+                            Setelah pembayaran terkonfirmasi, status pesanan dapat dilihat di dashboard.
                         </p>
                         <div>
                             <DropdownSelect id="payment_method" label="Metode Pembayaran" optionProperty="name"
@@ -376,9 +409,12 @@ const closeModal = () => {
                                     Dana)</span>
                             </li>
                         </ul>
+                        <p class="my-2 text-sm text-gray-700">
+
+                        </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <PrimaryButton class="ms-3" @click="storePayment">Pesan</PrimaryButton>
+                            <PrimaryButton class="ms-3" @click="storePayment">Ok</PrimaryButton>
                         </div>
                     </div>
                 </Modal>

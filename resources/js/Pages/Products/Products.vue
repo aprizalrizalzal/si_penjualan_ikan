@@ -239,6 +239,9 @@ const closeModal = () => {
                                     Harga
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
+                                    Stok
+                                </th>
+                                <th scope="col" class="px-3 py-3 truncate">
                                     Berat
                                 </th>
                                 <th scope="col" class="px-2 py-3 text-center truncate" colspan="3">
@@ -282,6 +285,9 @@ const closeModal = () => {
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
                                     <div class="font-normal text-gray-500">{{ $formatCurrency(product.price) }}</div>
+                                </td>
+                                <td class="px-3 py-3 truncate max-w-xs">
+                                    <div class="font-normal text-gray-500">{{ product.stock }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
                                     <div class="font-normal text-gray-500">{{ product.weight }} Kg</div>

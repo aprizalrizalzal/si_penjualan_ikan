@@ -80,7 +80,7 @@ onUnmounted(() => {
                                 <Link :href="route('welcome')">
                                 <h1 class="px-4 text-lg text-gray-800 truncate">
                                     <span class="block sm:hidden">SIPI Desa Soro</span>
-                                    <span class="hidden sm:block">Sistem Informasi Penjualan Ikan (Desa Soro)</span>
+                                    <span class="hidden sm:block">Pusat Ikan Desa Soro</span>
                                 </h1>
                                 </Link>
                             </div>
@@ -176,7 +176,7 @@ onUnmounted(() => {
                 class="fixed top-0 left-0 z-50 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
-                    SIPI Desa Soro - Admin
+                    Menu - Admin
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-admin" aria-controls="drawer-navigation-admin"
@@ -217,10 +217,6 @@ onUnmounted(() => {
                             <Inbox width="16" height="16" />
                             <span class="text-sm">Pesanan</span>
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')">
-                            <Chart widht="16" height="16" />
-                            <span class="text-sm">Laporan</span>
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.payments')"
                             :active="route().current('show.payments')">
                             <CreditCard width="16" height="16" />
@@ -256,7 +252,7 @@ onUnmounted(() => {
                 class="fixed top-0 left-0 z-50 h-screen py-7 overflow-y-auto transition-transform -translate-x-full bg-white w-64"
                 tabindex="-1" aria-labelledby="drawer-navigation-label">
                 <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 px-4 pb-7">
-                    SIPI Desa Soro - Pembeli
+                    Menu - Pembeli
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-user" aria-controls="drawer-navigation-user"

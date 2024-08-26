@@ -90,7 +90,7 @@ const isPrevDisabled = computed(() => (movingForward.value && currentIndex.value
             <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="text-center text-white p-4">
                     <h1 class="text-2xl font-bold">
-                        Selamat Datang di Sistem Informasi Penjualan Ikan Desa Soro
+                        Selamat Datang di Pusat Ikan Desa Soro
                     </h1>
                     <p class="mt-2 text-lg">
                         "Segar dari Laut, Menghidupi Desa"

@@ -43,14 +43,14 @@ Route::get('/dashboard', function () {
     if (Auth::user()->hasRole('admin')) {
         // Admin dapat melihat semua pembayaran
         $products = Product::get();
-        $users = User::get();
+        $users = User::with('roles')->get();
         $orders = Order::get();
-        $payments = Payment::with('order', 'order.user')->get();
+        $payments = Payment::with('order', 'order.orderItems', 'order.orderItems.product', 'order.user', 'order.user.customer')->get();
     } else {
         // User hanya dapat melihat pembayaran mereka sendiri
         $payments = Payment::whereHas('order', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->with('order', 'order.user')->get();
+        })->with('order', 'order.orderItems', 'order.orderItems.product', 'order.user', 'order.user.customer')->get();
     }
 
     return Inertia::render('Dashboard', [

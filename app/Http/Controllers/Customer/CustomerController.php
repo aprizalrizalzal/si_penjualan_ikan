@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer\Customer;
+use App\Models\Role\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -24,7 +25,7 @@ class CustomerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'email_verified_at' => Carbon::now(),
-            'password' => Hash::make('@amitech'),
+            'password' => Hash::make('password'),
         ]);
 
         Customer::create([
@@ -32,6 +33,12 @@ class CustomerController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
+
+        // Tambahkan role "user" ke user yang baru dibuat
+        $role = Role::where('name', 'user')->first();
+        if ($role) {
+            $user->roles()->attach($role->id, ['created_at' => now(), 'updated_at' => now()]);
+        }
 
         return redirect()->route('show.users');
     }

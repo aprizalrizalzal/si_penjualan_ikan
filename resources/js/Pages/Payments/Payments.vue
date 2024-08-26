@@ -14,6 +14,8 @@ import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
 import Images from './Images.vue';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);
@@ -181,6 +183,53 @@ const closeModal = () => {
     confirmingPaymentImageDeletion.value = false;
     confirmingPaymentDeletion.value = false;
 };
+
+const printContent = ref(null);
+
+const handlePrint = () => {
+    const pdf = new jsPDF({
+        format: 'a5',
+        orientation: 'landscape',
+    });
+
+    const printContentEl = printContent.value;
+
+    const logoImage = new Image();
+    logoImage.src = 'storage/images/header/logo-sipi.png'; // Ganti dengan path gambar logo Anda
+    pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
+
+    pdf.setFontSize(14);
+    pdf.text(`Pusat Ikan Desa Soro`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.setFontSize(10);
+    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
+
+    const rows = [];
+    const content = printContentEl.querySelectorAll('tbody tr');
+    content.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        const rowData = Array.from(cells).map(cell => cell.innerText);
+        rows.push(rowData);
+    });
+
+    pdf.autoTable({
+        body: rows,
+        startY: 38,
+        styles: { font: 'helvetica', fontSize: 10 },
+    });
+
+    const totalPages = pdf.internal.getNumberOfPages();
+    const timestamp = new Date().getTime();
+
+    pdf.setPage(totalPages);
+    pdf.setFontSize(6);
+    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+
+    const blob = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(blob);
+
+    const newTabPdf = window.open('', '_blank');
+    newTabPdf.location.href = pdfURL;
+};
 </script>
 
 <template>
@@ -203,7 +252,7 @@ const closeModal = () => {
                                 <path
                                     d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
                             </svg>
-                            SIPI Desa Soro
+                            Pusat Ikan Desa Soro
                         </SecondaryButton>
                     </div>
                     <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
@@ -213,6 +262,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
+                                <th scope="col" class="px-3 py-3 truncate">Pelanggan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Bukti Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
@@ -225,6 +275,12 @@ const closeModal = () => {
                             <tr v-for="(payment, index) in paginatedPayments" :key="payment.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}.</td>
+                                <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <div class="text-base font-semibold">{{ payment.order.user.name }}</div>
+                                        <div class="font-normal text-gray-500">{{ payment.order.user.email }}</div>
+                                    </div>
+                                </th>
                                 <td class="px-3 py-3 truncate ">
                                     <div class="flex items-center">
                                         <div v-for="(paymentImage) in payment.payment_images" :key="paymentImage.id"
@@ -278,7 +334,7 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center truncate">
                                     #
                                 </td>
-                                <td class="px-3 py-3 font-bold truncate" colspan="4">
+                                <td class="px-3 py-3 font-bold truncate" colspan="5">
                                     Total
                                 </td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="3">
@@ -409,19 +465,45 @@ const closeModal = () => {
 
                 <!-- Detail payment item modal -->
                 <Modal :show="showingModalPayment">
-                    <div class="p-6">
+                    <div ref="printContent" class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Detail Pesanan <strong>{{ selectedPayment.order.user.name }}</strong>
+                            Detail Pesanan
                         </h2>
                         <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
                             <tbody>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Nama</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.name }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Email</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.email }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Telepon</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.phone }}
+                                    </td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Alamat</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.address
+                                        }}</td>
+                                </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Kode Pesanan</td>
                                     <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.order_code }}</td>
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Kode Pembayaran</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_code }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Status</td>
                                     <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.status }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Metode Pembayaran</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_method }}</td>
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Total</td>
@@ -439,7 +521,8 @@ const closeModal = () => {
                                     pembayaran Anda untuk mempercepat proses verifikasi.</div>
                             </tfoot>
                         </table>
-                        <div class="mt-6 flex justify-end">
+                        <div class="mt-6 flex justify-end gap-4">
+                            <SecondaryButton @click="handlePrint">Print</SecondaryButton>
                             <PrimaryButton @click="closeModal">Ok</PrimaryButton>
                         </div>
                     </div>

@@ -3,19 +3,24 @@ import CardButton from '@/Components/CardButton.vue';
 import DateTimePicker from '@/Components/DateTimePicker.vue';
 import ArrowClockwise from '@/Components/Icons/ArrowClockwise.vue';
 import BoxSeam from '@/Components/Icons/BoxSeam.vue';
+import CardHeading from '@/Components/Icons/CardHeading.vue';
 import CreditCard from '@/Components/Icons/CreditCard.vue';
 import Inbox from '@/Components/Icons/Inbox.vue';
 import People from '@/Components/Icons/People.vue';
 import LineChart from '@/Components/LineChart.vue';
+import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watchEffect } from 'vue';
 
 const props = defineProps({
-    products: Number,
-    users: Number,
-    orders: Number,
+    products: Array,
+    users: Array,
+    orders: Array,
     payments: Array,
 })
 
@@ -25,6 +30,22 @@ const hasRole = (role) => roles.value.includes(role);
 
 const isAdmin = computed(() => hasRole('admin'));
 const isUser = computed(() => hasRole('user'));
+
+const userHasRole = (user, roleName) => {
+    return user.roles.some(role => role.name === roleName);
+};
+
+const usersWithoutRole = computed(() => {
+    return props.users.filter(user => user.roles.length === 0);
+});
+
+// const sellerUsers = computed(() => {
+//     return props.users.filter(user => userHasRole(user, 'seller'));
+// });
+
+const normalUsers = computed(() => {
+    return props.users.filter(user => userHasRole(user, 'user'));
+});
 
 const goToProducts = () => {
     router.visit(route('show.products'))
@@ -42,12 +63,26 @@ const goToPayments = () => {
     router.visit(route('show.payments'))
 }
 
-const start_date_line_chart = ref('');
-const end_date_line_chart = ref('');
+const selectedPayment = ref(null);
+const selectedOrderItems = ref(null);
+const showingModalPayment = ref(false);
+
+const showModalPayment = (payment) => {
+    showingModalPayment.value = true;
+    selectedPayment.value = payment;
+    selectedOrderItems.value = payment.order.order_items
+};
+
+const closeModal = () => {
+    showingModalPayment.value = false;
+};
 
 const defaultStartDate = new Date();
 defaultStartDate.setDate(defaultStartDate.getDate() - 7);
 const defaultEndDate = new Date();
+
+const start_date_line_chart = ref('');
+const end_date_line_chart = ref('');
 
 const datePickerKeys = ref({
     startDate: 0,
@@ -129,12 +164,13 @@ watchEffect(() => {
     updateDataCharts();
 });
 
-// computed property untuk filter status
-const selectedStatus = ref('pending'); // Default status
+// Status filtering
+const selectedStatus = ref('pending');
 const filteredPayments = computed(() => {
     return props.payments.filter(payment => payment.status === selectedStatus.value);
 });
 
+// Status counts
 const statusCounts = computed(() => {
     return props.payments.reduce((counts, payment) => {
         if (counts.hasOwnProperty(payment.status)) {
@@ -144,15 +180,15 @@ const statusCounts = computed(() => {
         }
         return counts;
     }, {
-        check: 0,
         pending: 0,
         paid: 0,
         shipped: 0,
         completed: 0,
-        cancelled: 0
+        cancelled: 0,
     });
 });
 
+// Calculate total amount
 const totalAmount = computed(() => {
     return filteredPayments.value.reduce((total, payment) => {
         const amount = parseFloat(payment.amount);
@@ -160,7 +196,59 @@ const totalAmount = computed(() => {
     }, 0);
 });
 
+// const detailTotalAmount = computed(() => {
+//     return selectedOrderItems.value.reduce((total, orderItems) => {
+//         const totalAmount = parseFloat(orderItems.product.price * orderItems.quantity);
+//         return total + (isNaN(totalAmount) ? 0 : totalAmount);
+//     }, 0);
+// });
 
+const printContent = ref(null);
+
+const handlePrint = () => {
+    const pdf = new jsPDF({
+        format: 'a5',
+        orientation: 'landscape',
+    });
+
+    const printContentEl = printContent.value;
+
+    const logoImage = new Image();
+    logoImage.src = 'storage/images/header/logo-sipi.png'; // Ganti dengan path gambar logo Anda
+    pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
+
+    pdf.setFontSize(14);
+    pdf.text(`Pusat Ikan Desa Soro`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.setFontSize(10);
+    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
+
+    const rows = [];
+    const content = printContentEl.querySelectorAll('tbody tr');
+    content.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        const rowData = Array.from(cells).map(cell => cell.innerText);
+        rows.push(rowData);
+    });
+
+    pdf.autoTable({
+        body: rows,
+        startY: 38,
+        styles: { font: 'helvetica', fontSize: 10 },
+    });
+
+    const totalPages = pdf.internal.getNumberOfPages();
+    const timestamp = new Date().getTime();
+
+    pdf.setPage(totalPages);
+    pdf.setFontSize(6);
+    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+
+    const blob = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(blob);
+
+    const newTabPdf = window.open('', '_blank');
+    newTabPdf.location.href = pdfURL;
+};
 </script>
 
 <template>
@@ -177,6 +265,26 @@ const totalAmount = computed(() => {
                 <div v-if="isAdmin">
                     <div class="flex flex-col gap-4 pb-4 ">
                         <div class="grid grid-cols sm:grid-cols-4 mx-2 gap-4">
+                            <!-- <div class="grid grid-cols sm:grid-cols-5 mx-2 gap-4"> -->
+                            <!-- <CardButton @click="goToUsers" title="Penjual" description="Tambahkan Penjual."
+                                class="mx-auto">
+                                <template #svg>
+                                    <div class="bg-blue-100 p-4 rounded-tl-3xl">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                                            <path
+                                                d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                                            <path fill-rule="evenodd"
+                                                d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+                                        </svg>
+                                    </div>
+                                </template>
+                                <template #end>
+                                    <div class="bg-blue-100 p-4 rounded-br-3xl">
+                                        <p class="text-md p-0.5 font-bold">{{ usersWithoutRole.length }}</p>
+                                    </div>
+                                </template>
+                            </CardButton> -->
                             <CardButton @click="goToProducts" title="Produk" description="Daftar Produk."
                                 class="mx-auto">
                                 <template #svg>
@@ -199,7 +307,7 @@ const totalAmount = computed(() => {
                                 </template>
                                 <template #end>
                                     <div class="bg-blue-100 p-4 rounded-br-3xl">
-                                        <p class="text-md p-0.5 font-bold">{{ users.length }}</p>
+                                        <p class="text-md p-0.5 font-bold">{{ normalUsers.length }}</p>
                                     </div>
                                 </template>
                             </CardButton>
@@ -249,26 +357,10 @@ const totalAmount = computed(() => {
                     </div>
                 </div>
                 <div v-if="isUser" class="bg-white overflow-hidden sm:rounded-lg py-6">
-                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-6">
-                        <li
-                            class="flex w-full text-xs items-center text-blue-500 after:content-['Check'] after:w-full after:h-1 after:border-b after:border-blue-50 after:border-4 after:inline-block ">
-                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">
-                                {{
-                                    statusCounts.check }}
-                            </div>
-                            <a href="#" @click="selectedStatus = 'check'"
-                                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-check-circle" viewBox="0 0 16 16">
-                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                    <path
-                                        d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                                </svg>
-                            </a>
-                        </li>
+                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-8">
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.pending }}
                             </div>
                             <a href="#" @click="selectedStatus = 'pending'"
@@ -282,7 +374,7 @@ const totalAmount = computed(() => {
                         </li>
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Paid'] after:w-full after:h-1 after:border-b after:border-blue-200 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.paid }}
                             </div>
                             <a href="#" @click="selectedStatus = 'paid'"
@@ -292,7 +384,7 @@ const totalAmount = computed(() => {
                         </li>
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Shipped'] after:w-full after:h-1 after:border-b after:border-blue-300 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.shipped }}
                             </div>
                             <a href="#" @click="selectedStatus = 'shipped'"
@@ -306,9 +398,9 @@ const totalAmount = computed(() => {
                         </li>
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
-                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
+                            <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                                }}
+                            }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
@@ -321,7 +413,7 @@ const totalAmount = computed(() => {
                         </li>
                         <li
                             class="flex w-full text-xs items-center text-red-500 after:content-['Cancelled'] after:w-full after:h-1 after:border-b after:border-red-400 after:border-4 after:inline-block">
-                            <div class="bg-red-100 text-red-700 text-sm font-bold p-3.5 rounded-tl-2xl">{{
+                            <div class="bg-red-100 text-red-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.cancelled }}
                             </div>
                             <a href="#" @click="selectedStatus = 'cancelled'"
@@ -341,10 +433,12 @@ const totalAmount = computed(() => {
                                 <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                                     <tr>
                                         <th scope="col" class="px-3 py-3 truncate">No.</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Nama</th>
                                         <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
                                         <th scope="col" class="px-3 py-3 truncate">Status</th>
                                         <th scope="col" class="px-3 py-3 truncate">Metode Pembayaran</th>
                                         <th scope="col" class="px-3 py-3 truncate">Jumlah</th>
+                                        <th scope="col" class="px-3 py-3 text-center truncate">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -352,6 +446,14 @@ const totalAmount = computed(() => {
                                         class="bg-white border-b hover:bg-blue-100">
                                         <td class="w-4 p-4 text-center">{{ index + 1
                                             }}.</td>
+                                        <th scope="row"
+                                            class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                            <div class="flex flex-col">
+                                                <div class="text-base font-semibold">{{ payment.order.user.name }}</div>
+                                                <div class="font-normal text-gray-500">{{ payment.order.user.email }}
+                                                </div>
+                                            </div>
+                                        </th>
                                         <td class="px-3 py-3 truncate">{{ payment.payment_code }}</td>
                                         <td class="px-3 py-3 truncate capitalize">
                                             <a v-if="isAdmin" href="#" type="button"
@@ -368,6 +470,13 @@ const totalAmount = computed(() => {
                                         </td>
                                         <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
                                         <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
+                                        <td class="px-3 py-3 truncate">
+                                            <!-- Modal toggle Detail-->
+                                            <a href="#" type="button" @click="showModalPayment(payment)"
+                                                class="flex gap-2 items-center justify-center font-normal px-2 text-gray-600 hover:underline">
+                                                <CardHeading width="16" height="16" />Detail
+                                            </a>
+                                        </td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
@@ -388,6 +497,121 @@ const totalAmount = computed(() => {
                     </div>
                 </div>
             </div>
+
+            <Modal :show="showingModalPayment">
+                <div ref="printContent" class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Detail Pesanan
+                    </h2>
+                    <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                        <tbody>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Nama</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.name }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Email</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.email }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Telepon</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.phone }}
+                                </td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Alamat</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.address
+                                    }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Kode Pesanan</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.order_code }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Kode Pembayaran</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_code }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Status</td>
+                                <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.status }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Metode Pembayaran</td>
+                                <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_method }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Total</td>
+                                <td class="pe-6 py-1.5 truncate">{{
+                                    $formatCurrency(selectedPayment.order.total_amount) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <div v-if="selectedPayment.status === 'check'" class="pt-4">Saat ini status pembayaran
+                                Anda
+                                masih dalam tahap pengecekan. Silakan
+                                upload
+                                bukti
+                                pembayaran Anda untuk mempercepat proses verifikasi.</div>
+                        </tfoot>
+                    </table>
+                    <div class="mt-6 flex justify-end gap-4">
+                        <SecondaryButton @click="handlePrint">Print</SecondaryButton>
+                        <PrimaryButton @click="closeModal">Ok</PrimaryButton>
+                    </div>
+                </div>
+            </Modal>
+
+            <!-- Table for PDF
+            <div ref="printContent" class="overflow-x-auto">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Detail Pesanan
+                </h2>
+                <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                    <tbody>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Nama</td>
+                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.name }}</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Email</td>
+                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.email }}</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Telepon</td>
+                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.phone }}
+                            </td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Alamat</td>
+                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.address
+                                }}</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Kode Pesanan</td>
+                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.order_code }}</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Status</td>
+                            <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.status }}</td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-blue-100">
+                            <td class="pe-6 py-1.5 text-black truncate">Total</td>
+                            <td class="pe-6 py-1.5 truncate">{{
+                                $formatCurrency(selectedPayment.order.total_amount) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <div v-if="selectedPayment.status === 'check'" class="pt-4">Saat ini status pembayaran
+                            Anda
+                            masih dalam tahap pengecekan. Silakan
+                            upload
+                            bukti
+                            pembayaran Anda untuk mempercepat proses verifikasi.</div>
+                    </tfoot>
+                </table>
+            </div> -->
         </div>
     </AuthenticatedLayout>
 </template>
