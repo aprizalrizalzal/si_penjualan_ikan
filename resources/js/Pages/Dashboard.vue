@@ -16,6 +16,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable'
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watchEffect } from 'vue';
+import Chart from '@/Components/Icons/Chart.vue';
 
 const props = defineProps({
     products: Array,
@@ -78,7 +79,7 @@ const closeModal = () => {
 };
 
 const defaultStartDate = new Date();
-defaultStartDate.setDate(defaultStartDate.getDate() - 7);
+defaultStartDate.setDate(defaultStartDate.getDate() - 5);
 const defaultEndDate = new Date();
 
 const start_date_line_chart = ref('');
@@ -348,11 +349,21 @@ const handlePrint = () => {
                                         label="Tanggal akhir" v-model="end_date_line_chart" />
                                     <PrimaryButton @click="resetDateLineChartFilters"
                                         class="mt-auto gap-2 shadow-none py-3 capitalize">
-                                        <ArrowClockwise width="16" height="16" /> Atur Ulang
+                                        <ArrowClockwise width="16" height="16" />
                                     </PrimaryButton>
                                 </div>
                             </div>
                             <LineChart :lableCharts="lableCharts" :dataCharts="dataCharts" />
+                        </div>
+                        <div class="px-2">
+                            <PrimaryButton class="gap-2 py-3">
+                                <Chart widht="16" height="16" />Laporan
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+                                </svg>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>
@@ -400,7 +411,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                            }}
+                                }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
