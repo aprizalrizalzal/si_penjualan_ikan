@@ -90,11 +90,11 @@ const closeModal = () => {
         </template>
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded">
+                <div class="p-4 sm:p-8 bg-white sm:rounded">
                     <div
                         class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                         <div class="flex items-center gap-2 me-auto">
-                            <PrimaryButton @click="showModalAddBanner" class="gap-2 shadow-none py-2.5 capitalize">
+                            <PrimaryButton @click="showModalAddBanner" class="gap-2 py-2.5 capitalize">
                                 <PlusCircle width="16" height="16" />Banner
                             </PrimaryButton>
                         </div>
@@ -158,7 +158,6 @@ const closeModal = () => {
                         </SecondaryButton>
                     </div>
                 </div>
-                <hr>
             </div>
         </div>
         <Modal :show="showingModalAddBannerImage">

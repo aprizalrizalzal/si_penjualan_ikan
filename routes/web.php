@@ -11,12 +11,14 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Role\RoleController;
+use App\Http\Controllers\Seller\SellerImageController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\User\UserController;
 use App\Models\Banner\Banner;
 use App\Models\Order\Order;
 use App\Models\Payment\Payment;
 use App\Models\Product\Product;
+use App\Models\Seller\Seller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +37,7 @@ Route::get('/dashboard', function () {
     $userId = Auth::id();
 
     // Inisialisasi variabel dengan nilai default
+    $sellers = [];
     $products = [];
     $users = [];
     $orders = [];
@@ -42,6 +45,7 @@ Route::get('/dashboard', function () {
 
     if (Auth::user()->hasRole('admin')) {
         // Admin dapat melihat semua pembayaran
+        $sellers = Seller::get();
         $products = Product::get();
         $users = User::with('roles')->get();
         $orders = Order::get();
@@ -54,6 +58,7 @@ Route::get('/dashboard', function () {
     }
 
     return Inertia::render('Dashboard', [
+        'sellers' => $sellers,
         'products' => $products,
         'users' => $users,
         'orders' => $orders,
@@ -65,6 +70,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/banner/image', [BannerController::class, 'store'])->name('store.banner.image');
     Route::delete('/banner/image', [BannerController::class, 'destroy'])->name('destroy.banner.image');
+
+    Route::post('/seller/image', [SellerImageController::class, 'store'])->name('store.seller.image');
+    Route::delete('/seller/image', [SellerImageController::class, 'destroy'])->name('destroy.seller.image');
 
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');
     Route::post('/product', [ProductController::class, 'store'])->name('store.product');

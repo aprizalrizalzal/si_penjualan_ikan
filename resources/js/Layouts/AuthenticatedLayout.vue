@@ -12,7 +12,7 @@ import CreditCard from '@/Components/Icons/CreditCard.vue';
 import Cart from '@/Components/Icons/Cart.vue';
 import BoxSeam from '@/Components/Icons/BoxSeam.vue';
 import People from '@/Components/Icons/People.vue';
-import Chart from '@/Components/Icons/Chart.vue';
+import Person from '@/Components/Icons/Person.vue';
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);
@@ -201,6 +201,11 @@ onUnmounted(() => {
                             <span class="text-sm">Dashboard</span>
                         </ResponsiveNavLink>
                         <hr>
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.products')"
+                            :active="route().current('show.products') || route().current('show.categories')">
+                            <Person widht="16" height="16" />
+                            <span class="text-sm">Penjual</span>
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.products')"
                             :active="route().current('show.products') || route().current('show.categories')">
                             <BoxSeam widht="16" height="16" />

@@ -5,3 +5,14 @@ export function formatCurrency(amount) {
         minimumFractionDigits: 0
     }).format(amount);
 }
+
+export function formatDate(date) {
+    const d = new Date(date);
+    
+    // Format tahun, bulan, dan hari
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Tambahkan 1 pada bulan karena bulan dimulai dari 0
+    const day = String(d.getDate()).padStart(2, '0'); // Tambahkan leading zero jika perlu
+
+    return `${year}-${month}-${day}`;
+}

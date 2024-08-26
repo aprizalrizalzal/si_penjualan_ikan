@@ -15,10 +15,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import Chart from '@/Components/Icons/Chart.vue';
+import Person from '@/Components/Icons/Person.vue';
 
 const props = defineProps({
+    sellers: Array,
     products: Array,
     users: Array,
     orders: Array,
@@ -35,14 +37,6 @@ const isUser = computed(() => hasRole('user'));
 const userHasRole = (user, roleName) => {
     return user.roles.some(role => role.name === roleName);
 };
-
-const usersWithoutRole = computed(() => {
-    return props.users.filter(user => user.roles.length === 0);
-});
-
-// const sellerUsers = computed(() => {
-//     return props.users.filter(user => userHasRole(user, 'seller'));
-// });
 
 const normalUsers = computed(() => {
     return props.users.filter(user => userHasRole(user, 'user'));
@@ -78,12 +72,14 @@ const closeModal = () => {
     showingModalPayment.value = false;
 };
 
+// Inisialisasi tanggal default
 const defaultStartDate = new Date();
-defaultStartDate.setDate(defaultStartDate.getDate() - 5);
+defaultStartDate.setDate(defaultStartDate.getDate() - 6);
 const defaultEndDate = new Date();
 
-const start_date_line_chart = ref('');
-const end_date_line_chart = ref('');
+// Refs untuk tanggal
+const start_date_line_chart = ref(defaultStartDate);
+const end_date_line_chart = ref(defaultEndDate);
 
 const datePickerKeys = ref({
     startDate: 0,
@@ -91,49 +87,39 @@ const datePickerKeys = ref({
 });
 
 const resetDateLineChartFilters = () => {
-    start_date_line_chart.value = defaultStartDate;
-    end_date_line_chart.value = defaultEndDate;
+    start_date_line_chart.value = new Date(defaultStartDate);
+    end_date_line_chart.value = new Date(defaultEndDate);
 
     datePickerKeys.value.startDate += 1;
     datePickerKeys.value.endDate += 1;
 };
 
-start_date_line_chart.value = defaultStartDate;
-end_date_line_chart.value = defaultEndDate;
+const filteredDateLineChart = ref({});
+const dataCharts = ref([]);
 
-let filteredDateLineChart = ref({});
-let lableCharts = ref([
+const lableCharts = ref([
     'Check',
     'Pending',
     'Paid',
     'Shipped',
-    'Complate',
-    'Canncelled'
+    'Complete',
+    'Cancelled'
 ]);
 
-let dataCharts = ref([]);
-
 const computeFilteredDateLineChart = () => {
-    let filteredDataLineChart = {};
-
     if (start_date_line_chart.value && end_date_line_chart.value) {
-        // Filter untuk semua entitas
-        filteredDataLineChart = {
+        const start = new Date(start_date_line_chart.value);
+        const end = new Date(end_date_line_chart.value);
+
+        return {
             payments: props.payments.filter(payment => {
                 const createdDate = new Date(payment.created_at);
-                const start = new Date(start_date_line_chart.value);
-                const end = new Date(end_date_line_chart.value);
                 return createdDate >= start && createdDate <= end;
             }),
         };
     } else {
-        // Jika tidak ada rentang tanggal yang dipilih, gunakan semua data
-        filteredDataLineChart = {
-            payments: props.payments,
-        };
+        return { payments: props.payments };
     }
-
-    return filteredDataLineChart;
 };
 
 const updateDataCharts = () => {
@@ -160,6 +146,7 @@ const updateDataCharts = () => {
     }
 };
 
+// WatchEffect perubahan pada tanggal
 watchEffect(() => {
     filteredDateLineChart.value = computeFilteredDateLineChart();
     updateDataCharts();
@@ -196,13 +183,6 @@ const totalAmount = computed(() => {
         return total + (isNaN(amount) ? 0 : amount);
     }, 0);
 });
-
-// const detailTotalAmount = computed(() => {
-//     return selectedOrderItems.value.reduce((total, orderItems) => {
-//         const totalAmount = parseFloat(orderItems.product.price * orderItems.quantity);
-//         return total + (isNaN(totalAmount) ? 0 : totalAmount);
-//     }, 0);
-// });
 
 const printContent = ref(null);
 
@@ -265,27 +245,20 @@ const handlePrint = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="isAdmin">
                     <div class="flex flex-col gap-4 pb-4 ">
-                        <div class="grid grid-cols sm:grid-cols-4 mx-2 gap-4">
-                            <!-- <div class="grid grid-cols sm:grid-cols-5 mx-2 gap-4"> -->
-                            <!-- <CardButton @click="goToUsers" title="Penjual" description="Tambahkan Penjual."
+                        <div class="grid grid-cols sm:grid-cols-5 mx-2 gap-4">
+                            <CardButton @click="goToUsers" title="Penjual" description="Daftar Penjual."
                                 class="mx-auto">
                                 <template #svg>
                                     <div class="bg-blue-100 p-4 rounded-tl-3xl">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
-                                            <path
-                                                d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
-                                            <path fill-rule="evenodd"
-                                                d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
-                                        </svg>
+                                        <Person widht="24" height="24" />
                                     </div>
                                 </template>
                                 <template #end>
                                     <div class="bg-blue-100 p-4 rounded-br-3xl">
-                                        <p class="text-md p-0.5 font-bold">{{ usersWithoutRole.length }}</p>
+                                        <p class="text-md p-0.5 font-bold">{{ sellers.length }}</p>
                                     </div>
                                 </template>
-                            </CardButton> -->
+                            </CardButton>
                             <CardButton @click="goToProducts" title="Produk" description="Daftar Produk."
                                 class="mx-auto">
                                 <template #svg>
@@ -411,7 +384,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                                }}
+                            }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
@@ -479,7 +452,15 @@ const handlePrint = () => {
                                             </p>
 
                                         </td>
-                                        <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
+                                        <th scope="row"
+                                            class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                            <div class="flex flex-col">
+                                                <div class="text-base font-semibold">{{ payment.payment_method }}</div>
+                                                <div class="font-normal text-gray-500">
+                                                    {{ $formatDate(payment.created_at) }}
+                                                </div>
+                                            </div>
+                                        </th>
                                         <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
                                         <td class="px-3 py-3 truncate">
                                             <!-- Modal toggle Detail-->
@@ -541,6 +522,10 @@ const handlePrint = () => {
                             <tr class="bg-white border-b hover:bg-blue-100">
                                 <td class="pe-6 py-1.5 text-black truncate">Kode Pembayaran</td>
                                 <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_code }}</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-blue-100">
+                                <td class="pe-6 py-1.5 text-black truncate">Tanggal Pembayaran</td>
+                                <td class="pe-6 py-1.5 truncate">{{ $formatDate(selectedPayment.created_at) }}</td>
                             </tr>
                             <tr class="bg-white border-b hover:bg-blue-100">
                                 <td class="pe-6 py-1.5 text-black truncate">Status</td>

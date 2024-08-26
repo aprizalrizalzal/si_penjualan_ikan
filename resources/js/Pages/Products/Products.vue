@@ -386,17 +386,24 @@ const closeModal = () => {
                         </div>
                         <form @submit.prevent="submitForm" class="mt-3 space-y-3">
                             <div>
+                                <DropdownSelect id="seller_id" label="Penjual" optionProperty="name" valueProperty="id"
+                                    :options="sellers" v-model="form.seller_id"
+                                    :placeholder='selectedProduct && selectedProduct.seller ? selectedProduct.seller.name : "Pilih Penjual"'
+                                    class="w-full" />
+                                <InputError class="mt-2" :message="form.errors.seller_id" />
+                            </div>
+                            <div>
                                 <InputLabel for="name" value="Nama" />
                                 <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
                                     placeholder="Nama Ikan" required autofocus />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
                             <div>
-                                <DropdownSelect id="seller_id" label="Penjual" optionProperty="name" valueProperty="id"
-                                    :options="sellers" v-model="form.seller_id"
-                                    :placeholder='selectedProduct && selectedProduct.seller ? selectedProduct.seller.name : "Pilih Penjual"'
+                                <DropdownSelect id="category_id" label="Kategori" optionProperty="name"
+                                    valueProperty="id" :options="categories" v-model="form.category_id"
+                                    :placeholder='selectedProduct && selectedProduct.category ? selectedProduct.category.name : "Pilih Kategori"'
                                     class="w-full" />
-                                <InputError class="mt-2" :message="form.errors.seller_id" />
+                                <InputError class="mt-2" :message="form.errors.category_id" />
                             </div>
                             <div>
                                 <InputLabel for="description" value="Deskripsi" />
@@ -421,13 +428,6 @@ const closeModal = () => {
                                 <TextInput id="weight" type="text" class="mt-1 block w-full" v-model="form.weight"
                                     placeholder="Berat (Kg)" required autofocus />
                                 <InputError class="mt-2" :message="form.errors.weight" />
-                            </div>
-                            <div>
-                                <DropdownSelect id="category_id" label="Kategori" optionProperty="name"
-                                    valueProperty="id" :options="categories" v-model="form.category_id"
-                                    :placeholder='selectedProduct && selectedProduct.category ? selectedProduct.category.name : "Pilih Kategori"'
-                                    class="w-full" />
-                                <InputError class="mt-2" :message="form.errors.category_id" />
                             </div>
                             <div class="mt-6 flex justify-start" :class="{ 'opacity-25': form.processing }"
                                 :disabled="form.processing">
@@ -455,7 +455,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

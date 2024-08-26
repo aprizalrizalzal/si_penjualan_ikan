@@ -311,7 +311,14 @@ const handlePrint = () => {
                                     </p>
 
                                 </td>
-                                <td class="px-3 py-3 truncate">{{ payment.payment_method }}</td>
+                                <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <div class="text-base font-semibold">{{ payment.payment_method }}</div>
+                                        <div class="font-normal text-gray-500">
+                                            {{ $formatDate(payment.created_at) }}
+                                        </div>
+                                    </div>
+                                </th>
                                 <td class="px-3 py-3 truncate">{{ $formatCurrency(payment.amount) }}</td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle Detail-->
@@ -496,6 +503,10 @@ const handlePrint = () => {
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Kode Pembayaran</td>
                                     <td class="pe-6 py-1.5 truncate">{{ selectedPayment.payment_code }}</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-blue-100">
+                                    <td class="pe-6 py-1.5 text-black truncate">Tanggal Pembayaran</td>
+                                    <td class="pe-6 py-1.5 truncate">{{ $formatDate(selectedPayment.created_at) }}</td>
                                 </tr>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Status</td>

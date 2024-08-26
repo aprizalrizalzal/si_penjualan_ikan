@@ -6,49 +6,37 @@ import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import AssigningRole from './AssigningRole.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PencilSquare from '@/Components/Icons/PencilSquare.vue';
 import Trash3 from '@/Components/Icons/Trash3.vue';
 
 const props = defineProps({
-    users: Array,
-});
-
-const getUserRoles = (user) => {
-    return user.roles.length > 0 ? user.roles : [];
-};
-
-const { auth } = usePage().props;
-const userId = ref(auth.user.id);
-
-const filteredUsersId = computed(() => {
-    return props.users.filter(user => user.id !== userId.value);
+    sellers: Array,
 });
 
 const searchQuery = ref('');
 
-const filteredUsersSearch = computed(() => {
+const filteredSellersSearch = computed(() => {
     if (!searchQuery.value) {
-        return filteredUsersId.value;
+        return sellers;
     }
-    return filteredUsersId.value.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return sellers.filter(seller =>
+        seller.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        seller.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const paginatedUsers = computed(() => {
+const paginatedSellers = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return filteredUsersSearch.value.slice(start, end);
+    return filteredSellersSearch.value.slice(start, end);
 });
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredUsersSearch.value.length / itemsPerPage);
+    return Math.ceil(filteredSellersSearch.value.length / itemsPerPage);
 });
 
 const nextPage = () => {
@@ -63,21 +51,21 @@ const previousPage = () => {
     }
 };
 
-const selectedUser = ref(null);
+const selectedSeller = ref(null);
 
-const confirmingUserDeletion = ref(false);
+const confirmingSellerDeletion = ref(false);
 
 const form = useForm({
 });
 
-const confirmUserDeletion = (user) => {
-    confirmingUserDeletion.value = true;
-    selectedUser.value = user;
-    form.id = user.id;
+const confirmSellerDeletion = (seller) => {
+    confirmingSellerDeletion.value = true;
+    selectedSeller.value = seller;
+    form.id = seller.id;
 };
 
-const deleteUser = () => {
-    router.delete(route('destroy.user', { id: selectedUser.value.id }), {
+const deleteSeller = () => {
+    router.delete(route('destroy.seller', { id: selectedSeller.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
             closeModal();
@@ -93,33 +81,33 @@ const deleteUser = () => {
     });
 };
 
-const showingModalassignRole = ref(false);
+const showingModalUpdate = ref(false);
 
-const showModalAssignRole = (user) => {
-    selectedUser.value = user;
-    showingModalassignRole.value = true;
+const showModalUpdateSeller = (seller) => {
+    selectedSeller.value = seller;
+    showingModalUpdate.value = true;
 };
 
-const showingModalAssignSuccessfully = ref(false);
+const showingModalUpdateSuccessfully = ref(false);
 
-const showModalAssignSuccessfully = () => {
-    showingModalassignRole.value = false;
-    showingModalAssignSuccessfully.value = true;
+const showModalUpdateSuccessfully = () => {
+    showingModalUpdate.value = false;
+    showingModalUpdateSuccessfully.value = true;
 };
 
-const closeModalAssignSuccessfully = () => {
-    showingModalAssignSuccessfully.value = false;
+const closeModalUpdateSuccessfully = () => {
+    showingModalUpdateSuccessfully.value = false;
 };
 
 const closeModal = () => {
-    confirmingUserDeletion.value = false;
-    showingModalassignRole.value = false;
+    confirmingSellerDeletion.value = false;
+    showingModalUpdate.value = false;
 };
 </script>
 
 <template>
 
-    <Head title="Users" />
+    <Head title="Sellers" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -151,7 +139,7 @@ const closeModal = () => {
                                     Alamat
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
-                                    Peran
+                                    Penjual
                                 </th>
                                 <th scope="col" class="px-3 py-3 truncate">
                                     Status E-mail
@@ -162,31 +150,31 @@ const closeModal = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(user, index) in paginatedUsers" :key="user.id"
+                            <tr v-for="(seller, index) in paginatedSellers" :key="seller.id"
                                 class="bg-white border-b hover:bg-blue-100">
                                 <td class="w-4 p-4 text-center"> {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
                                 </td>
                                 <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
                                     <div class="flex flex-col">
-                                        <div class="text-base font-semibold">{{ user.name }}</div>
-                                        <div class="font-normal text-gray-500">{{ user.email }}</div>
+                                        <div class="text-base font-semibold">{{ seller.name }}</div>
+                                        <div class="font-normal text-gray-500">{{ seller.email }}</div>
                                     </div>
                                 </th>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div class="font-normal text-gray-500">{{ user.customer.phone }}</div>
+                                    <div class="font-normal text-gray-500">{{ seller.phone }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div class="font-normal text-gray-500">{{ user.customer.address }}</div>
+                                    <div class="font-normal text-gray-500">{{ seller.address }}</div>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <a href="#" type="button" @click="showModalAssignRole(user)"
+                                    <a href="#" type="button" @click="showModalUpdateSeller(seller)"
                                         class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                        <span v-for="role in getUserRoles(user)" :key="role.id">#{{ role.name }}</span>
+                                        Sunting
                                         <PencilSquare width="16" height="16" />
                                     </a>
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <div v-if="user.email_verified_at !== null"
+                                    <div v-if="seller.email_verified_at !== null"
                                         class="flex items-center gap-1 text-gray-500">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
@@ -210,7 +198,7 @@ const closeModal = () => {
                                 </td>
                                 <td class="px-3 py-3 truncate">
                                     <!-- Modal toggle delete-->
-                                    <a href="#" type="button" @click="confirmUserDeletion(user)"
+                                    <a href="#" type="button" @click="confirmSellerDeletion(seller)"
                                         class="flex gap-2 items-center justify-center font-normal px-2 text-red-600 hover:underline">
                                         <Trash3 width="16" height="16" />Hapus
                                     </a>
@@ -236,51 +224,51 @@ const closeModal = () => {
                         </svg>
                     </SecondaryButton>
                 </div>
-                <!-- Assigning roles modal -->
-                <Modal :show="showingModalassignRole">
+                <!-- Updateing seller modal -->
+                <Modal :show="showingModalUpdate">
                     <div class="m-6">
                         <div class="flex justify-between items-center text-gray-900">
                             <h2 class="text-lg font-medium text-gray-900">
-                                Peran
+                                Penjual
                             </h2>
                             <DangerButton @click="closeModal">X</DangerButton>
                         </div>
                         <hr class="mt-4 mb-2">
-                        <AssigningRole :user="selectedUser" @assignRole="showModalAssignSuccessfully" />
                     </div>
                 </Modal>
 
-                <Modal maxWidth="xl" :show="showingModalAssignSuccessfully">
+                <Modal maxWidth="xl" :show="showingModalUpdateSuccessfully">
                     <div class="p-6">
                         <div class="flex justify-between items-center text-gray-900">
                             <h2 class="text-lg font-medium text-gray-900">
-                                Peran
+                                Penjual
                             </h2>
-                            <DangerButton @click="closeModalAssignSuccessfully">X</DangerButton>
+                            <DangerButton @click="closeModalUpdateSuccessfully">X</DangerButton>
                         </div>
                         <hr class="mt-4 mb-2">
                         <p class="mt-1 text-sm text-gray-700">
-                            Penetapan Peran Pengguna Berhasil!
+                            Penetapan Penjual Pengguna Berhasil!
                         </p>
                         <div class="mt-6 flex justify-start">
-                            <PrimaryButton @click="closeModalAssignSuccessfully">Ok</PrimaryButton>
+                            <PrimaryButton @click="closeModalUpdateSuccessfully">Ok</PrimaryButton>
                         </div>
                     </div>
                 </Modal>
-                <!-- Delete user modal -->
-                <Modal :show="confirmingUserDeletion">
+
+                <!-- Delete seller modal -->
+                <Modal :show="confirmingSellerDeletion">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
-                            Apakah Anda yakin ingin menghapus pengguna <strong>{{ selectedUser.name }}</strong>?
+                            Apakah Anda yakin ingin menghapus penjual <strong>{{ selectedSeller.name }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
-                            Setelah pengguna <strong>{{ selectedUser.name }}</strong> dihapus, semua sumber daya dan
+                            Setelah penjual <strong>{{ selectedSeller.name }}</strong> dihapus, semua sumber daya dan
                             datanya
                             akan dihapus secara permanen.
                         </p>
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                            <DangerButton class="ms-3" @click="deleteUser">Hapus</DangerButton>
+                            <DangerButton class="ms-3" @click="deleteSeller">Hapus</DangerButton>
                         </div>
                     </div>
                 </Modal>

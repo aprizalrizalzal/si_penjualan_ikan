@@ -6,7 +6,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-import { formatCurrency } from './utils/helper';
+import { formatCurrency, formatDate } from './utils/helper';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,6 +20,7 @@ createInertiaApp({
             .mixin({
                 methods: {
                     $formatCurrency: formatCurrency,
+                    $formatDate: formatDate,
                 }
             })
             .mount(el);

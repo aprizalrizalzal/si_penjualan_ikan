@@ -23,7 +23,7 @@ const formattedDate = ref(props.modelValue);
 
 onMounted(() => {
   const fp = flatpickr(datepicker.value, {
-    dateFormat: "d/m/Y",
+    dateFormat: "Y-m-d",
     defaultDate: formattedDate.value,
     onChange: (selectedDates, dateStr) => {
       formattedDate.value = dateStr;
