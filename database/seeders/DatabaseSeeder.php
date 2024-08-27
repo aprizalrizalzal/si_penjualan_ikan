@@ -10,6 +10,7 @@ use Database\Seeders\Table\CustomerImagesSeeder;
 use Database\Seeders\Table\CustomersSeeder;
 use Database\Seeders\Table\OrderItemsSeeder;
 use Database\Seeders\Table\OrdersSeeder;
+use Database\Seeders\Table\PaymentImagesSeeder;
 use Database\Seeders\Table\PaymentsSeeder;
 use Database\Seeders\Table\ProductImagesSeeder;
 use Database\Seeders\Table\ProductsSeeder;
@@ -50,6 +51,7 @@ class DatabaseSeeder extends Seeder
             CartsSeeder::class,
             OrdersSeeder::class,
             PaymentsSeeder::class,
+            PaymentImagesSeeder::class,
         ]);
     }
 }

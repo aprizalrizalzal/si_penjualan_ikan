@@ -19,18 +19,12 @@ const goToWelcome = () => {
                 </div>
             </div>
             <div class="p-12 hover:shadow max-w-8xl mx-auto">
-                <h1 class="text-2xl text-center font-bold text-blue-700 mb-4">Sistem Informasi Penjualan Ikan
-                    (SIPI-Desa
-                    Soro)
-                </h1>
+                <h1 class="text-2xl text-center font-bold text-blue-700 mb-4">Sistem Informasi Penjualan Ikan (SIPI-Desa
+                    Soro)</h1>
                 <p class="text-blue-900 mb-4">
-                    SIPI-Desa Soro adalah sebuah platform digital yang dirancang untuk memfasilitasi transaksi
-                    penjualan
-                    ikan
-                    secara online di Desa Soro. Sistem ini memudahkan para nelayan dan pembeli untuk melakukan
-                    transaksi
-                    secara
-                    efisien dan transparan, dari proses pemesanan hingga pembayaran.
+                    SIPI-Desa Soro adalah sebuah platform digital yang dirancang untuk memfasilitasi transaksi penjualan
+                    ikan secara online di Desa Soro. Sistem ini memudahkan para nelayan dan pembeli untuk melakukan
+                    transaksi secara efisien dan transparan, dari proses pemesanan hingga pembayaran.
                 </p>
                 <h2 class="text-xl font-semibold text-blue-600 mb-2">Fitur Utama:</h2>
                 <ul class="list-disc list-inside text-blue-900 mb-4">
@@ -40,18 +34,19 @@ const goToWelcome = () => {
                     <li>Dashboard untuk pemantauan penjualan dan pembelian.</li>
                 </ul>
                 <p class="text-blue-900">
-                    Dengan SIPI-Desa Soro, penjualan ikan menjadi lebih mudah, aman, dan dapat diakses kapan saja
-                    dan di
-                    mana
-                    saja.
-                    Dukung perkembangan ekonomi desa melalui teknologi digital!
+                    Dengan SIPI-Desa Soro, penjualan ikan menjadi lebih mudah, aman, dan dapat diakses kapan saja dan di
+                    mana saja. Dukung perkembangan ekonomi desa melalui teknologi digital!
+                </p>
+                <p class="text-blue-900 mt-4">
+                    Alamat: Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, Nusa Tenggara Barat, Indonesia.
                 </p>
                 <div class="flex justify-center pt-6">
-                    <p class="text-xs">Versi.1.0</p>
+                    <p class="text-xs">Versi.1.0(Beta)</p>
                 </div>
             </div>
+
         </div>
-        <div class="animate-fade animate-bounce flex items-center justify-center py-8">
+        <div class="animate-fade flex items-center justify-center py-8">
             <SecondaryButton class="gap-2 py-3" @click="goToWelcome">
                 <Back widht="16" height="16" />
                 Kembali
