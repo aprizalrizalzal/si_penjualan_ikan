@@ -62,6 +62,10 @@ const goToPayments = () => {
     router.visit(route('show.payments'))
 }
 
+const goToReports = () => {
+    router.visit(route('show.reports'))
+}
+
 const selectedPayment = ref(null);
 const selectedOrderItems = ref(null);
 const showingModalPayment = ref(false);
@@ -249,7 +253,7 @@ const handlePrint = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="isAdmin">
                     <div class="flex flex-col gap-4 pb-4 ">
-                        <div class="grid grid-cols sm:grid-cols-5 mx-2 gap-4">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 mx-2 gap-4">
                             <CardButton @click="goToSellers" title="Penjual" description="Daftar Penjual."
                                 class="mx-auto">
                                 <template #svg>
@@ -276,7 +280,7 @@ const handlePrint = () => {
                                     </div>
                                 </template>
                             </CardButton>
-                            <CardButton @click="goToUsers" title="Pelanggan" description="Daftar Pelanggan."
+                            <CardButton @click="goToUsers" title="Pengguna" description="Daftar Pengguna."
                                 class="mx-auto">
                                 <template #svg>
                                     <div class="bg-blue-100 p-4 rounded-tl-3xl">
@@ -333,7 +337,7 @@ const handlePrint = () => {
                             <LineChart :lableCharts="lableCharts" :dataCharts="dataCharts" />
                         </div>
                         <div class="px-2">
-                            <PrimaryButton class="gap-2 py-3">
+                            <PrimaryButton @click="goToReports" class="gap-2 py-3">
                                 <Chart widht="16" height="16" />Laporan
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-arrow-right-short" viewBox="0 0 16 16">
@@ -561,57 +565,6 @@ const handlePrint = () => {
                     </div>
                 </div>
             </Modal>
-
-            <!-- Table for PDF
-            <div ref="printContent" class="overflow-x-auto">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Detail Pesanan
-                </h2>
-                <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
-                    <tbody>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Nama</td>
-                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.name }}</td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Email</td>
-                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.email }}</td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Telepon</td>
-                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.phone }}
-                            </td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Alamat</td>
-                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.user.customer.address
-                                }}</td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Kode Pesanan</td>
-                            <td class="pe-6 py-1.5 truncate">{{ selectedPayment.order.order_code }}</td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Status</td>
-                            <td class="pe-6 py-1.5 truncate capitalize">{{ selectedPayment.status }}</td>
-                        </tr>
-                        <tr class="bg-white border-b hover:bg-blue-100">
-                            <td class="pe-6 py-1.5 text-black truncate">Total</td>
-                            <td class="pe-6 py-1.5 truncate">{{
-                                $formatCurrency(selectedPayment.order.total_amount) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <div v-if="selectedPayment.status === 'check'" class="pt-4">Saat ini status pembayaran
-                            Anda
-                            masih dalam tahap pengecekan. Silakan
-                            upload
-                            bukti
-                            pembayaran Anda untuk mempercepat proses verifikasi.</div>
-                    </tfoot>
-                </table>
-            </div> -->
         </div>
     </AuthenticatedLayout>
 </template>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Report\ReportController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SellerImageController;
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/user/remove-role', [RoleController::class, 'removeRole'])->name('remove.role');
 
     Route::get('/settings', [SettingController::class, 'show'])->name('show.settings');
+
+    Route::get('/reports', [ReportController::class, 'show'])->name('show.reports');
 });
 
 Route::middleware('auth')->group(function () {

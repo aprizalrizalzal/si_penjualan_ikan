@@ -192,7 +192,7 @@ onUnmounted(() => {
                 <div class="pt-2 pb-4 overflow-y-auto">
                     <div class="space-y-1">
                         <ResponsiveNavLink class="flex items-center gap-2" :href="route('dashboard')"
-                            :active="route().current('dashboard')">
+                            :active="route().current('dashboard') || route().current('show.reports')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="flex-shrink-0 w-5 h-4 text-gray-500 transition duration-75 group-hover:text-gray-900"
                                 viewBox="0 0 16 16">

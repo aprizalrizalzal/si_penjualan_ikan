@@ -262,7 +262,7 @@ const handlePrint = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 truncate">Pelanggan</th>
+                                <th scope="col" class="px-3 py-3 truncate">Pembeli</th>
                                 <th scope="col" class="px-3 py-3 truncate">Bukti Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>

@@ -176,7 +176,7 @@ const closeModal = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
-                                <th scope="col" class="px-3 py-3 truncate">Pelanggan</th>
+                                <th scope="col" class="px-3 py-3 truncate">Pembeli</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
@@ -279,7 +279,7 @@ const closeModal = () => {
                 </div>
 
                 <!-- Detail order item modal -->
-                <Modal :show="showingModalOrderItems">
+                <Modal maxWidth="4xl" :show="showingModalOrderItems">
                     <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
                             Detail Pesanan
@@ -313,6 +313,8 @@ const closeModal = () => {
                             <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                                 <tr>
                                     <th scope="col" class="ps-3 pe-6 py-1.5 truncate">No.</th>
+                                    <th scope="col" class="px-3 py-3 truncate">Penjual</th>
+                                    <th scope="col" class="px-3 py-3 truncate">Telepon</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Produk</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Berat</th>
                                     <th scope="col" class="pe-6 py-1.5 truncate">Harga</th>
@@ -323,6 +325,17 @@ const closeModal = () => {
                                 <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
                                     class="bg-white border-b hover:bg-blue-100">
                                     <td class="w-2 p-2 text-center">{{ index + 1 }}.</td>
+                                    <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                        <div class="flex flex-col">
+                                            <div class="text-base font-semibold">
+                                                {{ orderItem.product.seller.name }}
+                                            </div>
+                                            <div class="font-normal text-gray-500">
+                                                {{ orderItem.product.seller.email }}
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <td class="pe-6 py-1.5 truncate">{{ orderItem.product.seller.phone }}</td>
                                     <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
                                     <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
                                         Kg</td>
@@ -335,7 +348,7 @@ const closeModal = () => {
                                     <td class="w-2 p-2 text-center truncate">
                                         #
                                     </td>
-                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="2">
+                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="4">
                                         Total
                                     </td>
                                     <td class="pe-3 py-1.5 font-bold truncate" colspan="2">
@@ -361,7 +374,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
                                 selectedOrder.order_code
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,
