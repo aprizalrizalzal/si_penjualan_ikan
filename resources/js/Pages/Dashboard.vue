@@ -13,9 +13,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'
+import 'jspdf-autotable';
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { computed, ref, watch, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import Chart from '@/Components/Icons/Chart.vue';
 import Person from '@/Components/Icons/Person.vue';
 
@@ -204,12 +204,12 @@ const handlePrint = () => {
 
     const logoImage = new Image();
     logoImage.src = 'storage/images/header/logo-sipi.png'; // Ganti dengan path gambar logo Anda
-    pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
+    pdf.addImage(logoImage, 'PNG', 14, 4, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
 
     pdf.setFontSize(14);
-    pdf.text(`Sistem Informasi Penjualan Ikan (SIPI-Desa Soro)`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.text(`SIPI-Desa Soro`, pdf.internal.pageSize.width / 5, 16);  // Menambahkan nama perusahaan
     pdf.setFontSize(10);
-    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
+    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 5, 22);  // Menambahkan nama perusahaan
 
     const rows = [];
     const content = printContentEl.querySelectorAll('tbody tr');
@@ -221,7 +221,7 @@ const handlePrint = () => {
 
     pdf.autoTable({
         body: rows,
-        startY: 38,
+        startY: 28,
         styles: { font: 'helvetica', fontSize: 10 },
     });
 
@@ -230,7 +230,7 @@ const handlePrint = () => {
 
     pdf.setPage(totalPages);
     pdf.setFontSize(6);
-    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI-Desa Soro) pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti Transaksi Pembeli`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
 
     const blob = pdf.output('blob');
     const pdfURL = URL.createObjectURL(blob);
@@ -338,7 +338,8 @@ const handlePrint = () => {
                         </div>
                         <div class="px-2">
                             <PrimaryButton @click="goToReports" class="gap-2 py-3">
-                                <Chart widht="16" height="16" />Laporan
+                                <Chart widht="16" height="16" />
+                                <span>Laporan</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-arrow-right-short" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
@@ -392,7 +393,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                                }}
+                            }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
@@ -420,6 +421,9 @@ const handlePrint = () => {
                         </li>
                     </ol>
                     <div class="py-4">
+                        <div class="flex items-center justify-center font-bold text-lg py-2">
+                            <h2>{{ selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1) }}</h2>
+                        </div>
                         <div class="overflow-x-auto sm:rounded-md pb-4">
                             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                                 <thead class="text-xs text-gray-700 uppercase bg-blue-100">
@@ -499,11 +503,11 @@ const handlePrint = () => {
             </div>
 
             <Modal :show="showingModalPayment">
-                <div ref="printContent" class="p-6">
+                <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         Detail Pesanan
                     </h2>
-                    <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                    <table ref="printContent" class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
                         <tbody>
                             <tr class="bg-white border-b hover:bg-blue-100">
                                 <td class="pe-6 py-1.5 text-black truncate">Nama</td>

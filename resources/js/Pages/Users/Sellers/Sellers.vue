@@ -13,6 +13,7 @@ import PlusCircle from '@/Components/Icons/PlusCircle.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Images from './Images.vue';
 
 const props = defineProps({
     sellers: Array,
@@ -68,6 +69,35 @@ const selectedSellerImage = ref(null);
 
 const showingModalSeller = ref(false);
 const confirmingSellerDeletion = ref(false);
+const showingModalAddSellerImage = ref(false);
+const confirmingSellerImageDeletion = ref(false);
+
+const showModalAddSellerImage = (seller) => {
+    selectedSeller.value = seller;
+    showingModalAddSellerImage.value = true;
+};
+
+const confirmSellerImageDeletion = (seller) => {
+    selectedSellerImage.value = seller.seller_image;
+    confirmingSellerImageDeletion.value = true;
+};
+
+const deleteSellerImage = () => {
+    router.delete(route('destroy.seller.image', { id: selectedSellerImage.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+        },
+        onError: (errors) => {
+            if (errors) {
+                closeModal();
+            } else {
+                const errorMessages = Object.values(errors).flat();
+                alert(`${errorMessages}`);
+            }
+        }
+    });
+};
 
 const showModalSeller = (seller) => {
     selectedSeller.value = seller;
@@ -94,29 +124,13 @@ const handleFileChange = (event) => {
 };
 
 const submitForm = () => {
-    // if (selectedSellerImage.value.id) {
-    //     form.post(route('update.seller.image', { id: selectedSellerImage.value.id }), {
-    //         preserveScroll: true,
-    //         onSuccess: () => {
-    //             form.data();
-    //             previewUrl.value = null;
-    //         },
-    //         onError: (errors) => {
-    //             if (errors.image) {
-    //                 alert('update failed!');
-    //             } else {
-    //                 const errorMessages = Object.values(errors).flat();
-    //                 alert(`${errorMessages}`);
-    //             }
-    //         }
-    //     });
-    // } else 
     if (!selectedSeller.value.id) {
         form.post(route('store.seller', { alt: form.name }), {
             preserveScroll: true,
             onSuccess: () => {
                 form.reset();
                 previewUrl.value = null;
+                closeModal();
             },
             onError: (errors) => {
                 if (errors.image || errors.name || errors.email || errors.phone || errors.address) {
@@ -172,8 +186,9 @@ const deleteSeller = () => {
 
 const closeModal = () => {
     showingModalSeller.value = false;
+    showingModalAddSellerImage.value = false;
+    confirmingSellerImageDeletion.value = false;
     confirmingSellerDeletion.value = false;
-    showingModalUpdate.value = false;
 };
 </script>
 
@@ -227,15 +242,30 @@ const closeModal = () => {
                                 <td class="w-4 p-4 text-center"> {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
                                 </td>
                                 <td class="px-3 py-3 truncate max-w-xs">
-                                    <img v-if="seller.seller_image !== null" :src="seller.seller_image.image"
-                                        :alt="seller.seller_image.alt" class="h-16 w-16 object-cover rounded "
-                                        style="max-width: 128px;" />
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        fill="currentColor" class="bi bi-person-circle m-auto" viewBox="0 0 16 16">
-                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                        <path fill-rule="evenodd"
-                                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                    </svg>
+                                    <div class="flex items-center">
+                                        <div class="relative me-2">
+                                            <img v-if="seller.seller_image !== null" :src="seller.seller_image.image"
+                                                :alt="seller.seller_image.alt" class="h-16 w-16 object-cover rounded "
+                                                style="max-width: 128px;" />
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                                                fill="currentColor" class="bi bi-person-circle m-auto"
+                                                viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path fill-rule="evenodd"
+                                                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                            </svg>
+                                            <botton v-if="seller.seller_image !== null"
+                                                @click="confirmSellerImageDeletion(seller)"
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
+                                            </botton>
+                                        </div>
+                                        <botton v-if="seller.seller_image === null"
+                                            @click="showModalAddSellerImage(seller)"
+                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
+                                        </botton>
+                                    </div>
                                 </td>
                                 <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
                                     <div class="flex flex-col">
@@ -299,7 +329,7 @@ const closeModal = () => {
                         <div class="flex w-full flex-1 items-stretch">
                             <div class="w-full">
                                 <form @submit.prevent="submitForm" class="mt-3 space-y-3">
-                                    <div>
+                                    <div v-if="!selectedSeller.id">
                                         <InputLabel for="image" value="Foto" />
                                         <input type="file" id="image" @change="handleFileChange"
                                             class="mt-1 block w-full" />
@@ -334,17 +364,6 @@ const closeModal = () => {
                                         <p class="font-semibold">Pratinjau</p>
                                         <img :src="previewUrl" alt="Image Preview" class="w-full h-auto mt-2 rounded" />
                                     </div>
-                                    <div v-else class="my-4">
-                                        <p class="font-semibold">Pratinjau</p>
-                                        <img v-if="selectedSellerImage !== null" :src="selectedSellerImage.image"
-                                            :alt="selectedSellerImage.alt" class="w-full object-cover rounded " />
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="currentColor" class="bi bi-person-circle m-auto" viewBox="0 0 16 16">
-                                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                            <path fill-rule="evenodd"
-                                                d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                        </svg>
-                                    </div>
                                     <div>
                                         <PrimaryButton class="mt-6 mb-3" :class="{ 'opacity-25': form.processing }"
                                             :disabled="form.processing">
@@ -371,6 +390,39 @@ const closeModal = () => {
                         <div class="mt-6 flex justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
                             <DangerButton class="ms-3" @click="deleteSeller">Hapus</DangerButton>
+                        </div>
+                    </div>
+                </Modal>
+
+                <!-- Store seller image modal-->
+                <Modal :show="showingModalAddSellerImage">
+                    <div class="m-6">
+                        <div class="flex justify-between items-center ps-6 ms-6 text-blue-900">
+                            <span class="font-bold text-center w-full">Unggah Foto</span>
+                            <DangerButton @click="closeModal">X</DangerButton>
+                        </div>
+                        <Images :seller="selectedSeller" @addSellerImage="closeModal" />
+                    </div>
+                </Modal>
+
+                <Modal :show="confirmingSellerImageDeletion">
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Apakah Anda yakin ingin menghapus foto profil?
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-700">
+                            Setelah foto profil dihapus,
+                            semua
+                            sumber daya
+                            dan
+                            datanya
+                            akan dihapus secara permanen.
+                        </p>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                            <DangerButton @click="deleteSellerImage" class="ms-3">
+                                Hapus
+                            </DangerButton>
                         </div>
                     </div>
                 </Modal>

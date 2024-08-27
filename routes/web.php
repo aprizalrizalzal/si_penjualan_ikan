@@ -78,6 +78,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/seller', [SellerController::class, 'update'])->name('update.seller');
     Route::delete('/seller', [SellerController::class, 'destroy'])->name('destroy.seller');
 
+    Route::post('/seller-image', [SellerImageController::class, 'store'])->name('store.seller.image');
     Route::post('/seller/image', [SellerImageController::class, 'update'])->name('update.seller.image');
     Route::delete('/seller/image', [SellerImageController::class, 'destroy'])->name('destroy.seller.image');
 
@@ -131,5 +132,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment/image', [PaymentImageController::class, 'store'])->name('store.payment.image');
     Route::delete('/payment/image', [PaymentImageController::class, 'destroy'])->name('destroy.payment.image');
 });
+
+Route::get('/info', function () {
+    return Inertia::render('Info/Info');
+})->name('show.info');;
 
 require __DIR__ . '/auth.php';

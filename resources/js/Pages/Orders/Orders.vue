@@ -306,57 +306,63 @@ const closeModal = () => {
                                 </tr>
                             </tbody>
                         </table>
-                        <h2 class="py-2 text-sm font-medium text-gray-900">
-                            Kode <strong>{{ selectedOrder.order_code }}</strong>
-                        </h2>
-                        <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-blue-100">
-                                <tr>
-                                    <th scope="col" class="ps-3 pe-6 py-1.5 truncate">No.</th>
-                                    <th scope="col" class="px-3 py-3 truncate">Penjual</th>
-                                    <th scope="col" class="px-3 py-3 truncate">Telepon</th>
-                                    <th scope="col" class="pe-6 py-1.5 truncate">Produk</th>
-                                    <th scope="col" class="pe-6 py-1.5 truncate">Berat</th>
-                                    <th scope="col" class="pe-6 py-1.5 truncate">Harga</th>
-                                    <th scope="col" class="pe-6 py-1.5 truncate">Kuantitas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
-                                    class="bg-white border-b hover:bg-blue-100">
-                                    <td class="w-2 p-2 text-center">{{ index + 1 }}.</td>
-                                    <th scope="row" class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
-                                        <div class="flex flex-col">
-                                            <div class="text-base font-semibold">
-                                                {{ orderItem.product.seller.name }}
+                        <div ref="printContent">
+                            <h2 class="py-2 text-sm font-medium text-gray-900">
+                                Kode <strong>{{ selectedOrder.order_code }}</strong>
+                            </h2>
+                            <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-blue-100">
+                                    <tr>
+                                        <th scope="col" class="ps-3 pe-6 py-1.5 truncate">No.</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Penjual</th>
+                                        <th scope="col" class="px-3 py-3 truncate">Telepon</th>
+                                        <th scope="col" class="pe-6 py-1.5 truncate">Produk</th>
+                                        <th scope="col" class="pe-6 py-1.5 truncate">Berat</th>
+                                        <th scope="col" class="pe-6 py-1.5 truncate">Harga</th>
+                                        <th scope="col" class="pe-6 py-1.5 truncate">Kuantitas</th>
+                                        <th scope="col" class="pe-6 py-1.5 truncate">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(orderItem, index) in selectedOrderItems" :key="orderItem.id"
+                                        class="bg-white border-b hover:bg-blue-100">
+                                        <td class="w-2 p-2 text-center">{{ index + 1 }}.</td>
+                                        <th scope="row"
+                                            class="flex items-center px-2 py-3 text-gray-900 whitespace-nowrap">
+                                            <div class="flex flex-col">
+                                                <div class="text-base font-semibold">
+                                                    {{ orderItem.product.seller.name }}
+                                                </div>
+                                                <div class="font-normal text-gray-500">
+                                                    {{ orderItem.product.seller.email }}
+                                                </div>
                                             </div>
-                                            <div class="font-normal text-gray-500">
-                                                {{ orderItem.product.seller.email }}
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <td class="pe-6 py-1.5 truncate">{{ orderItem.product.seller.phone }}</td>
-                                    <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
-                                    <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
-                                        Kg</td>
-                                    <td class="pe-6 py-1.5 truncate">{{ $formatCurrency(orderItem.price) }} </td>
-                                    <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
-                                <tr>
-                                    <td class="w-2 p-2 text-center truncate">
-                                        #
-                                    </td>
-                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="4">
-                                        Total
-                                    </td>
-                                    <td class="pe-3 py-1.5 font-bold truncate" colspan="2">
-                                        {{ $formatCurrency(detailTotalAmount) }}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                        </th>
+                                        <td class="pe-6 py-1.5 truncate">{{ orderItem.product.seller.phone }}</td>
+                                        <td class="pe-6 py-1.5 truncate">{{ orderItem.product.name }}</td>
+                                        <td class="pe-6 py-1.5 truncate capitalize">{{ orderItem.product.weight }}
+                                            Kg</td>
+                                        <td class="pe-6 py-1.5 truncate">{{ $formatCurrency(orderItem.price) }} </td>
+                                        <td class="pe-3 py-1.5 truncate">{{ orderItem.quantity }} </td>
+                                        <td class="pe-3 py-1.5 truncate">{{ $formatCurrency(orderItem.price *
+                                            orderItem.quantity) }} </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
+                                    <tr>
+                                        <td class="w-2 p-2 text-center truncate">
+                                            #
+                                        </td>
+                                        <td class="pe-3 py-1.5 font-bold truncate" colspan="6">
+                                            Total
+                                        </td>
+                                        <td class="pe-3 py-1.5 font-bold truncate">
+                                            {{ $formatCurrency(detailTotalAmount) }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                         <div class="mt-6 flex gap-4 justify-end">
                             <SecondaryButton @click="closeModal">Batal</SecondaryButton>
                             <PrimaryButton v-if="selectedOrder.status === 'check'"

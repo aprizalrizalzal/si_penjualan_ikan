@@ -85,7 +85,7 @@ const closeModal = () => {
         <template #header>
             <div class="flex items-center ms-2">
 
-                <h2 class="font-bold text-green-700 text-lg leading-4 flex-none px-2 py-4">Pengaturan</h2>
+                <h2 class="font-bold text-gray-700 text-lg leading-4 flex-none px-2 py-4">Pengaturan</h2>
             </div>
         </template>
         <div class="py-8">

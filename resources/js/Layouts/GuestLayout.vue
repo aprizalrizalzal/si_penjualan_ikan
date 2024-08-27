@@ -3,6 +3,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 import { initFlowbite } from 'flowbite';
+import Footer from '@/Pages/Footer.vue';
 
 onMounted(() => {
     initFlowbite();
@@ -23,4 +24,8 @@ onMounted(() => {
             <slot />
         </div>
     </div>
+    <!-- Page Footer -->
+    <footer class="animate-fade-up pb-4 text-center text-sm text-gray-900 bg-white">
+        <Footer />
+    </footer>
 </template>

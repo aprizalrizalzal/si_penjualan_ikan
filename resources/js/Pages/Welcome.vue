@@ -8,6 +8,7 @@ import Footer from './Footer.vue';
 import Banners from './Welcome/Banners.vue';
 import Products from './Welcome/Products.vue';
 import CartPlus from '@/Components/Icons/CartPlus.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);

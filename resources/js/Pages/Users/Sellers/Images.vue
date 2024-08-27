@@ -26,7 +26,7 @@ const handleFileChange = (event) => {
 const submitForm = () => {
     form.post(route('store.seller.image', {
         seller_id: props.seller.id,
-        alt: props.seller.phone,
+        alt: props.seller.name,
     }), {
         preserveScroll: true,
         onSuccess: () => {
@@ -53,7 +53,7 @@ const emit = defineEmits(['addSellerImage']);
         <div class="w-full">
             <form @submit.prevent="submitForm" class="mt-3 space-y-3">
                 <div>
-                    <InputLabel for="image" value="Gambar" />
+                    <InputLabel for="image" value="Foto" />
                     <input type="file" id="image" @change="handleFileChange" class="mt-1 block w-full" />
                     <InputError :message="form.errors.image" />
                 </div>

@@ -2,18 +2,15 @@
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import SearchInput from '@/Components/SearchInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
-import Modal from '@/Components/Modal.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import Trash3 from '@/Components/Icons/Trash3.vue';
-import CardHeading from '@/Components/Icons/CardHeading.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import CreditCard from '@/Components/Icons/CreditCard.vue';
-import PlusCircle from '@/Components/Icons/PlusCircle.vue';
-import DropdownSelect from '@/Components/DropdownSelect.vue';
 import DateTimePicker from '@/Components/DateTimePicker.vue';
 import ArrowClockwise from '@/Components/Icons/ArrowClockwise.vue';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
+const { auth } = usePage().props;
 
 const props = defineProps({
     sellers: Array,
@@ -121,6 +118,73 @@ const totalAmount = computed(() => {
         }, 0);
     }, 0);
 });
+
+const printContent = ref(null);
+
+const handlePrint = () => {
+    const pdf = new jsPDF({
+        format: 'a4',
+        orientation: 'landscape',
+    });
+
+    // Ambil elemen tabel dari template
+    const printContentEl = printContent.value;
+
+    // Tambahkan logo
+    const logoImage = new Image();
+    logoImage.src = 'storage/images/header/logo-sipi.png'; // Ganti dengan path gambar logo Anda
+    pdf.addImage(logoImage, 'PNG', 14, 4, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
+
+    // Tambahkan nama perusahaan
+    pdf.setFontSize(14);
+    pdf.text('SIPI-Desa Soro', pdf.internal.pageSize.width / 7, 16);
+    pdf.setFontSize(10);
+    pdf.text('Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.', pdf.internal.pageSize.width / 7, 22);
+
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFontSize(10);
+    pdf.text(`${new Date(start_date.value).toLocaleDateString('id-ID')} - ${new Date(end_date.value).toLocaleDateString('id-ID')}`, pdf.internal.pageSize.width - 14, 22, { align: 'right' });
+
+    // Ambil isi tabel dari elemen HTML
+    const columns = Array.from(printContentEl.querySelectorAll('thead th')).map(th => th.innerText);
+    const rows = Array.from(printContentEl.querySelectorAll('tbody tr')).map(tr => {
+        return Array.from(tr.querySelectorAll('td, th')).map(td => td.innerText.trim());
+    });
+
+    // Ambil isi tfoot dari elemen HTML, termasuk colspan
+    const footer = Array.from(printContentEl.querySelectorAll('tfoot tr')).map(tr => {
+        return Array.from(tr.querySelectorAll('td, th')).map(td => ({
+            content: td.innerText.trim(),
+            colSpan: td.getAttribute('colspan') ? parseInt(td.getAttribute('colspan')) : 1,
+        }));
+    });
+
+    // Tambahkan tabel ke PDF dengan colspan di footer
+    pdf.autoTable({
+        head: [columns],
+        body: rows,
+        foot: footer.map(row => row.map(cell => ({ content: cell.content, colSpan: cell.colSpan }))),
+        startY: 28,
+        styles: { font: 'helvetica', fontSize: 10 },
+    });
+
+    // Tambahkan footer dokumen PDF
+    const totalPages = pdf.internal.getNumberOfPages();
+    const timestamp = new Date().toLocaleString('id-ID');
+    const userName = auth.user.name;
+
+    for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI-Desa Soro) pada tanggal ${timestamp} oleh ${userName} sebagai bukti Transaksi`, pdf.internal.pageSize.getWidth() - 55, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+    }
+
+    // Buat dan buka PDF
+    const blob = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(blob);
+    const newTabPdf = window.open('', '_blank');
+    newTabPdf.location.href = pdfURL;
+};
 </script>
 
 <template>
@@ -149,7 +213,7 @@ const totalAmount = computed(() => {
                     </div>
                 </div>
                 <div class="overflow-x-auto sm:rounded-md pb-4">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <table ref="printContent" class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <th scope="col" class="px-3 py-3 truncate">No.</th>
@@ -158,7 +222,6 @@ const totalAmount = computed(() => {
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
-                                <th scope="col" class="px-2 py-3 text-center truncate">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -203,35 +266,33 @@ const totalAmount = computed(() => {
                                         </li>
                                     </ul>
                                 </td>
-                                <td class="px-3 py-3 text-center truncate">
-                                    <a href="#" @click.prevent="showModalSeller(seller)"
-                                        class="flex gap-2 items-center justify-center font-normal px-2 text-gray-600 hover:underline">
-                                        <CardHeading width="16" height="16" />Detail
-                                    </a>
-                                </td>
                             </tr>
                         </tbody>
                         <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <td class="w-4 p-4 text-center truncate">#</td>
                                 <td class="px-3 py-3 font-bold truncate" colspan="4">Total</td>
-                                <td class="px-3 py-3 font-bold truncate" colspan="2">
+                                <td class="px-3 py-3 font-bold truncate">
                                     {{ $formatCurrency(totalAmount) }}
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="flex items-center pt-4 m-1">
-
-                        <div v-if="sellers.length < 1" class="flex items-center justify-center w-full">
-                            <a href="#" type="button" @click="goToCart"
-                                class="flex gap-2 items-center font-normal text-blue-600 hover:underline">
-                                Pesanan masih kosong
-                                <PlusCircle width="16" height="16" />
-                            </a>
-                        </div>
-                    </div>
                 </div>
+                <PrimaryButton @click="handlePrint" class="gap-2 py-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-printer" viewBox="0 0 16 16">
+                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                        <path
+                            d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
+                    </svg>
+                    <span>Print</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+                    </svg>
+                </PrimaryButton>
                 <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

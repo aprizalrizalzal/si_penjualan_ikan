@@ -15,7 +15,8 @@ import InputError from '@/Components/InputError.vue';
 import DropdownSelect from '@/Components/DropdownSelect.vue';
 import Images from './Images.vue';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'
+import 'jspdf-autotable';
+import Back from '@/Components/Icons/Back.vue';
 
 const { auth } = usePage().props;
 const roles = ref(auth.roles);
@@ -196,12 +197,12 @@ const handlePrint = () => {
 
     const logoImage = new Image();
     logoImage.src = 'storage/images/header/logo-sipi.png'; // Ganti dengan path gambar logo Anda
-    pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
+    pdf.addImage(logoImage, 'PNG', 14, 4, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
 
     pdf.setFontSize(14);
-    pdf.text(`SIPI`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.text(`SIPI-Desa Soro`, pdf.internal.pageSize.width / 5, 16);  // Menambahkan nama perusahaan
     pdf.setFontSize(10);
-    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
+    pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 5, 22);  // Menambahkan nama perusahaan
 
     const rows = [];
     const content = printContentEl.querySelectorAll('tbody tr');
@@ -213,7 +214,7 @@ const handlePrint = () => {
 
     pdf.autoTable({
         body: rows,
-        startY: 38,
+        startY: 28,
         styles: { font: 'helvetica', fontSize: 10 },
     });
 
@@ -222,7 +223,7 @@ const handlePrint = () => {
 
     pdf.setPage(totalPages);
     pdf.setFontSize(6);
-    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI-Desa Soro) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI-Desa Soro) pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti Transaksi Penjual`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
 
     const blob = pdf.output('blob');
     const pdfURL = URL.createObjectURL(blob);
@@ -247,11 +248,7 @@ const handlePrint = () => {
                     class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
                     <div class="flex items-center gap-2">
                         <SecondaryButton @click="goToWelcome" class="gap-2 shadow-none py-2.5 capitalize">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-back" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
-                            </svg>
+                            <Back widht="16" height="16" />
                             SIPI-Desa Soro
                         </SecondaryButton>
                     </div>
@@ -472,11 +469,11 @@ const handlePrint = () => {
 
                 <!-- Detail payment item modal -->
                 <Modal :show="showingModalPayment">
-                    <div ref="printContent" class="p-6">
+                    <div class="p-6">
                         <h2 class="text-lg font-medium text-gray-900">
                             Detail Pesanan
                         </h2>
-                        <table class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
+                        <table ref="printContent" class="mt-1 w-full text-sm text-left rtl:text-right text-gray-500">
                             <tbody>
                                 <tr class="bg-white border-b hover:bg-blue-100">
                                     <td class="pe-6 py-1.5 text-black truncate">Nama</td>
