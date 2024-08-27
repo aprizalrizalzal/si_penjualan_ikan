@@ -11,6 +11,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Role\RoleController;
+use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\SellerImageController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\User\UserController;
@@ -71,7 +72,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/banner/image', [BannerController::class, 'store'])->name('store.banner.image');
     Route::delete('/banner/image', [BannerController::class, 'destroy'])->name('destroy.banner.image');
 
-    Route::post('/seller/image', [SellerImageController::class, 'store'])->name('store.seller.image');
+    Route::get('/sellers', [SellerController::class, 'show'])->name('show.sellers');
+    Route::post('/seller', [SellerController::class, 'store'])->name('store.seller');
+    Route::put('/seller', [SellerController::class, 'update'])->name('update.seller');
+    Route::delete('/seller', [SellerController::class, 'destroy'])->name('destroy.seller');
+
+    Route::post('/seller/image', [SellerImageController::class, 'update'])->name('update.seller.image');
     Route::delete('/seller/image', [SellerImageController::class, 'destroy'])->name('destroy.seller.image');
 
     Route::get('/products', [ProductController::class, 'show'])->name('show.products');

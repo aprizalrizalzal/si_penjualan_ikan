@@ -79,8 +79,9 @@ onUnmounted(() => {
                                 </Link>
                                 <Link :href="route('welcome')">
                                 <h1 class="px-4 text-lg text-gray-800 truncate">
-                                    <span class="block sm:hidden">SIPI Desa Soro</span>
-                                    <span class="hidden sm:block">Pusat Ikan Desa Soro</span>
+                                    <span class="block sm:hidden">SIPI-Desa Soro</span>
+                                    <span class="hidden sm:block">Sistem Informasi Penjualan Ikan
+                                        (SIPI-Desa Soro)</span>
                                 </h1>
                                 </Link>
                             </div>
@@ -201,8 +202,8 @@ onUnmounted(() => {
                             <span class="text-sm">Dashboard</span>
                         </ResponsiveNavLink>
                         <hr>
-                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.products')"
-                            :active="route().current('show.products') || route().current('show.categories')">
+                        <ResponsiveNavLink class="flex items-center gap-2" :href="route('show.sellers')"
+                            :active="route().current('show.sellers')">
                             <Person widht="16" height="16" />
                             <span class="text-sm">Penjual</span>
                         </ResponsiveNavLink>

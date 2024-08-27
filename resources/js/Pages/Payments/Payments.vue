@@ -199,7 +199,7 @@ const handlePrint = () => {
     pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
 
     pdf.setFontSize(14);
-    pdf.text(`Pusat Ikan Desa Soro`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.text(`SIPI`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
     pdf.setFontSize(10);
     pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
 
@@ -222,7 +222,7 @@ const handlePrint = () => {
 
     pdf.setPage(totalPages);
     pdf.setFontSize(6);
-    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
+    pdf.text(`Dibuat menggunakan Sistem Informasi Penjualan Ikan (SIPI-Desa Soro) desa Soro pada tanggal ${new Date().toLocaleString('id-ID')} / ${timestamp} oleh ${auth.user.name} sebagai bukti pemesanan`, pdf.internal.pageSize.getWidth() - 30, pdf.internal.pageSize.getHeight() - 10, { align: 'right' });
 
     const blob = pdf.output('blob');
     const pdfURL = URL.createObjectURL(blob);
@@ -252,7 +252,7 @@ const handlePrint = () => {
                                 <path
                                     d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
                             </svg>
-                            Pusat Ikan Desa Soro
+                            SIPI-Desa Soro
                         </SecondaryButton>
                     </div>
                     <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />

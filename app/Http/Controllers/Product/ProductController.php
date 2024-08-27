@@ -11,6 +11,7 @@ use App\Models\Seller\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -110,6 +111,7 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($request->id);
+
         // Menghapus produk
         $product->delete();
 

@@ -12,7 +12,7 @@ const currentYear = computed(() => {
             <hr>
             <p class="pt-5 text-xs text-gray-900">Copyright &copy; {{
                 currentYear }} <a href='#' target="_blank" rel="noopener noreferrer"><span
-                        class="text-gray-900 font-bold">Pusat Ikan Desa Soro</span></a></p>
+                        class="text-gray-900 font-bold">Sistem Informasi Penjualan Ikan (SIPI-Desa Soro)</span></a></p>
         </div>
     </div>
 </template>

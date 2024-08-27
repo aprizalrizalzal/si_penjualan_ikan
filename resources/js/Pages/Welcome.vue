@@ -63,8 +63,9 @@ onUnmounted(() => {
                                     <ApplicationLogo class="w-16 h-auto" />
                                     </Link>
                                     <h1 class="px-4 text-lg text-gray-800 truncate">
-                                        <span class="block sm:hidden">SIPI Desa Soro</span>
-                                        <span class="hidden sm:block">Pusat Ikan Desa Soro</span>
+                                        <span class="block sm:hidden">SIPI-Desa Soro</span>
+                                        <span class="hidden sm:block">Sistem Informasi Penjualan Ikan
+                                            (SIPI-Desa Soro)</span>
                                     </h1>
                                 </div>
                             </div>

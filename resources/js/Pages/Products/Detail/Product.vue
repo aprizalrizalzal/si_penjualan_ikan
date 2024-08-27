@@ -97,36 +97,40 @@ const closeModal = () => {
             </div>
         </div>
         <div class="text-start">
-            <p class="text-lg font-medium text-gray-700">
-                {{ product.name }} <span class="text-gray-500">({{ product.category.name }})</span>
-            </p>
-            <p class="text-gray-500 text-sm">
-                <span>Berat: </span>{{ product.weight }} Kg
-            </p>
-            <p class="text-gray-700 text-sm mt-2">
-                <span>Stok: </span>{{ product.stock }}
-            </p>
-            <hr>
-            <p class="text-gray-700 text-sm overflow-hidden" v-html="formatDescription(product.description)">
-            </p>
-            <hr>
-            <p class="text-lg font-medium text-gray-700 overflow-hidden">
-                {{ product.seller.name }}
-            </p>
-            <p class="text-gray-700 text-sm overflow-hidden">
-                {{ product.seller.email }}
-            </p>
-            <p class="text-gray-700 text-sm overflow-hidden mt-2">
-                {{ product.seller.phone }}
-            </p>
-            <hr>
-            <p class="text-gray-700 text-sm overflow-hidden">
-                {{ product.seller.address }}
-            </p>
-            <hr>
-            <p class="inline-block py-2 font-bold text-gray-900">
-                {{ $formatCurrency(product.price) }}
-            </p>
+            <div class="pb-2">
+                <p class="text-lg font-medium text-gray-700">
+                    {{ product.name }} <span class="text-gray-500">({{ product.category.name }})</span>
+                </p>
+                <p class="text-gray-500 text-sm">
+                    <span>Berat: </span>{{ product.weight }} Kg
+                </p>
+                <p class="text-gray-700 text-sm mt-2">
+                    <span>Stok: </span>{{ product.stock }}
+                </p>
+                <hr>
+                <p class="text-gray-700 text-sm overflow-hidden py-2" v-html="formatDescription(product.description)">
+                </p>
+                <hr>
+            </div>
+            <div class="pt-2">
+                <p class="text-lg font-medium text-gray-700 overflow-hidden">
+                    {{ product.seller.name }} (Penjual)
+                </p>
+                <p class="text-gray-700 text-sm overflow-hidden">
+                    {{ product.seller.email }}
+                </p>
+                <p class="text-gray-700 text-sm overflow-hidden mt-2">
+                    {{ product.seller.phone }}
+                </p>
+                <hr>
+                <p class="text-gray-700 text-sm overflow-hidden py-2">
+                    {{ product.seller.address }}
+                </p>
+                <hr>
+                <p class="inline-block py-2 font-bold text-gray-900">
+                    {{ $formatCurrency(product.price) }}
+                </p>
+            </div>
             <div class="flex justify-center items-center">
                 <PrimaryButton @click="confirmProductCart(product)" class="gap-2">
                     <CartPlus width="16" height="16" />

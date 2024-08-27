@@ -8,12 +8,19 @@ use App\Models\Role\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
 {
     public function store(Request $request)
     {
+        // Cek apakah user memiliki peran admin
+        if (!Auth::user()->hasRole('admin')) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,

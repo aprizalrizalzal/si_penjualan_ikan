@@ -54,7 +54,9 @@ const submit = () => {
 
             <div class="mt-4">
                 <InputLabel for="address" value="Alamat" />
-                <TextInput id="address" type="text" class="mt-1 block w-full" v-model="form.address" required />
+                <textarea id="address" type="text"
+                    class="mt-1 block w-full border-blue-300 focus:border-blue-700 focus:ring-blue-700 rounded shadow"
+                    v-model="form.address" placeholder="Alamat" required />
                 <InputError class="mt-2" :message="form.errors.address" />
             </div>
 

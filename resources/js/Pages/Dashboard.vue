@@ -42,6 +42,10 @@ const normalUsers = computed(() => {
     return props.users.filter(user => userHasRole(user, 'user'));
 });
 
+const goToSellers = () => {
+    router.visit(route('show.sellers'))
+}
+
 const goToProducts = () => {
     router.visit(route('show.products'))
 }
@@ -199,7 +203,7 @@ const handlePrint = () => {
     pdf.addImage(logoImage, 'PNG', 14, 0, 25, 25); // Menambahkan gambar logo dengan posisi dan ukuran
 
     pdf.setFontSize(14);
-    pdf.text(`Pusat Ikan Desa Soro`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
+    pdf.text(`Sistem Informasi Penjualan Ikan (SIPI-Desa Soro)`, pdf.internal.pageSize.width / 15, 26);  // Menambahkan nama perusahaan
     pdf.setFontSize(10);
     pdf.text(`Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, NTB.`, pdf.internal.pageSize.width / 15, 32);  // Menambahkan nama perusahaan
 
@@ -246,7 +250,7 @@ const handlePrint = () => {
                 <div v-if="isAdmin">
                     <div class="flex flex-col gap-4 pb-4 ">
                         <div class="grid grid-cols sm:grid-cols-5 mx-2 gap-4">
-                            <CardButton @click="goToUsers" title="Penjual" description="Daftar Penjual."
+                            <CardButton @click="goToSellers" title="Penjual" description="Daftar Penjual."
                                 class="mx-auto">
                                 <template #svg>
                                     <div class="bg-blue-100 p-4 rounded-tl-3xl">
@@ -384,7 +388,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                            }}
+                                }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
