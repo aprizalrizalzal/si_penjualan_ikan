@@ -3,6 +3,7 @@
 use App\Http\Controllers\Banner\BannerController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Customer\CustomerImageController;
+use App\Http\Controllers\Fonnte\MessageController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Payment\PaymentImageController;
@@ -125,9 +126,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/order/payments', [PaymentController::class, 'store_payment'])->name('store.order.payment');
     Route::delete('/order', [OrderController::class, 'destroy'])->name('destroy.order');
 
+    Route::post('order/messages/{order_code}', [MessageController::class, 'send_order_message'])->name('order.messages');
+
     Route::get('/payments', [PaymentController::class, 'show'])->name('show.payments');
     Route::put('/payment', [PaymentController::class, 'update'])->name('update.payment');
     Route::delete('/payment', [PaymentController::class, 'destroy'])->name('destroy.payment');
+
+    Route::post('payment/messages/{payment_code}', [MessageController::class, 'send_payment_message'])->name('payment.messages');
 
     Route::post('/payment/image', [PaymentImageController::class, 'store'])->name('store.payment.image');
     Route::delete('/payment/image', [PaymentImageController::class, 'destroy'])->name('destroy.payment.image');

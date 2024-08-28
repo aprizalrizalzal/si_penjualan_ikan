@@ -126,6 +126,6 @@ class PaymentController extends Controller
 
         $order->update(['status' => $request->status]);
 
-        return redirect()->route('show.payments');
+        return redirect()->route('show.orders');
     }
 }

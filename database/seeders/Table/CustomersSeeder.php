@@ -16,7 +16,7 @@ class CustomersSeeder extends Seeder
         $customers = [
             [
                 'user_id' => 1,
-                'phone' => '081123345567',
+                'phone' => '087765889202',
                 'address' => 'Alamat lengkap admin'
 
             ],

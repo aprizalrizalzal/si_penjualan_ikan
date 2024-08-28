@@ -116,6 +116,7 @@ const paymentMethods = [
 const confirmOrderPayment = (order) => {
     confirmingOrderPayment.value = true;
     selectedOrder.value = order;
+
     if (order) {
         form.order_id = order.id;
         form.amount = order.total_amount;
@@ -123,10 +124,15 @@ const confirmOrderPayment = (order) => {
     }
 };
 
+const sendMessage = (order) => {
+    router.post(route('order.messages', { order_code: order.order_code }));
+}
+
 const storePayment = () => {
     form.post(route('store.order.payment'), {
         preserveScroll: true,
         onSuccess: () => {
+            sendMessage(selectedOrder.value);
             closeModal();
         },
         onError: (errors) => {
@@ -380,7 +386,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
                                 selectedOrder.order_code
-                                }}</strong>?
+                            }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,
