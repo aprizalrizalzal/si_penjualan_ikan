@@ -37,6 +37,15 @@ class OrderController extends Controller
             'id' => 'required|exists:orders,id',
         ]);
 
+        $userId = Auth::id();
+
+        if (Auth::user()->hasRole('admin')) {
+            $order = Order::findOrFail($request->id);
+        } else {
+            // User hanya dapat menghapus pesanan mereka sendiri
+            $order = Order::where('user_id', $userId)->where('id', $request->id)->firstOrFail();
+        }
+
         $order = Order::findOrFail($request->id);
 
         // Periksa jika pengguna adalah user dan tidak memiliki hak atas pesanan ini

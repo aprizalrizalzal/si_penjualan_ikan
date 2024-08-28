@@ -85,9 +85,15 @@ class PaymentController extends Controller
         ]);
 
         $userId = Auth::id();
-        $payment = Payment::whereHas('order', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        })->where('id', $request->id)->firstOrFail();
+
+        if (Auth::user()->hasRole('admin')) {
+            $payment = Payment::where('id', $request->id)->firstOrFail();
+        } else {
+            // User hanya dapat menghapus pembayaran mereka sendiri
+            $payment = Payment::whereHas('order', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })->where('id', $request->id)->firstOrFail();
+        }
 
         // Menghapus pembayaran
         $payment->delete();
@@ -111,6 +117,7 @@ class PaymentController extends Controller
         ]);
 
         $userId = Auth::id();
+
         $order = Order::where('user_id', $userId)
             ->where('id', $request->order_id)
             ->firstOrFail();

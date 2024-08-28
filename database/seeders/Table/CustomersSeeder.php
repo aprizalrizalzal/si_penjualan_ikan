@@ -22,7 +22,7 @@ class CustomersSeeder extends Seeder
             ],
             [
                 'user_id' => 2,
-                'phone' => '087765543321',
+                'phone' => '087857054203',
                 'address' => 'Alamat lengkap pembeli satu'
 
             ],
