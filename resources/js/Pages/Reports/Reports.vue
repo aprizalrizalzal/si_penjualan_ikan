@@ -16,6 +16,24 @@ const props = defineProps({
     sellers: Array,
 });
 
+// const getPaymentStatusFromSellers = (sellers) => {
+//     const paymentStatus = [];
+
+//     sellers.forEach((seller) => {
+//         seller.products.forEach((product) => {
+//             product.order_items.forEach((orderItem) => {
+//                 if (orderItem.order && orderItem.order.payment) {
+//                     paymentStatus.push(orderItem.order.payment.status);
+//                 }
+//             });
+//         });
+//     });
+
+//     return paymentStatus;
+// };
+
+// const paymentStatus = getPaymentStatusFromSellers(props.sellers);
+
 const searchQuery = ref('');
 
 const filteredSellersSearch = computed(() => {
@@ -221,6 +239,7 @@ const handlePrint = () => {
                                 <th scope="col" class="px-3 py-3 truncate">Telepon</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pesanan</th>
                                 <th scope="col" class="px-3 py-3 truncate">Kode Pembayaran</th>
+                                <th scope="col" class="px-3 py-3 truncate">Status</th>
                                 <th scope="col" class="px-3 py-3 truncate">Total</th>
                             </tr>
                         </thead>
@@ -259,6 +278,17 @@ const handlePrint = () => {
                                         </li>
                                     </ul>
                                 </td>
+                                <td class="px-3 py-3 capitalize truncate">
+                                    <ul v-for="product in seller.products" :key="product.id">
+                                        <li v-for="orderItem in product.order_items" :key="orderItem.id">
+                                            <ul v-for="order in [orderItem.order]" :key="order.id">
+                                                <li v-if="order.payment" :key="order.payment.id">
+                                                    {{ order.payment.status }}
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </td>
                                 <td class="px-3 py-3 truncate">
                                     <ul v-for="product in seller.products" :key="product.id">
                                         <li v-for="orderItem in product.order_items" :key="orderItem.id">
@@ -271,7 +301,7 @@ const handlePrint = () => {
                         <tfoot class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
                                 <td class="w-4 p-4 text-center truncate">#</td>
-                                <td class="px-3 py-3 font-bold truncate" colspan="4">Total</td>
+                                <td class="px-3 py-3 font-bold truncate" colspan="5">Total</td>
                                 <td class="px-3 py-3 font-bold truncate">
                                     {{ $formatCurrency(totalAmount) }}
                                 </td>
