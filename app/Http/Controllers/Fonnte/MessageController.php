@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Fonnte;
 use App\Http\Controllers\Controller;
 use App\Models\Order\Order;
 use App\Models\Payment\Payment;
-use App\Models\User;
 use App\Service\FonnteService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -67,12 +66,20 @@ class MessageController extends Controller
                 . "*Kode Pembayaran " . $payment->payment_code . "* a/n " . $user->name . "\n\n"
                 . "Untuk informasi lebih detail, Anda bisa mengunjungi website kami di "
                 . "" . url('/payments') . "\n\n"
-                . "*Terima kasih atas pembayaran Anda. Salam hangat dari kami, Kampung Nelayan Desa Soro.*\n";
+                . "*_Terima kasih atas pembayaran Anda. Salam hangat dari kami, Kampung Nelayan Desa Soro._*\n";
 
-            $response = $this->fonnte->sendMessage($to, $message);
+            try {
+                // Kirim pesan
+                $response = $this->fonnte->sendMessage($to, $message);
+                // Mencatat log respon
+                Log::info('Fonnte Response for Payment Message:', ['response' => $response]);
+            } catch (\Exception $e) {
+                // Log pesan error atau lakukan tindakan lainnya
+                Log::error('Failed to send message: ' . $e->getMessage());
 
-            // Mencatat log respon
-            Log::info('Fonnte Response for Payment Message:', ['response' => $response]);
+                // Anda juga bisa menambahkan flash message atau indikasi lainnya untuk pengguna
+                session()->flash('error', 'Gagal mengirim pesan, silakan coba lagi nanti.');
+            }
         } else {
             Log::warning('Payment not found for payment code: ' . $payment_code);
         }
