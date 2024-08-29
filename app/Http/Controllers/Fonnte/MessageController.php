@@ -21,9 +21,9 @@ class MessageController extends Controller
     public function send_order_message($order_code)
     {
         $user = Auth::user();
+        $order = Order::where('order_code', $order_code)->first();
 
         $to = $user->customer->phone;
-        $order = Order::where('order_code', $order_code)->first();
 
         if ($order) {
             $message = "*SIPI-Desa Soro*\n"
@@ -55,15 +55,14 @@ class MessageController extends Controller
     public function send_payment_message($payment_code)
     {
         // Mengambil semua pengguna dengan role 'admin'
-        $user = Auth::user();
+        $payment = Payment::where('payment_code', $payment_code)->with('order', 'order.user', 'order.user.customer')->first();
 
-        $to = $user->customer->phone;
-        $payment = Payment::where('payment_code', $payment_code)->first();
+        $to = $payment->order->user->customer->phone;
 
         if ($payment) {
             $message = "*SIPI-Desa Soro*\n"
                 . "Kampung Nelayan Desa Soro, Kecamatan Kempo, Dompu, Nusa Tenggara Barat.\n\n"
-                . "*Kode Pembayaran " . $payment->payment_code . "* a/n " . $user->name . "\n\n"
+                . "*Kode Pembayaran " . $payment->payment_code . "* a/n " . $payment->order->user->name . "\n\n"
                 . "Untuk informasi lebih detail, Anda bisa mengunjungi website kami di "
                 . "" . url('/payments') . "\n\n"
                 . "*_Terima kasih atas pembayaran Anda. Salam hangat dari kami, Kampung Nelayan Desa Soro._*\n";

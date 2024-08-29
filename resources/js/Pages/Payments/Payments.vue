@@ -185,6 +185,11 @@ const closeModal = () => {
     confirmingPaymentDeletion.value = false;
 };
 
+const sendMessage = (payment) => {
+    router.post(route('payment.messages', { payment_code: payment.payment_code }));
+    closeModal();
+}
+
 const printContent = ref(null);
 
 const handlePrint = () => {
@@ -529,6 +534,10 @@ const handlePrint = () => {
                                     pembayaran Anda untuk mempercepat proses verifikasi.</div>
                             </tfoot>
                         </table>
+                        <div v-if="isAdmin" class="mt-6 flex gap-4">
+                            <PrimaryButton @click="sendMessage(selectedPayment)">Kirim Pesan ke Pelanggan
+                            </PrimaryButton>
+                        </div>
                         <div class="mt-6 flex justify-end gap-4">
                             <SecondaryButton @click="handlePrint">Print</SecondaryButton>
                             <PrimaryButton @click="closeModal">Ok</PrimaryButton>
