@@ -293,7 +293,7 @@ const handlePrint = () => {
                                     </div>
                                 </template>
                             </CardButton>
-                            <CardButton @click="goToOrders" title="Pesanan" description="Daftar pesanan."
+                            <CardButton @click="goToOrders" title="Pesanan" description="Daftar Pesanan."
                                 class="mx-auto">
                                 <template #svg>
                                     <div class="bg-blue-100 p-4 rounded-tl-3xl">
@@ -306,7 +306,7 @@ const handlePrint = () => {
                                     </div>
                                 </template>
                             </CardButton>
-                            <CardButton @click="goToPayments" title="Pembayaran" description="Daftar pembayaran."
+                            <CardButton @click="goToPayments" title="Pembayaran" description="Daftar Pembayaran."
                                 class="mx-auto">
                                 <template #svg>
                                     <div class="bg-blue-100 p-4 rounded-tl-3xl">
@@ -393,7 +393,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                            }}
+                                }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">
