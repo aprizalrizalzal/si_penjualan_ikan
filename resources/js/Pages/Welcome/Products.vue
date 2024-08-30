@@ -220,11 +220,11 @@ const storeCart = () => {
                 Konfirmasi Produk
             </h2>
             <p class="mt-1 text-sm text-gray-700">
-                Setelah produk dipesan, produk akan ditambahkan ke keranjang.
+                Produk akan ditambahkan ke keranjang.
             </p>
             <div class="mt-6 flex justify-end">
                 <SecondaryButton @click="closeModal">Batal</SecondaryButton>
-                <PrimaryButton class="ms-3" @click="storeCart">Pesan</PrimaryButton>
+                <PrimaryButton class="ms-3" @click="storeCart">Ok</PrimaryButton>
             </div>
         </div>
     </Modal>
