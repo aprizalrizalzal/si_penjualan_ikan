@@ -168,16 +168,17 @@ const closeModal = () => {
 
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
-                    <div class="flex items-center gap-2">
+                <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
+                    <div class="flex items-center gap-2 px-2">
                         <SecondaryButton @click="goToPayments" class="gap-2 shadow-none py-2.5 capitalize">
                             <CreditCard width="16" height="16" /> Pembayaran
                         </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+                    <div class="px-2">
+                        <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" class="px-2" />
+                    </div>
                 </div>
-                <div class="overflow-x-auto sm:rounded-md pb-4">
+                <div class="overflow-x-auto pb-4 px-2 bg-white">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
@@ -386,7 +387,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus pesanan Anda, code <strong>{{
                                 selectedOrder.order_code
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah pesanan Anda, code <strong>{{ selectedOrder.order_code }}</strong> dihapus,

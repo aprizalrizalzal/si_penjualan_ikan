@@ -215,10 +215,9 @@ const handlePrint = () => {
         </template>
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
+                <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
                     <div class="flex items-center sm:flex-row flex-col gap-2 w-full">
-                        <div class="flex items-center gap-2 bg-white">
+                        <div class="flex items-center gap-2 bg-white p-2">
                             <DateTimePicker :key="datePickerKeys.startDate" id="start_date" label="Tanggal awal"
                                 v-model="start_date" />
                             <DateTimePicker :key="datePickerKeys.endDate" id="end_date" label="Tanggal akhir"
@@ -227,10 +226,12 @@ const handlePrint = () => {
                                 <ArrowClockwise width="16" height="16" />
                             </PrimaryButton>
                         </div>
-                        <SearchInput class="mt-auto ms-auto" v-model:searchQuery="searchQuery" placeholder="Cari" />
+                        <div class="mt-auto ms-auto p-2">
+                            <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+                        </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto sm:rounded-md pb-4">
+                <div class="overflow-x-auto pb-4 px-2 bg-white">
                     <table ref="printContent" class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
@@ -309,20 +310,22 @@ const handlePrint = () => {
                         </tfoot>
                     </table>
                 </div>
-                <PrimaryButton @click="handlePrint" class="gap-2 py-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-printer" viewBox="0 0 16 16">
-                        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                        <path
-                            d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
-                    </svg>
-                    <span>Print</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
-                    </svg>
-                </PrimaryButton>
+                <div class="py-2">
+                    <PrimaryButton @click="handlePrint" class="gap-2 py-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-printer" viewBox="0 0 16 16">
+                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                            <path
+                                d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
+                        </svg>
+                        <span>Print</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+                        </svg>
+                    </PrimaryButton>
+                </div>
                 <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

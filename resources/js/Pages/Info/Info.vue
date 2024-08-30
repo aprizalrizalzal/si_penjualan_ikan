@@ -14,8 +14,8 @@ const goToWelcome = () => {
     <Head title="Info" />
     <div class="py-8">
         <div class="animate-fade-down max-w-7xl mx-auto sm:px-6 lg:px-8 mb-8">
-            <div class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
-                <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
+                <div class="flex items-center gap-2 px-2">
                 </div>
             </div>
             <div class="p-12 hover:shadow max-w-8xl mx-auto">

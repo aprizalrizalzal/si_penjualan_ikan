@@ -16,3 +16,14 @@ export function formatDate(date) {
 
     return `${year}-${month}-${day}`;
 }
+
+export function searchProducts(products, searchQuery) {
+    if (!searchQuery) return products;
+    const lowerCaseQuery = searchQuery.toLowerCase();
+  
+    return products.filter(product =>
+      product.name.toLowerCase().includes(lowerCaseQuery) ||
+      product.category.name.toLowerCase().includes(lowerCaseQuery) ||
+      product.description.toLowerCase().includes(lowerCaseQuery)
+    );
+  }

@@ -16,7 +16,7 @@ watch(searchQuery, (newQuery) => {
 </script>
 
 <template>
-    <div class="flex items-center sm:max-w-xs w-full border border-blue-300 rounded-md bg-transparent focus-within:ring-blue-500 focus-within:border-blue-500"
+    <div class="flex items-center sm:max-w-xs w-full border border-blue-300 bg-transparent focus-within:ring-blue-500 focus-within:border-blue-500"
         tabindex="0">
         <span class="ml-2 text-blue-500">
             <!-- Icon Search -->

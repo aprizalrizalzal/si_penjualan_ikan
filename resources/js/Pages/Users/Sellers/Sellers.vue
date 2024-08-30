@@ -203,16 +203,17 @@ const closeModal = () => {
 
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
-                    <div class="flex items-center gap-2">
+                <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
+                    <div class="flex items-center gap-2 px-2">
                         <PrimaryButton @click="showModalSeller" class="gap-2 py-2.5 capitalize">
                             <PlusCircle width="16" height="16" />Penjual
                         </PrimaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+                    <div class="px-2">
+                        <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" class="px-2" />
+                    </div>
                 </div>
-                <div class="overflow-x-auto sm:rounded-md pb-4">
+                <div class="overflow-x-auto pb-4 px-2 bg-white">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
@@ -245,7 +246,7 @@ const closeModal = () => {
                                     <div class="flex items-center">
                                         <div class="relative me-2">
                                             <img v-if="seller.seller_image !== null" :src="seller.seller_image.image"
-                                                :alt="seller.seller_image.alt" class="h-16 w-16 object-cover rounded "
+                                                :alt="seller.seller_image.alt" class="h-16 w-16 object-cover "
                                                 style="max-width: 128px;" />
                                             <svg v-else xmlns="http://www.w3.org/2000/svg" width="64" height="64"
                                                 fill="currentColor" class="bi bi-person-circle m-auto"
@@ -256,13 +257,13 @@ const closeModal = () => {
                                             </svg>
                                             <botton v-if="seller.seller_image !== null"
                                                 @click="confirmSellerImageDeletion(seller)"
-                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
                                                 <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
                                             </botton>
                                         </div>
                                         <botton v-if="seller.seller_image === null"
                                             @click="showModalAddSellerImage(seller)"
-                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            class="bg-white items-center p-0.5 font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
                                             <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
                                         </botton>
                                     </div>
@@ -356,16 +357,16 @@ const closeModal = () => {
                                     <div>
                                         <InputLabel for="address" value="Alamat" />
                                         <textarea id="address" type="text"
-                                            class="mt-1 block w-full border-blue-300 focus:border-blue-700 focus:ring-blue-700 rounded shadow"
+                                            class="mt-1 block w-full border-blue-300 focus:border-blue-700 focus:ring-blue-700 shadow"
                                             v-model="form.address" placeholder="Alamat" required />
                                         <InputError class="mt-2" :message="form.errors.address" />
                                     </div>
                                     <div v-if="previewUrl" class="my-4">
                                         <p class="font-semibold">Pratinjau</p>
-                                        <img :src="previewUrl" alt="Image Preview" class="w-full h-auto mt-2 rounded" />
+                                        <img :src="previewUrl" alt="Image Preview" class="w-full h-auto mt-2" />
                                     </div>
                                     <div>
-                                        <PrimaryButton class="mt-6 mb-3" :class="{ 'opacity-25': form.processing }"
+                                        <PrimaryButton class=" mt-6 mb-3" :class="{ 'opacity-25': form.processing }"
                                             :disabled="form.processing">
                                             Simpan
                                         </PrimaryButton>

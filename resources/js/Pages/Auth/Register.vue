@@ -55,7 +55,7 @@ const submit = () => {
             <div class="mt-4">
                 <InputLabel for="address" value="Alamat" />
                 <textarea id="address" type="text"
-                    class="mt-1 block w-full border-blue-300 focus:border-blue-700 focus:ring-blue-700 rounded shadow"
+                    class="mt-1 block w-full border-blue-300 focus:border-blue-700 focus:ring-blue-700 shadow"
                     v-model="form.address" placeholder="Alamat" required />
                 <InputError class="mt-2" :message="form.errors.address" />
             </div>
@@ -80,7 +80,7 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
                 <Link :href="route('login')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    class="underline text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Sudah terdaftar?
                 </Link>
 

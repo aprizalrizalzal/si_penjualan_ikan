@@ -28,7 +28,7 @@ defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="animate-fade-up p-4 sm:p-8 bg-white hover:shadow sm:rounded-lg">
+                <div class="animate-fade-up p-4 sm:p-8 bg-white hover:shadow ">
                     <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
                         <Customers :customer="customer" />
                         <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status"
@@ -36,11 +36,11 @@ defineProps({
                     </div>
                 </div>
 
-                <div class="animate-fade-right p-4 sm:p-8 bg-white hover:shadow sm:rounded-lg">
+                <div class="animate-fade-right p-4 sm:p-8 bg-white hover:shadow ">
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
 
-                <div class="animate-fade-left p-4 sm:p-8 bg-white hover:shadow sm:rounded-lg">
+                <div class="animate-fade-left p-4 sm:p-8 bg-white hover:shadow ">
                     <DeleteUserForm class="max-w-xl" />
                 </div>
             </div>

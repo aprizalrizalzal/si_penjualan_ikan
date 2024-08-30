@@ -323,7 +323,7 @@ const handlePrint = () => {
                         <hr>
                         <div class="flex flex-col items-center sm:justify-start justify-center gap-4 mx-2">
                             <div class="flex flex-col items-center gap-2 me-auto">
-                                <div class="flex items-center gap-2 bg-white">
+                                <div class="flex items-center gap-2 px-2">
                                     <DateTimePicker :key="datePickerKeys.startDate" id="start_date_line_chart"
                                         label="Tanggal awal" v-model="start_date_line_chart" />
                                     <DateTimePicker :key="datePickerKeys.endDate" id="end_date_line_chart"
@@ -349,7 +349,7 @@ const handlePrint = () => {
                         </div>
                     </div>
                 </div>
-                <div v-if="isUser" class="bg-white overflow-hidden sm:rounded-lg py-6">
+                <div v-if="isUser" class="bg-white overflow-hidden sm:py-6">
                     <ol class="flex items-center w-full mb-4 sm:mb-5 py-8">
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
@@ -424,7 +424,7 @@ const handlePrint = () => {
                         <div class="flex items-center justify-center font-bold text-lg py-2">
                             <h2>{{ selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1) }}</h2>
                         </div>
-                        <div class="overflow-x-auto sm:rounded-md pb-4">
+                        <div class="overflow-x-auto pb-4 px-2 bg-white">
                             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                                 <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                                     <tr>

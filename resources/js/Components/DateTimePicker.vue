@@ -52,7 +52,7 @@ watch(formattedDate, (newValue) => {
   <div class="date-picker">
     <label :for="id" class="block font-medium text-sm text-blue-700 mb-1">{{ label }}</label>
     <input :id="id" v-model="formattedDate"
-      class="w-full border-blue-700 focus:border-blue-700 focus:ring-blue-700 rounded shadow" :placeholder="placeholder"
+      class="w-full border-blue-700 focus:border-blue-700 focus:ring-blue-700 shadow" :placeholder="placeholder"
       ref="datepicker" />
   </div>
 </template>

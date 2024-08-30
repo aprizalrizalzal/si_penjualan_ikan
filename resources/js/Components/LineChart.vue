@@ -23,29 +23,40 @@ onMounted(() => {
         data: {
             labels: props.lableCharts,
             datasets: [{
-                label: 'Count',
+                label: 'Jumlah',
                 data: props.dataCharts,
-                backgroundColor: generateRandomColors(props.dataCharts.length).map(color => `${color}33`),
+                backgroundColor: "#ffffff",
                 borderColor: generateRandomColors(props.dataCharts.length),
-                borderWidth: 2,
-                pointRadius: 4,
-                pointBorderWidth: 2,
-                pointHoverBorderWidth: 2,
-                pointHoverRadius: 8,
-                pointStyle: 'rectRounded'
+                borderWidth: 4,
+                pointRadius: 8,
+                pointBorderWidth: 4,
+                pointHoverBorderWidth: 4,
+                pointHoverRadius: 16,
+                pointStyle: 'rectRounded',
             }]
         },
         options: {
             scales: {
+                x: {
+                    grid: {
+                        color: '#ffffff', // Warna garis grid sumbu x
+                    },
+                    ticks: {
+                        color: '#ffffff', // Warna teks pada sumbu x
+                    }
+                },
                 y: {
                     beginAtZero: true,
-                    // Calculate max value for y axis based on props.dataCharts
                     max: calculateMaxY(props.dataCharts) + 2,
+                    grid: {
+                        color: '#1D4ED8', // Warna garis grid sumbu y
+                    },
                     ticks: {
-                        stepSize: 1, // Ensure the step size is 1 to only show integers
+                        stepSize: 1, // Pastikan ukuran langkah adalah 1 untuk hanya menampilkan bilangan bulat
                         callback: function (value) {
-                            return Math.round(value); // Ensure only integers are displayed
+                            return Math.round(value); // Pastikan hanya bilangan bulat yang ditampilkan
                         },
+                        color: '#1D4ED8', // Warna teks pada sumbu y
                     }
                 }
             }

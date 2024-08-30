@@ -80,7 +80,7 @@ const isPrevDisabled = computed(() => (movingForward.value && currentIndex.value
 <template>
     <div v-if="banners.length">
         <div id="default-banner" class="relative w-full" data-banner="slide">
-            <div class="h-auto overflow-hidden rounded md:h-auto">
+            <div class="h-auto overflow-hidden md:h-auto">
                 <div id="banner-wrapper" class="banner-wrapper">
                     <div v-for="(banner, index) in banners" :key="banner.id" class="banner-slide">
                         <img :src="banner.image" :alt="banner.alt">
@@ -89,11 +89,14 @@ const isPrevDisabled = computed(() => (movingForward.value && currentIndex.value
             </div>
             <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="text-center text-white p-4">
-                    <h1 class="text-2xl font-bold">
-                        Selamat Datang di Sistem Informasi Penjualan Ikan (SIPI-Desa Soro)
+                    <h1 class="font-bold ">
+                        <span class="block sm:hidden text-xl">Selamat Datang di SIPI-Desa Soro</span>
+                        <span class="hidden sm:block text-4xl px-24">Selamat Datang di Sistem Informasi Penjualan Ikan
+                            (SIPI-Desa Soro)</span>
                     </h1>
-                    <p class="mt-2 text-lg">
-                        "Segar dari Laut, Menghidupi Desa"
+                    <p class="mt-2">
+                        <span class="block sm:hidden text-xs">"Segar dari Laut, Menghidupi Desa"</span>
+                        <span class="hidden sm:block text-xl">"Segar dari Laut, Menghidupi Desa"</span>
                     </p>
                 </div>
             </div>

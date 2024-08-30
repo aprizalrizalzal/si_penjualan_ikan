@@ -249,17 +249,18 @@ const handlePrint = () => {
 
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
-                    <div class="flex items-center gap-2">
+                <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
+                    <div class="flex items-center gap-2 px-2">
                         <SecondaryButton @click="goToWelcome" class="gap-2 shadow-none py-2.5 capitalize">
                             <Back widht="16" height="16" />
                             SIPI-Desa Soro
                         </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+                    <div class="px-2">
+                        <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" class="px-2" />
+                    </div>
                 </div>
-                <div class="overflow-x-auto sm:rounded-md pb-4">
+                <div class="overflow-x-auto pb-4 px-2 bg-white">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
@@ -288,15 +289,15 @@ const handlePrint = () => {
                                         <div v-for="(paymentImage) in payment.payment_images" :key="paymentImage.id"
                                             class="relative me-2">
                                             <img :src="`${paymentImage.image}`" :alt="paymentImage.alt"
-                                                class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
+                                                class="h-16 w-16 object-cover" style=" max-width: 128px;" />
                                             <botton @click="confirmPaymentImageDeletion(paymentImage)"
-                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
                                                 <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
                                             </botton>
                                         </div>
                                         <botton v-if="payment.payment_images.length < 2"
                                             @click="showModalUploadProofPayment(payment)"
-                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            class="bg-white items-center p-0.5 font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
                                             <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
                                         </botton>
                                     </div>
@@ -352,12 +353,12 @@ const handlePrint = () => {
                             </tr>
                         </tfoot>
                     </table>
+                    <p class="pt-4 text-xs font-normal text-gray-900">Jika gambar terlihat terlalu
+                        kecil,
+                        klik kanan pada gambar dan pilih 'Buka gambar di tab
+                        baru'
+                        untuk melihatnya dalam ukuran penuh.</p>
                 </div>
-                <p class="px-4 text-xs font-normal text-gray-900">Jika gambar terlihat terlalu
-                    kecil,
-                    klik kanan pada gambar dan pilih 'Buka gambar di tab
-                    baru'
-                    untuk melihatnya dalam ukuran penuh.</p>
                 <div class="flex justify-center gap-4 items-center p-2">
                     <SecondaryButton @click="previousPage" :disabled="currentPage === 1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

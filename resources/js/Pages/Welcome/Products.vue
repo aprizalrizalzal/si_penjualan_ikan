@@ -11,7 +11,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import CartPlus from '@/Components/Icons/CartPlus.vue';
 
 const props = defineProps({
-    products: Array,
+    products: Array, // Hanya gunakan produk yang diterima dari props
 
     canLogin: {
         type: Boolean,
@@ -34,30 +34,17 @@ const form = useForm({
     quantity: 1, // Default quantity
 });
 
-
-const searchQuery = ref('');
 const currentPage = ref(1);
 const itemsPerPage = ref(12);
-
-const filteredProducts = computed(() => {
-    if (!searchQuery.value) {
-        return props.products;
-    }
-    return props.products.filter(product =>
-        product.category.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        product.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-});
 
 const paginatedProducts = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
-    return filteredProducts.value.slice(start, end);
+    return props.products.slice(start, end);
 });
 
 const totalPages = computed(() => {
-    return Math.ceil(filteredProducts.value.length / itemsPerPage.value);
+    return Math.ceil(props.products.length / itemsPerPage.value);
 });
 
 const showAllProduct = () => {
@@ -80,10 +67,6 @@ const previousPage = () => {
         currentPage.value--;
     }
 };
-
-watch(searchQuery, () => {
-    currentPage.value = 1;
-});
 
 const showingModalProductDetail = ref(false);
 const confirmingProductCart = ref(false);
@@ -141,14 +124,14 @@ const storeCart = () => {
 </script>
 
 <template>
-    <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 sm:px-0 bg-white">
-            <div class="flex items-center gap-2 me-auto">
+    <!-- <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between sm:flex-row flex-col gap-4 py-4 sm:px-0 bg-white">
+            <div class="flex items-center gap-2 text-lg font-bold px-2 me-auto">
                 <span>Produk</span>
             </div>
-            <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+            <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" class="mx-2" />
         </div>
-    </div>
+    </div> -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 my-2 text-sm font-bold text-blue-900">
         <div v-for="product in paginatedProducts" :key="product.id">
             <CardView :category="product.category.name" :name="product.name" :stock="product.stock"

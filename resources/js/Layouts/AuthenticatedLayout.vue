@@ -41,9 +41,9 @@ onUnmounted(() => {
 
 <template>
     <div>
-        <div class="min-h-screen bg-white">
+        <div class="min-h-screen bg-gradient-to-l from-blue-700 to-blue-50 ">
             <nav :class="[
-                'animate-fade-down fixed left-0 top-0 w-full bg-white transition-shadow duration-300 z-0',
+                'animate-fade-right fixed left-0 top-0 w-full bg-blue-50 transition-shadow duration-300 z-30',
                 { 'shadow-sm': hasScrolled },
             ]">
                 <!-- Primary Navigation Menu -->
@@ -51,7 +51,7 @@ onUnmounted(() => {
                     <div class="flex items-center h-20">
                         <!-- drawer admin init and show -->
                         <button v-if="isAdmin"
-                            class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
+                            class="animate-fade-right px-2 my-5 px-2 py-2 text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
                             type="button" data-drawer-target="drawer-navigation-admin"
                             data-drawer-show="drawer-navigation-admin" aria-controls="drawer-navigation-admin">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -62,7 +62,7 @@ onUnmounted(() => {
                         </button>
                         <!-- drawer user init and show -->
                         <button v-if="isUser"
-                            class="animate-fade-right px-2 my-5 px-2 py-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
+                            class="animate-fade-right px-2 my-5 px-2 py-2 text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out"
                             type="button" data-drawer-target="drawer-navigation-user"
                             data-drawer-show="drawer-navigation-user" aria-controls="drawer-navigation-user">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -75,7 +75,7 @@ onUnmounted(() => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('welcome')">
-                                <ApplicationLogo class="w-16 h-auto" />
+                                <ApplicationLogo class="w-16 h-auto p-2 m-2 bg-white rounded-full shadow" />
                                 </Link>
                                 <Link :href="route('welcome')">
                                 <h1 class="px-4 text-lg text-gray-800 truncate">
@@ -95,9 +95,9 @@ onUnmounted(() => {
                             <div class="ms-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
-                                        <span class="inline-flex rounded-md">
+                                        <span class="inline-flex ">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-250">
+                                                class="inline-flex items-center px-3 py-2 border border-transparent bg-blue-50 text-sm leading-4 font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-250">
                                                 {{ $page.props.auth.user.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +122,7 @@ onUnmounted(() => {
                         <!-- Hamburger -->
                         <div class="animate-fade-left -me-2 flex items-center sm:hidden">
                             <button @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out">
+                                class="inline-flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 hover:bg-blue-100 focus:outline-none focus:bg-blue-100 focus:text-gray-700 transition duration-150 ease-in-out">
                                 <svg class="h-6 w-6" stroke="#256125" fill="none" viewBox="0 0 24 24">
                                     <path :class="{
                                         hidden: showingNavigationDropdown,
@@ -166,7 +166,7 @@ onUnmounted(() => {
                 </div>
             </nav>
             <!-- Page Heading -->
-            <header class="animate-fade-left shadow-sm mt-20 bg-white transition-shadow duration-300"
+            <header class="animate-fade-left shadow-sm mt-20  bg-blue-50 transition-shadow duration-300"
                 v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
@@ -181,7 +181,7 @@ onUnmounted(() => {
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-admin" aria-controls="drawer-navigation-admin"
-                    class="text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-900 rounded-md text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
+                    class="text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-900 text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -253,7 +253,7 @@ onUnmounted(() => {
                 </h5>
                 <hr>
                 <button type="button" data-drawer-hide="drawer-navigation-user" aria-controls="drawer-navigation-user"
-                    class="text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-900 rounded-md text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
+                    class="text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-900 text-sm w-8 h-8 absolute top-6 end-2.5 inline-flex items-center justify-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -297,6 +297,31 @@ onUnmounted(() => {
             <main class="animate-fade shadow-sm mb-2">
                 <slot />
             </main>
+            <div class="relative">
+                <div class="h-32 bg-gradient-to-l from-blue-700 to-blue-50 text-white flex items-center justify-center">
+                    <svg class="w-24 h-24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" xml:space="preserve">
+                        <path fill="#FFFFFF" stroke="#000000" stroke-width="10" stroke-miterlimit="10" d="M57,283" />
+                    </svg>
+                </div>
+
+                <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+                    <svg class="w-full h-48 transform translate-y-10" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none"
+                        shape-rendering="auto">
+                        <defs>
+                            <path id="gentle-wave"
+                                d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                        </defs>
+                        <g class="parallax">
+                            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7)" />
+                            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.2)" />
+                            <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
             <!-- Page Footer -->
             <footer class="animate-fade-up pb-4 text-center text-sm text-gray-900 bg-white">
                 <Footer />
@@ -304,3 +329,39 @@ onUnmounted(() => {
         </div>
     </div>
 </template>
+
+<style>
+.parallax>use {
+    animation: move-forever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+}
+
+.parallax>use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+}
+
+.parallax>use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+}
+
+.parallax>use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+}
+
+.parallax>use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+}
+
+@keyframes move-forever {
+    0% {
+        transform: translate3d(-90px, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(85px, 0, 0);
+    }
+}
+</style>

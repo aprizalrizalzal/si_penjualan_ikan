@@ -1,7 +1,7 @@
 <template>
     <button
-        class="flex flex-col justify-between items-stretch py-2 max-w-sm rounded text-sm overflow-hidden bg-white hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:ring-offset-2 hover:rounded-none hover:ring-blue-300 ring-1 ring-white/[0.05] transition ease-in-out duration-150">
-        <div class="flex items-center text-blue-600 py-2 gap-2">
+        class="flex flex-col justify-between items-stretch py-2 max-w-sm text-sm overflow-hidden bg-white hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:ring-offset-2 hover:ring-blue-300 ring-1 ring-white/[0.05] transition ease-in-out duration-150">
+        <div class="flex items-center text-blue-600 p-2 gap-2">
             <div class="h-auto flex">
                 <slot name="svg"></slot>
             </div>

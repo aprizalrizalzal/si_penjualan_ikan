@@ -209,9 +209,8 @@ const closeModal = () => {
 
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="flex items-center justify-between sm:flex-row flex-col gap-4 pt-2 pb-4 px-4 sm:px-0 bg-white">
-                    <div class="flex items-center gap-2 me-auto">
+                <div class="flex items-center justify-between sm:flex-row flex-col gap-4 p-2 sm:px-0 bg-white">
+                    <div class="flex items-center gap-2 px-2 me-auto">
                         <PrimaryButton @click="showModalProduct" class="gap-2 shadow-none py-2.5 capitalize">
                             <PlusCircle width="16" height="16" />Produk
                         </PrimaryButton>
@@ -220,9 +219,11 @@ const closeModal = () => {
                             <BoxArrowInRight width="16" height="16" /> Kategori
                         </SecondaryButton>
                     </div>
-                    <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" />
+                    <div class="px-2">
+                        <SearchInput v-model:searchQuery="searchQuery" placeholder="Cari" class="px-2" />
+                    </div>
                 </div>
-                <div class="overflow-x-auto sm:rounded-md pb-4">
+                <div class="overflow-x-auto pb-4 px-2 bg-white px-2 bg-white">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-blue-100">
                             <tr>
@@ -262,15 +263,15 @@ const closeModal = () => {
                                         <div v-for="(productImage) in product.product_images" :key="productImage.id"
                                             class="relative me-2">
                                             <img :src="`${productImage.image}`" :alt="productImage.alt"
-                                                class="h-16 w-16 object-cover rounded " style="max-width: 128px;" />
+                                                class="h-16 w-16 object-cover " style="max-width: 128px;" />
                                             <botton @click="confirmProductImageDeletion(productImage)"
-                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 rounded font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
+                                                class="absolute top-0.5 right-0.5 inline-flex bg-white items-center p-0.5 font-semibold text-xs text-red-900 tracking-widest shadow hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-900 opacity-75 transition ease-in-out duration-150">
                                                 <Trash3 width="16" height="16" class="hover:w-6 hover:h-6" />
                                             </botton>
                                         </div>
                                         <botton v-if="product.product_images.length < 4"
                                             @click="showModalAddProductImages(product)"
-                                            class="bg-white items-center p-0.5 rounded font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
+                                            class="bg-white items-center p-0.5 font-semibold text-xs text-blue-900 tracking-widest hover:bg-blue-100 focus:outline-none focus:ring-1 focus:ring-blue-900 transition ease-in-out duration-150">
                                             <PlusCircle width="16" height="16" class="hover:w-6 hover:h-6" />
                                         </botton>
                                     </div>
@@ -455,7 +456,7 @@ const closeModal = () => {
                         <h2 class="text-lg font-medium text-gray-900">
                             Apakah Anda yakin ingin menghapus produk <strong>{{
                                 selectedProduct.name
-                            }}</strong>?
+                                }}</strong>?
                         </h2>
                         <p class="mt-1 text-sm text-gray-700">
                             Setelah produck <strong>{{ selectedProduct.name }}</strong> dihapus,

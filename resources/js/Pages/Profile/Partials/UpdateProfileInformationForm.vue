@@ -77,7 +77,7 @@ const form = useForm({
                 <p class="text-sm mt-2 text-gray-800">
                     Alamat email Anda belum diverifikasi.
                     <Link :href="route('verification.send')" method="post" as="button"
-                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-500">
+                        class="underline text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-500">
                     Klik di sini untuk mengirim ulang email verifikasi.
                     </Link>
                 </p>
