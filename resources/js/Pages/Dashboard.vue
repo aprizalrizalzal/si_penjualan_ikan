@@ -350,7 +350,7 @@ const handlePrint = () => {
                     </div>
                 </div>
                 <div v-if="isUser" class="bg-white overflow-hidden sm:py-6">
-                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-8">
+                    <ol class="flex items-center w-full mb-4 sm:mb-5 py-8 px-2">
                         <li
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Pending'] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
