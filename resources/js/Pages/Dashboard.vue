@@ -252,7 +252,7 @@ const handlePrint = () => {
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="isAdmin">
-                    <div class="flex flex-col gap-4 pb-4 ">
+                    <div class="flex flex-col gap-4 pb-4">
                         <div class="grid grid-cols-2 sm:grid-cols-5 mx-2 gap-4">
                             <CardButton @click="goToSellers" title="Penjual" description="Daftar Penjual."
                                 class="mx-auto">
@@ -393,7 +393,7 @@ const handlePrint = () => {
                             class="flex w-full text-xs items-center text-blue-500 after:content-['Completed'] after:w-full after:h-1 after:border-b after:border-blue-400 after:border-4 after:inline-block">
                             <div class="bg-blue-100 text-blue-700 text-sm font-bold p-2 rounded-tl-2xl">{{
                                 statusCounts.completed
-                                }}
+                            }}
                             </div>
                             <a href="#" @click="selectedStatus = 'completed'"
                                 class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-br-2xl lg:h-12 lg:w-12 shrink-0">

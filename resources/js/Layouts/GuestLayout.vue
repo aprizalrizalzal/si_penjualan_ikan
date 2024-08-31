@@ -1,13 +1,24 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { Link } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { initFlowbite } from 'flowbite';
 import Footer from '@/Pages/Footer.vue';
 
+const hasScrolledToBottom = ref(false);
+
+const handleScrollUp = () => {
+    hasScrolledToBottom.value = window.scrollY > 100;
+};
+
 onMounted(() => {
     initFlowbite();
+    window.addEventListener('scroll', handleScrollUp);
 })
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScrollUp);
+});
 </script>
 
 <template>
@@ -24,8 +35,7 @@ onMounted(() => {
             <slot />
         </div>
     </div>
-    <!-- Page Footer -->
-    <div class="relative">
+    <div class="relative mb-10">
         <div class="h-32 bg-gradient-to-l from-blue-700 to-blue-50 text-white flex items-center justify-center">
             <svg class="w-24 h-24" version="1.1" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" xml:space="preserve">
@@ -50,7 +60,11 @@ onMounted(() => {
             </svg>
         </div>
     </div>
-    <footer class="animate-fade-up py-4 text-center text-sm text-black">
+    <!-- Page Footer -->
+    <footer :class="[
+        'fixed w-full bottom-0 left-0 pb-2 text-center text-sm text-gray-900 bg-white z-40',
+        { 'block animate-fade-up': hasScrolledToBottom, 'hidden animate-fade-down': !hasScrolledToBottom },
+    ]">
         <Footer />
     </footer>
 </template>
